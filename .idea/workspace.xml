@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a358a51f-195d-4e8e-908b-2334aa4b90d5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/Front-End/src/screen/LoginScreen/LoginScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/Front-End/src/screen/LoginScreen/LoginScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front-End/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Front-End/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/config/db.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/config/db.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1q0VfUommASrWl2Q2zYGPaYG5G9" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a358a51f-195d-4e8e-908b-2334aa4b90d5" name="Default Changelist" comment="" />
+      <created>1616216597870</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1616216597870</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="266" y="130" width="1200" height="800" key="AVDManager" timestamp="1616424908442">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="266" y="130" width="1200" height="800" key="AVDManager/0.0.1920.1040@0.0.1920.1040" timestamp="1616424908442" />
+    <state x="364" y="180" key="SettingsEditor" timestamp="1616219886587">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="364" y="180" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1616219886587" />
+  </component>
+</project>
