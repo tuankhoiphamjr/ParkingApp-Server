@@ -1,67 +1,67 @@
 const config = require("../config/auth.config");
 const db = require("../models");
-const { createUser } = require("../services/user.service");
-
-const User = db.user;
-const Role = db.role;
+const userServices = require("../services/user.service");
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const { user, mongoose } = require("../models");
 
-exports.signup = (req, res) => {
+exports.signup = async (req, res) => {
   let { phoneNumber, password, role } = req.body;
-  let result = createUser(phoneNumber, password, role);
+  let { result, status } = await userServices.createUser(
+    phoneNumber,
+    bcrypt.hashSync(password, 8),
+    role
+  );
 
-  if (!result) {
-    res.status(500).send({ message: err });
+  if (!status) {
+    res.status(500).json({ message: "Something went wrong" });
     return;
   }
-  res.send({ message: "User was registered sucessfully!" });
+  res.status(200).json(result);
 };
 
-exports.signin = (req, res) => {
-  User.findOne({
-    phoneNumber: req.body.phoneNumber,
-  }).exec((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
+exports.signin = async (req, res) => {
+  let phoneNumber = req.body.phoneNumber;
+  let tempResult = await userServices.getUserByPhoneNumber(phoneNumber);
 
-    if (!user) {
-      return res.status(404).send({ message: "User Not found." });
-    }
+  if (!tempResult.status) {
+    res.status(404).send({message: tempResult.message})
+  }
 
-    var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+  let {result, status} = tempResult;
 
-    if (!passwordIsValid) {
-      return res.status(401).send({
-        accessToken: null,
-        message: "Invalid Password!",
-      });
-    }
+  let passwordCompareCheck = await userServices.comparePassword(req.body.password, result.password)
 
-    User.findOneAndUpdate(
-      { _id: mongoose.Types.ObjectId(user._id) },
-      { isActive: true },
-      {upsert: true}
-    );
-
-    var token = jwt.sign({ id: user.id }, config.secret, {
-      expiresIn: 86400, // 24 hours
+  if(!passwordCompareCheck.status) {
+    return res.status(401).send({
+      message : passwordCompareCheck.message
     });
+  }
 
-    res.status(200).send({
-      id: user._id,
-      phoneNumber: user.phoneNumber,
-      role: user.role,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      accummulatePoint: user.accummulatePoint,
-      isActive: user.isActive,
-      accessToken: token,
-    });
+  await userServices.setUserStatus(
+    mongoose.Types.ObjectId(result._id),
+    true
+  );
+
+  let token = await jwt.sign({ id: user.id }, config.secret, {
+    expiresIn: 86400, // 24 hours
   });
+
+  // Pass token to response
+  res.status(200).send({
+    result,
+    accessToken: token
+  });
+
+};
+
+// Sign Out - Change the active status
+exports.signout = async (req, res) => {
+  let userId = req.body.id;
+  let { message, status } = await userServices.setUserStatus(
+    mongoose.Types.ObjectId(userId),
+    false
+  );
+  res.status(200).json({ message });
 };
