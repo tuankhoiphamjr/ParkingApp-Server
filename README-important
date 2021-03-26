@@ -1,8 +1,16 @@
 Auth: POST
     api/auth/signin: {phoneNumber, password}
-    api/auth/signup: {phoneNumber, password, firstName, lastName, email}
-    api/auth/signout {id: user._id}
+
+    api/auth/signup: {phoneNumber, password, role, firstName, lastName, email}
+        - Return user info as JSON file
+        - Change the active status in DB (isActive: true)
+
+    api/auth/signout {id: user._id} 
+        - Change the active status in DB (isActive: false)
 
 Avatar: GET
-    api/avatar/file/:id - get JSON of image with {:id}
-    api/avatar/:id - get image with {:id}
+    api/avatar/file/:id 
+        - return JSON file of image with {:id}
+
+    api/avatar/:id 
+        - return image with {:id}

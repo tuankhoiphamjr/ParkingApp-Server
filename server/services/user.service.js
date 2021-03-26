@@ -3,7 +3,14 @@ const db = require("../models");
 var bcrypt = require("bcryptjs");
 const User = db.user;
 
-createUser = async (phoneNumber, password, role) => {
+createUser = async (
+  phoneNumber,
+  password,
+  role,
+  firstName,
+  lastName,
+  email
+) => {
   // const newUser = new User({
   //   phoneNumber: phoneNumber,
   //   password: bcrypt.hashSync(password, 8),
@@ -21,6 +28,9 @@ createUser = async (phoneNumber, password, role) => {
     phoneNumber,
     password,
     role,
+    firstName,
+    lastName,
+    email,
   });
   return { result, status: true };
 };
