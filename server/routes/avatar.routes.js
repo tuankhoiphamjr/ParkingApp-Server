@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 
-const controller = require("../controllers/uploadSingleImg.controller");
+// const controller = require("../controllers/uploadSingleImg.controller");
 const dbConfig = require("../config/db.config");
 
 const url = dbConfig.URI;
