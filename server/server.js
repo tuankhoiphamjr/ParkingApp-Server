@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const mongoose = require("mongoose");
 
 const app = express();
 
@@ -8,17 +9,14 @@ const db = require("./models");
 const dbConfig = require("./config/db.config");
 const Role = db.role;
 
-const user = require("./services/user.service")
+const user = require("./services/user.service");
 
 db.mongoose
-  .connect(
-    `mongodb+srv://${dbConfig.HOSTNAME}:${dbConfig.PASSWORD}@cluster0.uypbs.mongodb.net/${dbConfig.DB}?retryWrites=true&w=majority`,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false
-    }
-  )
+  .connect(dbConfig.URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  })
   .then(() => {
     console.log("Successfully connect to MongoDB.");
     initial();
@@ -40,7 +38,7 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header(
     "Access-Control-Allow-Headers",
     "x-access-token, Origin, Content-Type, Accept"
@@ -48,7 +46,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use("/api", require("./routes"))
+app.use("/api", require("./routes"));
 
 // routes
 //require("./routes/auth.routes")(app);
@@ -57,7 +55,32 @@ app.use("/api", require("./routes"))
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 
-// test
+// test------------------------------------------------------------------------
+
+const url = dbConfig.URI;
+
+const connect = mongoose.createConnection(url, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+let gfs;
+
+connect.once("open", async () => {
+  // initialize stream
+  gfs = await new mongoose.mongo.GridFSBucket(connect.db, {
+    bucketName: "photo",
+  });
+});
+
+
+app.get("/", (req, res) => {
+  res.status(200).send({message : "123"})
+})
+
+
+
+// test------------------------------------------------------------------------
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
