@@ -44,7 +44,7 @@ setUserStatus = async (userId, status) => {
       if (err) {
         result = { message: err, status: false };
       }
-      result = { message: "Success", status: false };
+      result = { message: "Success", status: true };
     }
   );
   return result;
@@ -58,8 +58,16 @@ getUserByPhoneNumber = async (phoneNumber) => {
   return { result, status: true };
 };
 
-comparePassword = async (password, passwordToCompare) => {
-  let passwordIsValid = await bcrypt.compareSync(password, passwordToCompare);
+getUserById = async (userID) => {
+  let result = await User.findOne({ _id: userID }).select("-__v");
+  if (!result) {
+    return { message: "User not found", status: false };
+  }
+  return { result, status: true };
+};
+
+comparePassword = async (password, passHashinDB) => {
+  let passwordIsValid = await bcrypt.compareSync(password, passHashinDB);
   if (!passwordIsValid) {
     return {
       status: false,
@@ -72,11 +80,29 @@ comparePassword = async (password, passwordToCompare) => {
   };
 };
 
+updatePassword = async (userId, newPassword) => {
+  let result;
+  await User.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(userId) },
+    { password: bcrypt.hashSync(newPassword, 8) },
+    (err, data) => {
+      if (err) {
+        result = { message: err, status: false };
+      }
+      result = { message: "Success", status: true };
+    }
+  );
+
+  return result;
+};
+
 const userServices = {
   setUserStatus,
   createUser,
   getUserByPhoneNumber,
+  getUserById,
   comparePassword,
+  updatePassword,
 };
 
 module.exports = userServices;

@@ -57,21 +57,6 @@ const PORT = process.env.PORT || 8080;
 
 // test------------------------------------------------------------------------
 
-const url = dbConfig.URI;
-
-const connect = mongoose.createConnection(url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-let gfs;
-
-connect.once("open", async () => {
-  // initialize stream
-  gfs = await new mongoose.mongo.GridFSBucket(connect.db, {
-    bucketName: "photo",
-  });
-});
 
 
 app.get("/", (req, res) => {
