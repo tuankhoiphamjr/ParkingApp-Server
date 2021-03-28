@@ -73,7 +73,7 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
-router.post("/post", upload.uploadFilesMiddleware, (req, res, next) => {
+router.post("/upload", upload.uploadFilesMiddleware, (req, res, next) => {
   console.log(req.file);
 
   // check for existing images

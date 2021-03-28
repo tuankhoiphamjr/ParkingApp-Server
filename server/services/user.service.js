@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const db = require("../models");
+const dbConfig = require("../config/db.config");
 var bcrypt = require("bcryptjs");
 const User = db.user;
 
@@ -9,7 +10,8 @@ createUser = async (
   role,
   firstName,
   lastName,
-  email
+  email,
+  avatarId = dbConfig.defaultAvatarId
 ) => {
   // const newUser = new User({
   //   phoneNumber: phoneNumber,
@@ -31,6 +33,7 @@ createUser = async (
     firstName,
     lastName,
     email,
+    avatarId,
   });
   return { result, status: true };
 };

@@ -6,14 +6,15 @@ const config = require("../config/auth.config");
 const userServices = require("../services/user.service");
 
 exports.signup = async (req, res) => {
-  let { phoneNumber, password, role, firstName, lastName, email } = req.body;
+  let { phoneNumber, password, role, firstName, lastName, email, avatarId } = req.body;
   let { result, status } = await userServices.createUser(
     phoneNumber,
     bcrypt.hashSync(password, 8),
     role,
     firstName,
     lastName,
-    email
+    email,
+    avatarId
   );
 
   if (!status) {
