@@ -4,8 +4,10 @@ const router = express.Router();
 
 // const controller = require("../controllers/uploadSingleImg.controller");
 const dbConfig = require("../config/db.config");
-
 const url = dbConfig.URI;
+const db = require("../models");
+const Avatar = db.avatar;
+const upload = require("../middlewares/uploadImg");
 
 const connect = mongoose.createConnection(url, {
   useNewUrlParser: true,
@@ -17,7 +19,7 @@ let gfs;
 connect.once("open", async () => {
   // initialize stream
   gfs = await new mongoose.mongo.GridFSBucket(connect.db, {
-    bucketName: "photo",
+    bucketName: "avatar",
   });
 });
 
@@ -46,29 +48,50 @@ router.get("/file/:id", (req, res, next) => {
 });
 
 router.get("/:id", (req, res, next) => {
-    gfs
-      .find({ _id: mongoose.Types.ObjectId(req.params.id) })
-      .toArray((err, files) => {
-        if (!files[0] || files.length === 0) {
-          return res.status(200).json({
-            success: false,
-            message: "No files available",
-          });
-        }
-  
-        if (
-          files[0].contentType === "image/jpeg" ||
-          files[0].contentType === "image/png" ||
-          files[0].contentType === "image/svg+xml"
-        ) {
-          // render image to browser
-          gfs.openDownloadStreamByName(files[0].filename).pipe(res);
-        } else {
-          res.status(404).json({
-            err: "Not an image",
-          });
-        }
-      });
+  gfs
+    .find({ _id: mongoose.Types.ObjectId(req.params.id) })
+    .toArray((err, files) => {
+      if (!files[0] || files.length === 0) {
+        return res.status(200).json({
+          success: false,
+          message: "No files available",
+        });
+      }
+
+      if (
+        files[0].contentType === "image/jpeg" ||
+        files[0].contentType === "image/png" ||
+        files[0].contentType === "image/svg+xml"
+      ) {
+        // render image to browser
+        gfs.openDownloadStreamByName(files[0].filename).pipe(res);
+      } else {
+        res.status(404).json({
+          err: "Not an image",
+        });
+      }
+    });
+});
+
+router.post("/post", upload.uploadFilesMiddleware, (req, res, next) => {
+  console.log(req.file);
+
+  // check for existing images
+
+  let newAvatar = new Avatar({
+    filename: req.file.filename,
+    fileId: req.file.id,
   });
+
+  newAvatar
+    .save()
+    .then((avatar) => {
+      res.status(200).json({
+        success: true,
+        avatar,
+      });
+    })
+    .catch((err) => res.status(500).json(err));
+});
 
 module.exports = router;

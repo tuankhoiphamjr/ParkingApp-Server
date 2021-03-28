@@ -38,6 +38,11 @@ const UserSchema = new mongoose.Schema({
     default: 0,
   },
 
+  avatar: {
+    type: mongoose.Types.ObjectId,
+    ref: "Avatar"
+  },
+
   isActive: {
     type: Boolean,
     default: false,
