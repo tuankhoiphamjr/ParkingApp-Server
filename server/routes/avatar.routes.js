@@ -2,12 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 
-// const controller = require("../controllers/uploadSingleImg.controller");
+const controller = require("../controllers/uploadSingleImg.controller");
 const dbConfig = require("../config/db.config");
 const url = dbConfig.URI;
-const db = require("../models");
-const Avatar = db.avatar;
-const upload = require("../middlewares/uploadImg");
 
 const connect = mongoose.createConnection(url, {
   useNewUrlParser: true,
@@ -24,10 +21,6 @@ connect.once("open", async () => {
 });
 
 // Route for AVATAR
-
-// Tạm thời chưa dùng được : phát triển thêm file controllers/uploadSingleImg, middlewares/uploadImg.js
-// router.post("/upload", controller.uploadFile);
-// Tạm thời chưa dùng được : phát triển thêm
 
 router.get("/file/:id", (req, res, next) => {
   gfs
@@ -73,25 +66,6 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
-router.post("/upload", upload.uploadFilesMiddleware, (req, res, next) => {
-  console.log(req.file);
-
-  // check for existing images
-
-  let newAvatar = new Avatar({
-    filename: req.file.filename,
-    fileId: req.file.id,
-  });
-
-  newAvatar
-    .save()
-    .then((avatar) => {
-      res.status(200).json({
-        success: true,
-        avatar,
-      });
-    })
-    .catch((err) => res.status(500).json(err));
-});
+router.post("/upload", controller.uploadFile);
 
 module.exports = router;

@@ -4,6 +4,7 @@ const dbConfig = require("../config/db.config");
 var bcrypt = require("bcryptjs");
 const User = db.user;
 
+// Create User in DB
 createUser = async (
   phoneNumber,
   password,
@@ -13,19 +14,6 @@ createUser = async (
   email,
   avatarId = dbConfig.defaultAvatarId
 ) => {
-  // const newUser = new User({
-  //   phoneNumber: phoneNumber,
-  //   password: bcrypt.hashSync(password, 8),
-  //   role: role,
-  // });
-
-  // let result = await newUser.save((err, user) => {
-  //   if (err) {
-  //     return { message: err, status: false };
-  //   }
-  //   return user;
-  // });
-
   let result = await User.create({
     phoneNumber,
     password,
@@ -38,6 +26,7 @@ createUser = async (
   return { result, status: true };
 };
 
+// Change status of user
 setUserStatus = async (userId, status) => {
   let result;
   await User.findOneAndUpdate(
@@ -53,6 +42,7 @@ setUserStatus = async (userId, status) => {
   return result;
 };
 
+// Get all user info by number phone
 getUserByPhoneNumber = async (phoneNumber) => {
   let result = await User.findOne({ phoneNumber }).select("-__v");
   if (!result) {
@@ -61,6 +51,7 @@ getUserByPhoneNumber = async (phoneNumber) => {
   return { result, status: true };
 };
 
+// Get all user info by _id
 getUserById = async (userID) => {
   let result = await User.findOne({ _id: userID }).select("-__v");
   if (!result) {
@@ -69,6 +60,7 @@ getUserById = async (userID) => {
   return { result, status: true };
 };
 
+// Compare password 
 comparePassword = async (password, passHashinDB) => {
   let passwordIsValid = await bcrypt.compareSync(password, passHashinDB);
   if (!passwordIsValid) {
@@ -83,6 +75,7 @@ comparePassword = async (password, passHashinDB) => {
   };
 };
 
+// Update password of user in DB
 updatePassword = async (userId, newPassword) => {
   let result;
   await User.findOneAndUpdate(
