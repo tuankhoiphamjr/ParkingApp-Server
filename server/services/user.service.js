@@ -12,7 +12,6 @@ createUser = async (
   firstName,
   lastName,
   email,
-  avatarId = dbConfig.defaultAvatarId
 ) => {
   let result = await User.create({
     phoneNumber,
@@ -21,7 +20,6 @@ createUser = async (
     firstName,
     lastName,
     email,
-    avatarId,
   });
   return { result, status: true };
 };
