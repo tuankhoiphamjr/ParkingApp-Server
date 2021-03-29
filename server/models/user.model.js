@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Schema.Types.ObjectId;
+const dbConfig = require("../config/db.config")
 
 const UserSchema = new mongoose.Schema({
   phoneNumber: {
@@ -36,6 +37,12 @@ const UserSchema = new mongoose.Schema({
   accummulatePoint: {
     type: Number,
     default: 0,
+  },
+
+  avatar: {
+    type: mongoose.Types.ObjectId,
+    ref: "Avatar",
+    default: dbConfig.defaultAvatarId,
   },
 
   isActive: {

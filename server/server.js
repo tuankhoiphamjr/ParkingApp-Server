@@ -11,6 +11,7 @@ const Role = db.role;
 
 const user = require("./services/user.service");
 
+// Connect to DB
 db.mongoose
   .connect(dbConfig.URI, {
     useNewUrlParser: true,
@@ -46,32 +47,14 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use("/api", require("./routes"));
-
 // routes
-//require("./routes/auth.routes")(app);
-//require("./routes/user.routes")(app);
+app.use("/api", require("./routes"));
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 
 // test------------------------------------------------------------------------
 
-const url = dbConfig.URI;
-
-const connect = mongoose.createConnection(url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-let gfs;
-
-connect.once("open", async () => {
-  // initialize stream
-  gfs = await new mongoose.mongo.GridFSBucket(connect.db, {
-    bucketName: "photo",
-  });
-});
 
 
 app.get("/", (req, res) => {

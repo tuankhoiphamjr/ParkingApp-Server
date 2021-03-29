@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.use("/auth", require("./routes/auth.routes"));
 
-router.use("/api/test", require("./routes/user.routes"));
+router.use("/user", require("./routes/user.routes"));
 
 router.use("/avatar", require("./routes/avatar.routes"));
 
