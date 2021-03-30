@@ -29,7 +29,7 @@ exports.changePassword = async (req, res) => {
 
   let { result, status } = await userServices.getUserById(userId);
   if (!status) {
-    res.status(404).send({ message: result.message });
+    res.status(400).send({ message: result.message });
   }
 
   let passwordCompareCheck = await userServices.comparePassword(
