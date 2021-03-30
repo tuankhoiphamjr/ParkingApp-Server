@@ -11,7 +11,7 @@ createUser = async (
   role,
   firstName,
   lastName,
-  email,
+  email
 ) => {
   let result = await User.create({
     phoneNumber,
@@ -58,7 +58,7 @@ getUserById = async (userID) => {
   return { result, status: true };
 };
 
-// Compare password 
+// Compare password
 comparePassword = async (password, passHashinDB) => {
   let passwordIsValid = await bcrypt.compareSync(password, passHashinDB);
   if (!passwordIsValid) {
@@ -90,6 +90,22 @@ updatePassword = async (userId, newPassword) => {
   return result;
 };
 
+// Update user info in DB
+updateUserInfo = async (userId, firstName, lastName, email) => {
+  let result;
+  await User.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(userId) },
+    { firstName: firstName, lastName: lastName, email: email },
+    (err, data) => {
+      if (err) {
+        result = { message: err, status: false };
+      }
+      result = { message: "Success", status: true };
+    }
+  );
+  return result;
+};
+
 const userServices = {
   setUserStatus,
   createUser,
@@ -97,6 +113,7 @@ const userServices = {
   getUserById,
   comparePassword,
   updatePassword,
+  updateUserInfo,
 };
 
 module.exports = userServices;

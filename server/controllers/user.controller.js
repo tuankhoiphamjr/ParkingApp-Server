@@ -38,14 +38,25 @@ exports.changePassword = async (req, res) => {
   );
 
   if (!passwordCompareCheck.status) {
-    return res.status(401).send({
+    return res.status(400).send({
       message: "Passwords does not match",
     });
   }
 
   let response = await userServices.updatePassword(userId, newPassword);
   if (!response.status) {
-    res.status(401).send(response);
+    res.status(400).send(response);
   }
   res.status(200).send(response);
 };
+
+exports.updateUserInfo = async (req, res) => {
+  let {userId, firstName, lastName, email} = req.body;
+  let result = await userServices.updateUserInfo(userId, firstName, lastName, email);
+  if (!result.status){
+    return res.status(400).send({
+      message: "Update user info failed.",
+    });
+  }
+  return res.status(200).send({message: "Update user info successfully."})
+}

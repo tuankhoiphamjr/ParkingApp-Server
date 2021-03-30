@@ -17,7 +17,7 @@ exports.signup = async (req, res) => {
   );
 
   if (!status) {
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(400).json({ message: "Something went wrong" });
     return;
   }
   res.status(200).json(result);
@@ -28,7 +28,7 @@ exports.signin = async (req, res) => {
   let tempResult = await userServices.getUserByPhoneNumber(phoneNumber);
 
   if (!tempResult.status) {
-    return res.status(404).send({ message: tempResult.message });
+    return res.status(400).send({ message: tempResult.message });
   }
 
   let { result, status } = tempResult;
@@ -39,7 +39,7 @@ exports.signin = async (req, res) => {
   );
 
   if (!passwordCompareCheck.status) {
-    return res.status(401).send({
+    return res.status(400).send({
       message: passwordCompareCheck.message,
     });
   }
