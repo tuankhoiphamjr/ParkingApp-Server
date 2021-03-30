@@ -28,7 +28,7 @@ exports.signin = async (req, res) => {
   let tempResult = await userServices.getUserByPhoneNumber(phoneNumber);
 
   if (!tempResult.status) {
-    res.status(404).send({ message: tempResult.message });
+    return res.status(404).send({ message: tempResult.message });
   }
 
   let { result, status } = tempResult;
