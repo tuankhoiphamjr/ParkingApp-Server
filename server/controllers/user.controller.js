@@ -23,7 +23,7 @@ exports.moderatorBoard = (req, res) => {
 };
 
 exports.changePassword = async (req, res) => {
-  let userId = req.body.userId;
+  let userId = req.userId;
   let newPassword = req.body.newPassword;
   let oldPassword = req.body.oldPassword;
 
@@ -51,7 +51,8 @@ exports.changePassword = async (req, res) => {
 };
 
 exports.updateUserInfo = async (req, res) => {
-  let {userId, firstName, lastName, email} = req.body;
+  let {firstName, lastName, email} = req.body;
+  let userId = req.userId;
   let result = await userServices.updateUserInfo(userId, firstName, lastName, email);
   if (!result.status){
     return res.status(400).send({
