@@ -37,20 +37,32 @@ const ParkingSchema = new mongoose.Schema({
     default: 0,
   },
 
-  image: {
+  images: {
     type: ObjectId,
     ref: "Avatar",
-    default: 0,
+    default: dbConfig.defaultAvatarId,
   },
 
   openTime: {
-    type: Date,
-    default: Date.now()
+    hour: {
+      type: Number,
+      default: 0,
+    },
+    minute: {
+      type: Number,
+      default: 0,
+    },
   },
 
   closeTime: {
-    type: Date,
-    default: Date.now()
+    hour: {
+      type: Number,
+      default: 0,
+    },
+    minute: {
+      type: Number,
+      default: 0,
+    },
   },
 
   registerDate: {
