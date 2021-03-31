@@ -9,7 +9,11 @@ router.use("/user", require("./routes/user.routes"));
 
 router.use("/avatar", require("./routes/avatar.routes"));
 
-router.use("/parking", [authJwt.verifyToken], require("./routes/parking.routes"));
+router.use(
+  "/parking",
+  [authJwt.verifyToken, isOwner],
+  require("./routes/parking.routes")
+);
 
 // router.use("/avatar", require("./routes/image"));
 
