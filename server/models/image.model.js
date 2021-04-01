@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const AvatarSchema = new mongoose.Schema({
+const ImageSchema = new mongoose.Schema({
     filename: {
         required: true,
         type: String,
@@ -9,10 +9,13 @@ const AvatarSchema = new mongoose.Schema({
         required: true,
         type: String,
     },
+    type:{
+        type: String,
+    },
     createdAt: {
         default: Date.now(),
         type: Date,
     },
 });
 
-module.exports = mongoose.model('Avatar', AvatarSchema);
+module.exports = mongoose.model('Image', ImageSchema);
