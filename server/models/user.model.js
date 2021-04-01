@@ -41,7 +41,7 @@ const UserSchema = new mongoose.Schema({
 
   avatar: {
     type: mongoose.Types.ObjectId,
-    ref: "Image",
+    ref: "AvatarImage",
     default: dbConfig.defaultAvatarId,
   },
 

@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const { uploadImage } = require("../middlewares");
 const db = require("../models");
-const Image = db.image;
+const AvatarImage = db.avatarImage;
+const ParkingImage = db.parkingImage;
 
 const dbConfig = require("../config/db.config");
 const url = dbConfig.URI;
@@ -21,7 +22,7 @@ connect.once("open", async () => {
   });
 });
 
-exports.uploadFile = async (req, res) => {
+exports.uploadAvatar = async (req, res) => {
   try {
     await uploadImage.uploadFilesMiddleware(req, res);
 
@@ -30,13 +31,12 @@ exports.uploadFile = async (req, res) => {
     // }
     // console.log(req.file);
 
-    let newImage = new Image({
+    let newAvatar = new AvatarImage({
       filename: req.file.filename,
       fileId: req.file.id,
-      type: req.body.type,
     });
 
-    newImage
+    newAvatar
       .save()
       .then((image) => {
         res.status(200).json({
@@ -96,4 +96,38 @@ exports.showImage = async (req, res) => {
         });
       }
     });
+};
+
+
+exports.uploadParkingImg = async (req, res) => {
+  try {
+    await uploadImage.uploadMutilFile(req, res);
+
+    // if (req.file == undefined) {
+    //   return res.send(`You must select a file.`);
+    // }
+    // console.log(req.file);
+
+    let newParkingImages = new ParkingImage({
+      filename: req.file.filename,
+      fileId: req.file.id,
+    });
+
+    newParkingImages
+      .save()
+      .then((image) => {
+        res.status(200).json({
+          success: true,
+          image,
+        });
+      })
+      .catch((err) => res.status(500).json(err));
+
+    // return res.send(`File has been uploaded.`);
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .send({ error: `Error when trying upload image: ${error}` });
+  }
 };

@@ -10,6 +10,8 @@ router.get("/file/:id", controller.getImageInfoController);
 
 router.get("/:id", controller.showImage);
 
-router.post("/avatar/upload", controller.uploadFile);
+router.post("/avatar/upload", controller.uploadAvatar);
+
+// router.post("/parking/:parkingId/upload",)
 
 module.exports = router;
