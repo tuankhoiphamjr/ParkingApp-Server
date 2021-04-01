@@ -39,7 +39,7 @@ const ParkingSchema = new mongoose.Schema({
 
   images: {
     type: ObjectId,
-    ref: "Image",
+    ref: "Avatar",
     default: dbConfig.defaultAvatarId,
   },
 

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const { uploadImage } = require("../middlewares");
 const db = require("../models");
-const Image = db.image;
+const Avatar = db.avatar;
 
 const dbConfig = require("../config/db.config");
 const url = dbConfig.URI;
@@ -17,7 +17,7 @@ let gfs;
 connect.once("open", async () => {
   // initialize stream
   gfs = await new mongoose.mongo.GridFSBucket(connect.db, {
-    bucketName: "image",
+    bucketName: "avatar",
   });
 });
 
@@ -30,18 +30,17 @@ exports.uploadFile = async (req, res) => {
     // }
     // console.log(req.file);
 
-    let newImage = new Image({
+    let newAvatar = new Avatar({
       filename: req.file.filename,
       fileId: req.file.id,
-      type: req.body.type,
     });
 
-    newImage
+    newAvatar
       .save()
-      .then((image) => {
+      .then((avatar) => {
         res.status(200).json({
           success: true,
-          image,
+          avatar,
         });
       })
       .catch((err) => res.status(500).json(err));
