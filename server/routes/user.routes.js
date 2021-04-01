@@ -22,4 +22,7 @@ const controller = require("../controllers/user.controller");
 
 router.post("/changePassword", controller.changePassword);
 
+router.post("/updateInfo", controller.updateUserInfo);
+
+
 module.exports = router;

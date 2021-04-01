@@ -41,7 +41,7 @@ const UserSchema = new mongoose.Schema({
 
   avatar: {
     type: mongoose.Types.ObjectId,
-    ref: "Avatar",
+    ref: "Image",
     default: dbConfig.defaultAvatarId,
   },
 
@@ -53,7 +53,7 @@ const UserSchema = new mongoose.Schema({
 
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now(),
   },
 });
 

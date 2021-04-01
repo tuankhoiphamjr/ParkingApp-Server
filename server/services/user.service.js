@@ -11,7 +11,7 @@ createUser = async (
   role,
   firstName,
   lastName,
-  email,
+  email
 ) => {
   let result = await User.create({
     phoneNumber,
@@ -42,7 +42,9 @@ setUserStatus = async (userId, status) => {
 
 // Get all user info by number phone
 getUserByPhoneNumber = async (phoneNumber) => {
-  let result = await User.findOne({ phoneNumber }).select("-__v");
+  let result = await User.findOne({ phoneNumber })
+    .populate("avatar", "-_id -__v")
+    .select("-__v");
   if (!result) {
     return { message: "User not found", status: false };
   }
@@ -51,14 +53,16 @@ getUserByPhoneNumber = async (phoneNumber) => {
 
 // Get all user info by _id
 getUserById = async (userID) => {
-  let result = await User.findOne({ _id: userID }).select("-__v");
+  let result = await User.findOne({ _id: userID })
+    .populate("avatar", "-_id -__v")
+    .select("-__v");
   if (!result) {
     return { message: "User not found", status: false };
   }
   return { result, status: true };
 };
 
-// Compare password 
+// Compare password
 comparePassword = async (password, passHashinDB) => {
   let passwordIsValid = await bcrypt.compareSync(password, passHashinDB);
   if (!passwordIsValid) {
@@ -90,6 +94,22 @@ updatePassword = async (userId, newPassword) => {
   return result;
 };
 
+// Update user info in DB
+updateUserInfo = async (userId, firstName, lastName, email) => {
+  let result;
+  await User.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(userId) },
+    { firstName: firstName, lastName: lastName, email: email },
+    (err, data) => {
+      if (err) {
+        result = { message: err, status: false };
+      }
+      result = { message: "Success", status: true };
+    }
+  );
+  return result;
+};
+
 const userServices = {
   setUserStatus,
   createUser,
@@ -97,6 +117,7 @@ const userServices = {
   getUserById,
   comparePassword,
   updatePassword,
+  updateUserInfo,
 };
 
 module.exports = userServices;
