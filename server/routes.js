@@ -7,7 +7,7 @@ router.use("/auth", require("./routes/auth.routes"));
 
 router.use("/user", [verifyToken], require("./routes/user.routes"));
 
-router.use("/avatar", require("./routes/avatar.routes"));
+router.use("/image", require("./routes/image.routes"));
 
 router.use(
   "/parking",

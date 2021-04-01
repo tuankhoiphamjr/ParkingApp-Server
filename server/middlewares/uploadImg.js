@@ -16,7 +16,7 @@ var storage = new GridFsStorage({
     }
 
     return {
-      bucketName: "avatar",
+      bucketName: "image",
       filename: `${Date.now()}-bezkoder-${file.originalname}`,
     };
   },
