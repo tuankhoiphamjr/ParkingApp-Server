@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const ObjectId = mongoose.Types.ObjectId;
 const dbConfig = require("../config/db.config");
+
+const PImgSchema = new mongoose.Schema({ id: ObjectId }, { _id: false });
 
 const ParkingSchema = new mongoose.Schema({
   ownerId: {
@@ -37,11 +39,7 @@ const ParkingSchema = new mongoose.Schema({
     default: 0,
   },
 
-  images: {
-    type: ObjectId,
-    ref: "ParkingImage",
-    default: dbConfig.defaultAvatarId,
-  },
+  parkingImgId: [PImgSchema],
 
   openTime: {
     hour: {

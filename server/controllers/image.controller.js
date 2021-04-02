@@ -1,9 +1,12 @@
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 const { uploadImage } = require("../middlewares");
 const db = require("../models");
 const AvatarImage = db.avatarImage;
 const ParkingImage = db.parkingImage;
+const User = db.user;
+const Parking = db.parking;
 
 const dbConfig = require("../config/db.config");
 const url = dbConfig.URI;
@@ -30,7 +33,8 @@ connect.once("open", async () => {
 exports.uploadAvatar = async (req, res) => {
   try {
     await uploadImage.uploadFilesMiddleware(req, res);
-
+    let userId = req.userId;
+    let avatarId = req.file.id;
     // if (req.file == undefined) {
     //   return res.send(`You must select a file.`);
     // }
@@ -41,15 +45,16 @@ exports.uploadAvatar = async (req, res) => {
     //   fileId: req.file.id,
     // });
 
-    // newAvatar
-    //   .save()
-    //   .then((image) => {
-    //     res.status(200).json({
-    //       success: true,
-    //       image,
-    //     });
-    //   })
-    //   .catch((err) => res.status(500).json(err));
+    await User.findOneAndUpdate(
+      { _id: ObjectId(userId) },
+      { avatar: avatarId },
+      (err, data) => {
+        if (err) {
+          result = { message: err, status: false };
+        }
+        result = { message: "Success", status: true };
+      }
+    );
 
     // return res.send(`File has been uploaded.`);
     return res.status(200).json({
@@ -65,7 +70,7 @@ exports.uploadAvatar = async (req, res) => {
 
 exports.getImageInfoController = async (req, res) => {
   await gfs_avatar
-    .find({ _id: mongoose.Types.ObjectId(req.params.id) })
+    .find({ _id: ObjectId(req.params.id) })
     .toArray((err, files) => {
       if (!files[0] || files.length === 0) {
         return res.status(200).json({
@@ -90,7 +95,7 @@ exports.showAvatarImage = async (req, res) => {
           message: "No files available",
         });
       }
-      
+
       if (
         files[0].contentType === "image/jpeg" ||
         files[0].contentType === "image/png" ||
@@ -109,6 +114,16 @@ exports.showAvatarImage = async (req, res) => {
 exports.uploadParkingImg = async (req, res) => {
   try {
     await uploadImage.uploadMultiFilessMiddleware(req, res);
+
+    let parkingId = req.params.parkingId;
+    let files = req.files;
+    let imageIdArray = [];
+
+    files.forEach((image) => {
+      imageIdArray.push({id: ObjectId(image.id)});
+    });
+
+    // console.log(imageIdArray)
     // console.log(req.files);
 
     // if (req.file == undefined) {
@@ -122,6 +137,17 @@ exports.uploadParkingImg = async (req, res) => {
 
     //   newParkingImages.save().catch((err) => res.status(500).json(err));
     // });
+    await Parking.updateOne(
+      { _id: ObjectId(parkingId) },
+      {
+        $addToSet: { parkingImgId: { $each: imageIdArray }, },
+      },
+      (err, data) => {
+        if (err) {
+          return res.status(500).json({ message: err, status: false });
+        }
+      }
+    );
 
     return res.status(200).json({
       status: true,

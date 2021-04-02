@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const ObjectId = mongoose.Types.ObjectId;
 const dbConfig = require("../config/db.config")
 
 const UserSchema = new mongoose.Schema({
@@ -41,7 +41,7 @@ const UserSchema = new mongoose.Schema({
 
   avatar: {
     type: mongoose.Types.ObjectId,
-    ref: "AvatarImage",
+    ref: "Avatar.Files",
     default: dbConfig.defaultAvatarId,
   },
 
