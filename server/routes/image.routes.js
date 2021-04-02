@@ -8,10 +8,13 @@ const controller = require("../controllers/image.controller");
 
 router.get("/file/:id", controller.getImageInfoController);
 
-router.get("/:id", controller.showImage);
+router.get("/avatar/:id", controller.showAvatarImage);
 
 router.post("/avatar/upload", controller.uploadAvatar);
 
-// router.post("/parking/:parkingId/upload",)
+router.get("/parking/:id", controller.showParkingImage);
+
+router.post("/parking/upload", controller.uploadParkingImg);
+
 
 module.exports = router;

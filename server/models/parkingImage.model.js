@@ -1,18 +1,30 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const ParkingImageSchema = new mongoose.Schema({
-    filename: {
-        required: true,
-        type: String,
-    },
-    fileId: {
-        required: true,
-        type: String,
-    },
-    createdAt: {
-        default: Date.now(),
-        type: Date,
-    },
+  length: {
+    required: true,
+    type: Number,
+  },
+  chunkSize: {
+    required: true,
+    type: Number,
+  },
+  uploadDate: {
+    required: true,
+    type: Date,
+  },
+  filename: {
+    required: true,
+    type: String,
+  },
+  md5: {
+    require: true,
+    type: String,
+  },
+  contentType: {
+    require: true,
+    type: String,
+  },
 });
 
-module.exports = mongoose.model('ParkingImage', ParkingImageSchema);
+module.exports = mongoose.model("Parking.Files", ParkingImageSchema);
