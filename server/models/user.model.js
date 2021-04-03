@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const ObjectId = mongoose.Types.ObjectId;
+const dbConfig = require("../config/db.config")
 
 const UserSchema = new mongoose.Schema({
   phoneNumber: {
@@ -38,6 +39,12 @@ const UserSchema = new mongoose.Schema({
     default: 0,
   },
 
+  avatar: {
+    type: mongoose.Types.ObjectId,
+    ref: "Avatar.Files",
+    default: dbConfig.defaultAvatarId,
+  },
+
   isActive: {
     type: Boolean,
     default: false,
@@ -46,7 +53,7 @@ const UserSchema = new mongoose.Schema({
 
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now(),
   },
 });
 
