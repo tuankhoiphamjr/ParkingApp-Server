@@ -111,16 +111,36 @@ exports.showAvatarImage = async (req, res) => {
     });
 };
 
+exports.deleteAvatarFile = async (req, res) => {
+  gfs_avatar.delete(new mongoose.Types.ObjectId(req.params.id), (err, data) => {
+    if (err) {
+      return res.status(404).json({ err: err });
+    }
+
+    res.status(200).json({
+      status: true,
+      message: `File with ID ${req.params.id} is deleted`,
+    });
+  });
+};
+
 exports.uploadParkingImg = async (req, res) => {
   try {
     await uploadImage.uploadMultiFilessMiddleware(req, res);
 
+    let userId = req.userId;
     let parkingId = req.params.parkingId;
     let files = req.files;
     let imageIdArray = [];
 
+    let result = await Parking.find({ _id: parkingId, ownerId: userId });
+    if (result.length === 0) {
+      return res
+        .status(401)
+        .json({ status: false, message: "You are not parking owner" });
+    }
     files.forEach((image) => {
-      imageIdArray.push({id: ObjectId(image.id)});
+      imageIdArray.push({ id: ObjectId(image.id) });
     });
 
     // console.log(imageIdArray)
@@ -140,7 +160,7 @@ exports.uploadParkingImg = async (req, res) => {
     await Parking.updateOne(
       { _id: ObjectId(parkingId) },
       {
-        $addToSet: { parkingImgId: { $each: imageIdArray }, },
+        $addToSet: { parkingImgId: { $each: imageIdArray } },
       },
       (err, data) => {
         if (err) {

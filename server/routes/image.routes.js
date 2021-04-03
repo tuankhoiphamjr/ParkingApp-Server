@@ -13,6 +13,14 @@ router.get("/avatar/:id", controller.showAvatarImage);
 
 router.post("/avatar/upload", [authJwt.verifyToken], controller.uploadAvatar);
 
+router.post(
+  "/avatar/del/:id",
+  [authJwt.verifyToken],
+  controller.deleteAvatarFile
+);
+
+// Route for Parking Image
+
 router.get("/parking/:id", controller.showParkingImage);
 
 router.post(
