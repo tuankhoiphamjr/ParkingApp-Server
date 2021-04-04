@@ -5,13 +5,13 @@ const { authJwt } = require("./middlewares");
 
 router.use("/auth", require("./routes/auth.routes"));
 
-router.use("/user", [verifyToken], require("./routes/user.routes"));
+router.use("/user", [authJwt.verifyToken], require("./routes/user.routes"));
 
 router.use("/image", require("./routes/image.routes"));
 
 router.use(
   "/parking",
-  [authJwt.verifyToken, isOwner],
+  [authJwt.verifyToken, authJwt.isOwner],
   require("./routes/parking.routes")
 );
 
