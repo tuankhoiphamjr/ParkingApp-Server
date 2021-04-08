@@ -10,6 +10,7 @@ db.avatarImage = require("./avatarImage.model");
 db.parking = require("./parking.model");
 db.parkingImage = require("./parkingImage.model");
 db.role = require("./role.model");
+db.feedback = require("./feedback.model");
 
 db.ROLES = ["user", "admin", "moderator"];
 
