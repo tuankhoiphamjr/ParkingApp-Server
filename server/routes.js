@@ -11,13 +11,13 @@ router.use("/image", require("./routes/image.routes"));
 
 router.use("/feedback", require("./routes/feedback.routes"));
 
+router.use("/vehicle", require("./routes/vehicle.routes"));
+
 router.use(
       "/parking",
       [authJwt.verifyToken, authJwt.isOwner],
       require("./routes/parking.routes")
 );
-
-
 
 // router.use("/avatar", require("./routes/image"));
 
