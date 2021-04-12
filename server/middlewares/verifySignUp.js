@@ -37,14 +37,14 @@ userModel = db.user;
 // };
 
 checkDuplicatePhoneNumber = (req, res, next) => {
-  userModel.findOne({ phoneNumber: req.body.phoneNumber }).exec((err, user) => {
+  userModel.findOne({ phoneNumber: req.body.phoneNumber, role: req.body.role }).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
 
     if (user) {
-      res.status(400).send({ message: `Failed: User has already in use` });
+      res.status(400).send({ status: false, message: `Failed!! User has been register with role ${req.body.role}` });
       return;
     }
     next();
