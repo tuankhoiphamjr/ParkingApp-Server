@@ -27,7 +27,7 @@ const ParkingSchema = new mongoose.Schema({
     default: 0,
   },
 
-  curentSlots: {
+  currentSlots: {
     type: Number,
     required: true,
     default: 0,
@@ -86,6 +86,17 @@ const ParkingSchema = new mongoose.Schema({
   averageRating: {
     type: Number,
     default: 0,
+  },
+
+  coordinate: {
+    latitude: {
+      type: Number,
+      default: 0,
+    },
+    longitude: {
+      type: Number,
+      default: 0,
+    },
   },
 });
 
