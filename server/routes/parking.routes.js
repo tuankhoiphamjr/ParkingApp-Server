@@ -9,4 +9,6 @@ router.get("/:parkingId", controller.getParkingInfoController);
 
 router.post("/:parkingId/update_1", controller.firstUpdateParkingInfoController);
 
+router.post("/reservation/:parkingId", controller.reservationController);
+
 module.exports = router;

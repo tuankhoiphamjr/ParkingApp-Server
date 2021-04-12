@@ -24,5 +24,7 @@ router.post("/changePassword", controller.changePassword);
 
 router.post("/updateInfo", controller.updateUserInfo);
 
+router.get("/getInfo", controller.getUserInfo);
+
 
 module.exports = router;
