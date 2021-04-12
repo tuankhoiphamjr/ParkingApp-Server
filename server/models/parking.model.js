@@ -88,6 +88,11 @@ const ParkingSchema = new mongoose.Schema({
     default: 0,
   },
 
+  pricePerHour: {
+    type: Number,
+    default: 0,
+  },
+
   coordinate: {
     latitude: {
       type: Number,
