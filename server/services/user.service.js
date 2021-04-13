@@ -110,6 +110,19 @@ updateUserInfo = async (userId, firstName, lastName, email) => {
   return result;
 };
 
+// Checking if user existed with ${role}
+checkUserExist = async (phoneNumber, role) => {
+  let result = await User.findOne({ phoneNumber: phoneNumber, role: role });
+  if (result) {
+    return {
+      status: true,
+      message: `Failed!! User has been register with role ${role}`,
+    };
+  }
+
+  return { status: false, message: "User not registed yet" };
+};
+
 const userServices = {
   setUserStatus,
   createUser,
@@ -118,6 +131,7 @@ const userServices = {
   comparePassword,
   updatePassword,
   updateUserInfo,
+  checkUserExist,
 };
 
 module.exports = userServices;

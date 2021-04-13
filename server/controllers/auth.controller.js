@@ -14,7 +14,7 @@ exports.signup = async (req, res) => {
     role,
     firstName,
     lastName,
-    email,
+    email
   );
 
   if (!status) {
@@ -27,10 +27,13 @@ exports.signup = async (req, res) => {
 exports.signin = async (req, res) => {
   let phoneNumber = req.body.phoneNumber;
   let role = req.body.role;
-  let tempResult = await userServices.getUserByPhoneNumberAndRole(phoneNumber, role);
+  let tempResult = await userServices.getUserByPhoneNumberAndRole(
+    phoneNumber,
+    role
+  );
 
   if (!tempResult.status) {
-    return res.status(400).send({ status: false,  message: tempResult.message });
+    return res.status(400).send({ status: false, message: tempResult.message });
   }
 
   let { result, status } = tempResult;
@@ -68,4 +71,12 @@ exports.signout = async (req, res) => {
     false
   );
   res.status(200).send({ message, status });
+};
+
+exports.checkUserExistController = async (req, res) => {
+  let { phoneNumber, role } = req.body;
+  let result = await userServices.checkUserExist(phoneNumber, role);
+  return res
+    .status(200)
+    .send({ status: result.status, message: result.message });
 };

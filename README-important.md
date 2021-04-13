@@ -44,6 +44,17 @@
         - Change the active status in DB (isActive: false)
 
 
+    api/auth/checkUserExist:
+                        {
+                            "phoneNumber" : "0347459242",
+                            "role" : "owner"
+                        }
+        VD: res: {
+                "status": true,
+                "message": "Failed!! User has been register with role owner"
+            }
+
+
 # Avatar: GET
     api/avatar/file/:id 
         - return JSON file of image with {:id}
