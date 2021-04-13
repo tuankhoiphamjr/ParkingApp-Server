@@ -103,6 +103,16 @@ const ParkingSchema = new mongoose.Schema({
       default: 0,
     },
   },
+
+  vechileType:{
+    type: Array,
+    default: [],
+  },
+
+  description: {
+    type: String,
+    default: '',
+  }
 });
 
 module.exports = mongoose.model("Parking", ParkingSchema);

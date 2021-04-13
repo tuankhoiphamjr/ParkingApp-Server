@@ -17,7 +17,7 @@
             + Wrong Role:
             {
                 status: false,
-                message: "You are not owner. Please use the correct App"
+                message: "User with role ${role} not found"
             }
 
 
@@ -40,14 +40,9 @@
             }
 
 
-            
-
-    api/auth/signup: {phoneNumber, password, role, firstName, lastName, email}
-        - Return user info as JSON file
-        - Change the active status in DB (isActive: true)
-
     api/auth/signout {id: user._id} 
         - Change the active status in DB (isActive: false)
+
 
 # Avatar: GET
     api/avatar/file/:id 
@@ -59,10 +54,21 @@
 
 # Parking: 
 
-    cần token trong header và với role là owner
-    api/parking/new:
+    POST: api/parking/new:    (cần token trong header và với role là owner)
     {
-        ownerId: 
-        parkingName:
-        parkingAddress:
+        "parkingName" : "Parking 1",
+        "parkingAddress" : "20 Đường số 20, Thủ Đức",
+        "coordinate": {
+            "latitude": 10.828031,
+            "longitude" : 106.720194
+        },
+        "vechileType" : ["car", "motobike"],
+        "superficies" : 500,
+        "initialSlots" : 50,
+        "description": "Bãi đỗ xe gần gần gần"
     }
+
+    GET: api/parking/:parkingId  (cần token trong header và với role là owner)
+        - success: return {result},
+    
+    

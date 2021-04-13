@@ -7,11 +7,6 @@ const userServices = require("../services/user.service");
 
 exports.signup = async (req, res) => {
   let { phoneNumber, password, role, firstName, lastName, email } = req.body;
-  let checkUser = await userServices.isUserHasSignUpWithRole();
-
-  if(checkUser.status) {
-    return res.status(400).send({status: false, message: checkUser.message})
-  }
 
   let { result, status } = await userServices.createUser(
     phoneNumber,
@@ -32,17 +27,13 @@ exports.signup = async (req, res) => {
 exports.signin = async (req, res) => {
   let phoneNumber = req.body.phoneNumber;
   let role = req.body.role;
-  let tempResult = await userServices.getUserByPhoneNumber(phoneNumber);
+  let tempResult = await userServices.getUserByPhoneNumberAndRole(phoneNumber, role);
 
   if (!tempResult.status) {
     return res.status(400).send({ status: false,  message: tempResult.message });
   }
 
   let { result, status } = tempResult;
-
-  if(result.role != role) {
-    return res.status(400).send({status: false, message: `You are not ${role}. Please use the correct App`})
-  }
 
   let passwordCompareCheck = await userServices.comparePassword(
     req.body.password,
