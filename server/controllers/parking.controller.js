@@ -30,16 +30,22 @@ exports.addNewParkingPlaceController = async (req, res) => {
     res.status(400).json({ message: "Something went wrong" });
     return;
   }
-  res.status(200).json(result);
+  res
+    .status(200)
+    .json({
+      status: true,
+      result: result,
+      message: "Add Parking Successfully",
+    });
 };
 
 exports.getParkingInfoController = async (req, res) => {
   let parkingId = req.params.parkingId;
   let result = await parkingServices.getParkingInfoById(parkingId);
   if (!result.status) {
-    res.status(400).json({ message: result.message });
+    res.status(400).json({ status: false, message: result.message });
   }
-  res.status(200).json(result.result);
+  res.status(200).json({ status: true, result: result.result });
 };
 
 exports.firstUpdateParkingInfoController = async (req, res) => {
