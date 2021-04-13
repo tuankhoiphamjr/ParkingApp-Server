@@ -25,7 +25,7 @@ router.get("/parking/:id", controller.showParkingImage);
 
 router.post(
   "/parking/upload/:parkingId",
-  [authJwt.verifyToken],
+  [authJwt.verifyToken, authJwt.isOwner],
   controller.uploadParkingImg
 );
 

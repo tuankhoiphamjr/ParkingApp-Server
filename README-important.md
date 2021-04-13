@@ -70,5 +70,10 @@
 
     GET: api/parking/:parkingId  (cần token trong header và với role là owner)
         - success: return {result},
-    
-    
+
+# Image (Avatar, ParkingImg)
+    POST: api/image/parking/upload/:parkingId: (cần token trong header và với role là owner) => upload nhiều hình trong bãi đỗ xe.
+    POST: api/image/avatar/upload  (cần token hợp lệ) => upload avatar
+    POST: api/image/avatar/del/:id (cần token hợp lệ) => xóa avatar với id của hình
+    GET:  api/image/avatar/:id                        => show hình avatar với id của hình
+    GET:  api/image/avatar/:id                        => show hình parking với id của hình
