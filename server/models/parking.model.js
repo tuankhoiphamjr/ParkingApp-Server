@@ -70,7 +70,7 @@ const ParkingSchema = new mongoose.Schema({
 
   ratingStar: {
     type: Number,
-    default: 0,
+    default: 0.1,
   },
 
   isVerified: {
@@ -96,11 +96,11 @@ const ParkingSchema = new mongoose.Schema({
   coordinate: {
     latitude: {
       type: Number,
-      default: 0,
+      default: 1.1,
     },
     longitude: {
       type: Number,
-      default: 0,
+      default: 1.1,
     },
   },
 
@@ -112,6 +112,11 @@ const ParkingSchema = new mongoose.Schema({
   description: {
     type: String,
     default: '',
+  },
+
+  distance: {
+    type: Number,
+    default: 0.1
   }
 });
 

@@ -19,6 +19,8 @@ router.use(
       require("./routes/parking.routes")
 );
 
+router.use("/parkings", require("./routes/parkings.routes"));
+
 // router.use("/avatar", require("./routes/image"));
 
 module.exports = router;

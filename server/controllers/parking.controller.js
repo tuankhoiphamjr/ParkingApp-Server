@@ -107,3 +107,11 @@ exports.reservationController = async (req, res) => {
     licensePlates,
   });
 };
+
+exports.getAllVerifiedParkingInfoController = async (req, res) => {
+  let result = await parkingServices.getAllVerifiedParkingInfo();
+  if (!result.status) {
+    res.status(400).json({ status: false, message: result.message });
+  }
+  res.status(200).json({ status: true, result: result.result });
+};

@@ -90,11 +90,22 @@ updateParkingCurrentSlot = async (parkingId) => {
   return result;
 };
 
+//Get all parking place info that is verified
+getAllVerifiedParkingInfo = async () => {
+  let result = await Parking.find({ isVerified: true });
+  if (!result) {
+    return { status: false, message: "Not Found Car Parking" };
+  }
+
+  return { status: true, result: result };
+};
+
 const parkingServices = {
   createNewParkingPlace,
   getParkingInfoById,
   updateParkingInfoForOwner,
   updateParkingCurrentSlot,
+  getAllVerifiedParkingInfo,
 };
 
 module.exports = parkingServices;
