@@ -7,13 +7,14 @@ const userServices = require("../services/user.service");
 
 exports.signup = async (req, res) => {
   let { phoneNumber, password, role, firstName, lastName, email } = req.body;
+
   let { result, status } = await userServices.createUser(
     phoneNumber,
     bcrypt.hashSync(password, 8),
     role,
     firstName,
     lastName,
-    email,
+    email
   );
 
   if (!status) {
@@ -25,10 +26,14 @@ exports.signup = async (req, res) => {
 
 exports.signin = async (req, res) => {
   let phoneNumber = req.body.phoneNumber;
-  let tempResult = await userServices.getUserByPhoneNumber(phoneNumber);
+  let role = req.body.role;
+  let tempResult = await userServices.getUserByPhoneNumberAndRole(
+    phoneNumber,
+    role
+  );
 
   if (!tempResult.status) {
-    return res.status(400).send({ message: tempResult.message });
+    return res.status(400).send({ status: false, message: tempResult.message });
   }
 
   let { result, status } = tempResult;
@@ -40,6 +45,7 @@ exports.signin = async (req, res) => {
 
   if (!passwordCompareCheck.status) {
     return res.status(400).send({
+      status: false,
       message: passwordCompareCheck.message,
     });
   }
@@ -65,4 +71,12 @@ exports.signout = async (req, res) => {
     false
   );
   res.status(200).send({ message, status });
+};
+
+exports.checkUserExistController = async (req, res) => {
+  let { phoneNumber, role } = req.body;
+  let result = await userServices.checkUserExist(phoneNumber, role);
+  return res
+    .status(200)
+    .send({ status: result.status, message: result.message });
 };

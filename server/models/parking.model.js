@@ -27,7 +27,7 @@ const ParkingSchema = new mongoose.Schema({
     default: 0,
   },
 
-  curentSlots: {
+  currentSlots: {
     type: Number,
     required: true,
     default: 0,
@@ -70,7 +70,7 @@ const ParkingSchema = new mongoose.Schema({
 
   ratingStar: {
     type: Number,
-    default: 0,
+    default: 0.1,
   },
 
   isVerified: {
@@ -87,6 +87,37 @@ const ParkingSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+
+  pricePerHour: {
+    type: Number,
+    default: 0,
+  },
+
+  coordinate: {
+    latitude: {
+      type: Number,
+      default: 1.1,
+    },
+    longitude: {
+      type: Number,
+      default: 1.1,
+    },
+  },
+
+  vechileType:{
+    type: Array,
+    default: [],
+  },
+
+  description: {
+    type: String,
+    default: '',
+  },
+
+  distance: {
+    type: Number,
+    default: 0.1
+  }
 });
 
 module.exports = mongoose.model("Parking", ParkingSchema);
