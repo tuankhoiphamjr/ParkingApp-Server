@@ -11,7 +11,7 @@ router.use("/image", require("./routes/image.routes"));
 
 router.use("/feedback", require("./routes/feedback.routes"));
 
-router.use("/vehicle", require("./routes/vehicle.routes"));
+router.use("/vehicle",[authJwt.verifyToken], require("./routes/vehicle.routes"));
 
 router.use(
       "/parking",
