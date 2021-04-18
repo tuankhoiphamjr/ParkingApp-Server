@@ -13,6 +13,8 @@ exports.addNewParkingPlaceController = async (req, res) => {
     superficies,
     initialSlots,
     description,
+    openTime,
+    closeTime,
   } = req.body;
   let ownerId = req.userId;
   let { result, status } = await parkingServices.createNewParkingPlace(
@@ -23,20 +25,20 @@ exports.addNewParkingPlaceController = async (req, res) => {
     vechileType,
     superficies,
     initialSlots,
-    description
+    description,
+    openTime,
+    closeTime
   );
 
   if (!status) {
-    res.status(400).json({ message: "Something went wrong" });
+    res.status(400).json({ status: false, message: "Something went wrong" });
     return;
   }
-  res
-    .status(200)
-    .json({
-      status: true,
-      result: result,
-      message: "Add Parking Successfully",
-    });
+  res.status(200).json({
+    status: true,
+    result: result,
+    message: "Add Parking Successfully",
+  });
 };
 
 exports.getParkingInfoController = async (req, res) => {
@@ -53,29 +55,38 @@ exports.firstUpdateParkingInfoController = async (req, res) => {
     parkingName,
     parkingAddress,
     initialSlots,
-    curentSlots,
     superficies,
     openTime,
     closeTime,
+    pricePerHour,
+    vechileType,
+    description,
   } = req.body;
 
-  let id = req.params.parkingId;
+  let parkingId = req.params.parkingId;
+  let ownerId = req.userId;
   let result = await parkingServices.updateParkingInfoForOwner(
-    id,
+    parkingId,
+    ownerId,
     parkingName,
     parkingAddress,
     initialSlots,
-    curentSlots,
     superficies,
     openTime,
-    closeTime
+    closeTime,
+    pricePerHour,
+    vechileType,
+    description
   );
   if (!result.status) {
     return res.status(400).send({
+      status: false,
       message: "Update parking info failed.",
     });
   }
-  return res.status(200).send({ message: "Update parking info successfully." });
+  return res
+    .status(200)
+    .send({ status: true, message: "Update parking info successfully." });
 };
 
 exports.reservationController = async (req, res) => {
@@ -110,6 +121,15 @@ exports.reservationController = async (req, res) => {
 
 exports.getAllVerifiedParkingInfoController = async (req, res) => {
   let result = await parkingServices.getAllVerifiedParkingInfo();
+  if (!result.status) {
+    res.status(400).json({ status: false, message: result.message });
+  }
+  res.status(200).json({ status: true, result: result.result });
+};
+
+exports.getParkingsOfOwnerController = async (req, res) => {
+  let ownerId = req.userId;
+  let result = await parkingServices.getParkingsByOwnerId(ownerId);
   if (!result.status) {
     res.status(400).json({ status: false, message: result.message });
   }
