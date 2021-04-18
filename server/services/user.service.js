@@ -41,12 +41,12 @@ setUserStatus = async (userId, status) => {
 };
 
 // Get all user info by number phone
-getUserByPhoneNumber = async (phoneNumber) => {
-  let result = await User.findOne({ phoneNumber })
+getUserByPhoneNumberAndRole = async (phoneNumber, role) => {
+  let result = await User.findOne({ phoneNumber, role })
     .populate("avatar", "-_id -__v")
     .select("-__v");
   if (!result) {
-    return { message: "User not found", status: false };
+    return { message: `User with role ${role} not found`, status: false };
   }
   return { result, status: true };
 };
@@ -110,14 +110,28 @@ updateUserInfo = async (userId, firstName, lastName, email) => {
   return result;
 };
 
+// Checking if user existed with ${role}
+checkUserExist = async (phoneNumber, role) => {
+  let result = await User.findOne({ phoneNumber: phoneNumber, role: role });
+  if (result) {
+    return {
+      status: true,
+      message: `Failed!! User has been register with role ${role}`,
+    };
+  }
+
+  return { status: false, message: "User not registed yet" };
+};
+
 const userServices = {
   setUserStatus,
   createUser,
-  getUserByPhoneNumber,
+  getUserByPhoneNumberAndRole,
   getUserById,
   comparePassword,
   updatePassword,
   updateUserInfo,
+  checkUserExist,
 };
 
 module.exports = userServices;

@@ -14,4 +14,6 @@ router.post("/signin", controller.signin);
 
 router.post("/signout", controller.signout);
 
+router.post("/checkUserExist", controller.checkUserExistController);
+
 module.exports = router;
