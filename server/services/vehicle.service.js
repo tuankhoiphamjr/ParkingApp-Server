@@ -7,8 +7,8 @@ getVehicleInfoByOwnerId = async (ownerId) => {
       const filter = {
             ownerId: mongoose.Types.ObjectId(ownerId),
       };
-      let result = await Vehicle.find(filter).select("-__v");
-      if (!result) {
+      let result = await Vehicle.find(filter);
+      if (result.length ===0) {
             return { message: "Vehicle not found", status: false };
       }
       return { result, status: true };
