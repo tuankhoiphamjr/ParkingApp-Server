@@ -128,7 +128,7 @@ exports.getAllVerifiedParkingInfoController = async (req, res) => {
 };
 
 exports.getParkingsOfOwnerController = async (req, res) => {
-  let ownerId = req.userId;
+  let ownerId = req.params.ownerId;
   let result = await parkingServices.getParkingsByOwnerId(ownerId);
   if (!result.status) {
     res.status(400).json({ status: false, message: result.message });
