@@ -98,7 +98,7 @@
             - FAILED: return { status: false, message: result.message }
 
     
-        api/parking/all/getinfo  (Get parking by ownerID)
+        api/parkings/all/getinfo/:ownerId  (Get parking by ownerID)
             - SUCCESS: return {status: true, result},
 
 
