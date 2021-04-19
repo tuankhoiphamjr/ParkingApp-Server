@@ -93,10 +93,13 @@ const ParkingSchema = new mongoose.Schema({
   },
 
   vechileType: {
-    current: {
-      type: Array,
-      default: [],
-    },
+    type: Array,
+    default: [
+      {
+        key : "0",
+        value: "car"
+      }
+    ]
   },
 
   description: {
