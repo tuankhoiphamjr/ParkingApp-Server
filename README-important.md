@@ -117,7 +117,10 @@
 
 
 
-    POST:     api/parking/delete/:parkingId    (cần header có token là owner)
+    POST:     api/parking/delete/:parkingId   (dùng cho cả owner và admin)
+                            {
+                                "ownerId" : "60758290432b1241ec881263"
+                            }
 
             - SUCCESS:  {
                             "status": true,
@@ -127,6 +130,21 @@
             - FAILED:   {
                             "status": false,
                             "message": "Parking not Found or Deleted Or user are not owner of parking"
+                        }
+
+
+
+
+    GET:     api/parkings/admin/verify/:parkingId        (dùng cho admin)
+
+            - SUCCESS:   {
+                            "status": true,
+                            "result": "Parking are verify to true"
+                        }
+            
+            - FAILED :  {
+                            "status": false,
+                            "message": "Parking not found or something went wrong"
                         }
 
 # Image (Avatar, ParkingImg)

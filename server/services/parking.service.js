@@ -133,15 +133,42 @@ deleteParkingByOwner = async (ownerId, parkingId) => {
     ownerId,
     parkingId
   );
-  console.log(checkIfParkingExisted)
+  console.log(checkIfParkingExisted);
   if (checkIfParkingExisted.result.length === 0)
-    return { status: false, message: "Parking not Found or Deleted Or user are not owner of parking" };
+    return {
+      status: false,
+      message: "Parking not Found or Deleted Or user are not owner of parking",
+    };
   await Parking.deleteOne({ _id: parkingId, ownerId: ownerId }, (err, data) => {
     if (err) {
       result = { message: err, status: false };
     }
     result = { message: "Delete Parking successfully", status: true };
   });
+  return result;
+};
+
+// Verify Parking by Admin
+verifyParking = async (parkingId, status) => {
+  let result;
+  await Parking.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(parkingId) },
+    { isVerified: status },
+    (err, data) => {
+      if (err) {
+        result = { message: err, status: false };
+      }
+
+      if (!data) {
+        result = {
+          message: "Parking not found or something went wrong",
+          status: false,
+        };
+      } else {
+        result = { message: `Parking are verify to ${status}`, status: true };
+      }
+    }
+  );
   return result;
 };
 
@@ -153,6 +180,7 @@ const parkingServices = {
   getAllVerifiedParkingInfo,
   getParkingsByOwnerId,
   deleteParkingByOwner,
+  verifyParking,
 };
 
 module.exports = parkingServices;

@@ -139,9 +139,19 @@ exports.getParkingsOfOwnerController = async (req, res) => {
 
 // Delete a Parking By Owner
 exports.deleteParkingController = async (req, res) => {
-  let ownerId = req.userId;
+  let ownerId = req.body.ownerId;
   let parkingId = req.params.parkingId;
   let result = await parkingServices.deleteParkingByOwner(ownerId, parkingId);
+  if (!result.status) {
+    return res.status(400).json({ status: false, message: result.message });
+  }
+  return res.status(200).json({ status: true, result: result.message });
+};
+
+// Verify a Parking By Admin
+exports.verifyParkingController = async (req, res) => {
+  let parkingId = req.params.parkingId;
+  let result = await parkingServices.verifyParking(parkingId, true);
   if (!result.status) {
     return res.status(400).json({ status: false, message: result.message });
   }
