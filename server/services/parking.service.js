@@ -117,6 +117,34 @@ getParkingsByOwnerId = async (ownerId) => {
   return { status: true, result: result };
 };
 
+// Get Parking info by owner Id and parking id
+getParkingByOwnerIdAndParkingId = async (ownerId, parkingId) => {
+  let result = await Parking.find({ ownerId: ownerId, _id: parkingId });
+  if (!result) {
+    return { status: false, message: "Something went wrong" };
+  }
+  return { status: true, result: result };
+};
+
+// Delete a parking by owner
+deleteParkingByOwner = async (ownerId, parkingId) => {
+  let result;
+  let checkIfParkingExisted = await getParkingByOwnerIdAndParkingId(
+    ownerId,
+    parkingId
+  );
+  console.log(checkIfParkingExisted)
+  if (checkIfParkingExisted.result.length === 0)
+    return { status: false, message: "Parking not Found or Deleted Or user are not owner of parking" };
+  await Parking.deleteOne({ _id: parkingId, ownerId: ownerId }, (err, data) => {
+    if (err) {
+      result = { message: err, status: false };
+    }
+    result = { message: "Delete Parking successfully", status: true };
+  });
+  return result;
+};
+
 const parkingServices = {
   createNewParkingPlace,
   getParkingInfoById,
@@ -124,6 +152,7 @@ const parkingServices = {
   updateParkingCurrentSlot,
   getAllVerifiedParkingInfo,
   getParkingsByOwnerId,
+  deleteParkingByOwner,
 };
 
 module.exports = parkingServices;

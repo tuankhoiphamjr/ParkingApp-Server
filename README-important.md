@@ -102,7 +102,7 @@
             - SUCCESS: return {status: true, result},
 
 
-        api/parking/:parkingId/update_1     (cần header có token và thay :parkingId bằng id của bãi đỗ xe)
+    POST:    api/parking/:parkingId/update_1     (cần header có token và thay :parkingId bằng id của bãi đỗ xe)
             {
                 "parkingName" : "update",
                 "parkingAddress" : "update" ,
@@ -114,6 +114,20 @@
                 "vechileType" : {"current" : [0,1,2,3]},
                 "description" : "123"
             }
+
+
+
+    POST:     api/parking/delete/:parkingId    (cần header có token là owner)
+
+            - SUCCESS:  {
+                            "status": true,
+                            "result": "Delete Parking successfully"
+                        }
+            
+            - FAILED:   {
+                            "status": false,
+                            "message": "Parking not Found or Deleted Or user are not owner of parking"
+                        }
 
 # Image (Avatar, ParkingImg)
 
