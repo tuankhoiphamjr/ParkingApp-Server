@@ -1,5 +1,3 @@
-const socketio = require("socket.io");
-const WebSockets = require("./utils/WebSockets.js");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -13,11 +11,6 @@ const dbConfig = require("./config/db.config");
 const Role = db.role;
 
 const user = require("./services/user.service");
-/** Create HTTP server. */
-const server = require("http").createServer(app);
-/** Create socket connection */
-global.io = socketio(server);
-global.io.on("connection", WebSockets.connection);
 
 // Connect to DB
 db.mongoose
@@ -58,7 +51,7 @@ app.use(function (req, res, next) {
 });
 const PORT = process.env.PORT || 8080;
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
       console.log(`Listening on port ${PORT}`);
 });
 
