@@ -42,25 +42,13 @@ const ParkingSchema = new mongoose.Schema({
   parkingImgId: [PImgSchema],
 
   openTime: {
-    hour: {
-      type: Number,
-      default: 0,
-    },
-    minute: {
-      type: Number,
-      default: 0,
-    },
+    type: String,
+    default: "00:00",
   },
 
   closeTime: {
-    hour: {
-      type: Number,
-      default: 0,
-    },
-    minute: {
-      type: Number,
-      default: 0,
-    },
+    type: String,
+    default: "00:00",
   },
 
   registerDate: {
@@ -104,20 +92,25 @@ const ParkingSchema = new mongoose.Schema({
     },
   },
 
-  vechileType:{
+  vechileType: {
     type: Array,
-    default: [],
+    default: [
+      {
+        key : "0",
+        value: "car"
+      }
+    ]
   },
 
   description: {
     type: String,
-    default: '',
+    default: "",
   },
 
   distance: {
     type: Number,
-    default: 0.1
-  }
+    default: 0.1,
+  },
 });
 
 module.exports = mongoose.model("Parking", ParkingSchema);

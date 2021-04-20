@@ -11,4 +11,6 @@ router.post("/:parkingId/update_1", controller.firstUpdateParkingInfoController)
 
 router.post("/reservation/:parkingId", controller.reservationController);
 
+router.post("/delete/:parkingId", controller.deleteParkingController)
+
 module.exports = router;
