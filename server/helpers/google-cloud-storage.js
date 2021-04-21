@@ -27,17 +27,3 @@ exports.storage = new Storage({
 exports.getPublicUrl = (fileName) => `https://storage.googleapis.com/parking_app_hcmut/${fileName}`;
 
 	
-exports.copyFileToGCS = (localFilePath,  options) => {
-  options = options || {};
-
-  const bucket = storage.bucket('parking_app_hcmut');
-  const fileName = path.basename(localFilePath);
-  const file = bucket.file(fileName);
-  const destFileName =  `${new Date().getTime()}_${fileName}`
-  return bucket.upload(localFilePath, {
-    destination: destFileName,
-  })
-    .then(() => file.makePublic())
-    .then(() => exports.getPublicUrl(gcsName));
-};
-
