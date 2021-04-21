@@ -30,6 +30,7 @@ exports.changePassword = async (req, res) => {
       let { result, status } = await userServices.getUserById(userId);
       if (!status) {
             res.status(400).send({ message: result.message });
+            return;
       }
 
       let passwordCompareCheck = await userServices.comparePassword(
@@ -46,6 +47,7 @@ exports.changePassword = async (req, res) => {
       let response = await userServices.updatePassword(userId, newPassword);
       if (!response.status) {
             res.status(400).send(response);
+            return;
       }
       res.status(200).send(response);
 };
@@ -75,6 +77,7 @@ exports.getUserInfo = async (req, res) => {
       let { result, status } = await userServices.getUserById(userId);
       if (!status) {
             res.status(400).send({ message: result.message });
+            return;
       }
       res.status(200).json(result);
 };

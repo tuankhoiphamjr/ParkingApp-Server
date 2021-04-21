@@ -21,6 +21,8 @@ router.use(
 
 router.use("/parkings", require("./routes/parkings.routes"));
 
+router.use("/notifications", require("./routes/notification"));
+
 // router.use("/avatar", require("./routes/image"));
 
 module.exports = router;
