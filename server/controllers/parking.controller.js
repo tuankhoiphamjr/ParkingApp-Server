@@ -4,6 +4,8 @@ const parkingServices = require("../services/parking.service");
 const userServices = require("../services/user.service");
 const vehicleService = require("../services/vehicle.service");
 
+
+// Add new Parking in DB
 exports.addNewParkingPlaceController = async (req, res) => {
   let {
     parkingName,
@@ -41,6 +43,8 @@ exports.addNewParkingPlaceController = async (req, res) => {
   });
 };
 
+
+// Get Parking Info by ID
 exports.getParkingInfoController = async (req, res) => {
   let parkingId = req.params.parkingId;
   let result = await parkingServices.getParkingInfoById(parkingId);
@@ -50,6 +54,8 @@ exports.getParkingInfoController = async (req, res) => {
   return res.status(200).json({ status: true, result: result.result });
 };
 
+
+// Update Parking Info (NOT IMAGE YET)
 exports.firstUpdateParkingInfoController = async (req, res) => {
   let {
     parkingName,
@@ -122,6 +128,8 @@ exports.reservationController = async (req, res) => {
   });
 };
 
+
+// Get all Parking that is verified
 exports.getAllVerifiedParkingInfoController = async (req, res) => {
   let result = await parkingServices.getAllVerifiedParkingInfo();
   if (!result.status) {

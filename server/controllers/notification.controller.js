@@ -21,16 +21,18 @@ exports.notifyToTopicController = async (req, res) => {
         imageUrl,
       },
     });
-    res
-      .status(200)
-      .json({ message: `Successfully sent notifications! to topic ${topic}` });
+    res.status(200).json({
+      status: true,
+      message: `Successfully sent notifications! to topic ${topic}`,
+    });
   } catch (err) {
     res
       .status(err.status || 500)
-      .json({ message: err.message || "Something went wrong!" });
+      .json({ status: false, message: err.message || "Something went wrong!" });
   }
 };
 
+// Add new token info to database
 exports.addNewNotificationToken = async (req, res) => {
   let { deviceId, token, userId, role } = req.body;
 
@@ -53,34 +55,38 @@ exports.addNewNotificationToken = async (req, res) => {
   );
 
   if (!status) {
-    res.status(400).json({ message: "Something went wrong" });
+    res.status(400).json({ status: false, message: "Something went wrong" });
     return;
   }
   res.status(200).json({ status: true, result: result });
 };
 
+// notify to number of user with user ids in array
 exports.notifyToUsersController = async (req, res) => {
   try {
-    const { receivedUsersId, title, body, imageUrl } = req.body;
+    const { receivedUsersId, sendUserId, title, body, imageUrl } = req.body;
     let tokens = await tokenServices.getTokensByUsersIdArray(receivedUsersId);
-    // await admin.messaging().sendMulticast({
-    //   tokens,
-    //   notification: {
-    //     title,
-    //     body,
-    //     imageUrl,
-    //   },
-    // });
+    console.log(tokens);
+    await admin.messaging().sendMulticast({
+      tokens,
+      notification: {
+        title,
+        body,
+        imageUrl,
+      },
+    });
     res.status(200).json({
+      status: true,
       message: `Successfully sent notifications to user has id: ${receivedUsersId}`,
     });
   } catch (err) {
     res
       .status(err.status || 500)
-      .json({ message: err.message || "Something went wrong!" });
+      .json({ status: false, message: err.message || "Something went wrong!" });
   }
 };
 
+// check if device that user sign in register toker for notification or not
 exports.checkDeviceController = async (req, res) => {
   const { userId, deviceId } = req.body;
   let result = await tokenServices.getTokenByUserIdAndDeviceId(
@@ -90,7 +96,7 @@ exports.checkDeviceController = async (req, res) => {
   if (!result.status) {
     return res
       .status(500)
-      .json({ message:"Device has not been registered yet", status: false });
+      .json({ message: "Device has not been registered yet", status: false });
   }
   return res.status(200).json({
     message: `Device has been registered`,

@@ -154,3 +154,65 @@
     POST: api/image/avatar/del/:id (cần token hợp lệ) => xóa avatar với id của hình
     GET:  api/image/avatar/:id                        => show hình avatar với id của hình
     GET:  api/image/avatar/:id                        => show hình parking với id của hình
+
+
+# Notifications
+
+    POST: api/notifications/token/new     (theem vào database để sau này sử dụng)
+            {
+                "deviceId": "165d6caf46a7880a",
+                "token" : "1231232",
+                "userId" : "60758290432b1241ec881263",
+                "role" : "user"
+            }
+
+            - SUCCESS: return {status: true, result}
+            - FAILED:  return { status: false, message: "Device has been registered" }
+
+
+
+
+    POST: api/notifications/topic/:role  (gửi thông báo đi tới role user, owner hay cả 2)
+
+          role: user, owner, all,
+            {   
+                "title" : "Có người đang tới bãi đỗ xe",
+                "body": "Xe F1",
+                "sendUserId": ""
+            }   
+
+            - SUCCESS: return {
+                                status: true,
+                                message: `Successfully sent notifications! to topic ${topic}`,
+                              }
+            - FAILED:  return { status: false, message: "Something went wrong" }
+
+
+    POST: api/notifications            (gửi thông báo đến user cụ thể sử dụng token đã lưu trong DB)
+
+            {   
+                "title" : "Có người đang tới bãi đỗ xe",
+                "body": "Xe F1",
+                "receivedUsersId": ["60758290432b1241ec881263"],
+                "sendUserId" :""
+            }   
+
+            - SUCCESS:  {
+                            status: true,
+                            message: `Successfully sent notifications to user has id: ${receivedUsersId}`,
+                        }
+            
+            - FAILED:  return { status: false, message: "Something went wrong" }
+
+    POST: api/notifications/checkDevice          (kiểm tra xem thiết bị của người dùng đã đăng nhập đã đăng ký nhận thông báo chưa trong DB)
+
+            {
+                "userId" : "60758290432b1241ec881263",
+                "deviceId": "165d6caf46a7880a"
+            }
+
+            - SUCCESS: return   {
+                                    message: `Device has been registered`,
+                                    status: true,
+                                }
+            - FAILED: return { message: "Device has not been registered yet", status: false }
