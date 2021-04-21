@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "parking-user-app",
+  "private_key_id": "a90a7f9e3f8ce7d091371f76732aa8f38f22b4ed",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCm/9vGAtGVSAjI\nx3qEOltnq9N6S9LXWh6Lc+HSCYTcOA0a/Ek/kQoJyQYXRW6uFdv0LC5G3R1Vsvhm\nXCxL5ROYLp1xsjkHUEjSEKWW7NYYllXTminUite5u21li4ArO24FW9kAWodhpmmg\n5MfKmG+UsLvEzWbhwmg/9tyACyS01f+URwzSova5EX1rgtodlUnET/Ur1iuVuzHF\nc771xw/bFkKUT28Tk99kJjt/oygA6cBaQXVZEc8VxO8E4RYciEj9hJCWyMgfxIBw\nGOcZAz6eKWgvLN0OTM+dnVieq3+MpPlHKCakRni4lXqr8KkC/aW466Xp0HNk9DJP\nYx7N9eW9AgMBAAECggEAKZrx3o2iOG5XXeowsFO3pQbua3gLgcJ+fKC0wHbFpnXC\nchgriY4xcYmnHlIahn2ErHr7VoVNAyZQ83OAR7I9JPtsF0DfK17JnagvEQBVQI/n\ntw2f4UdsAmZbFWLhXiPyv5wH3qovM1lZ1I9a5TMADYvQY/IGcTVVcqYmfjIIhZKp\ntqRUFq3GrOhYvj2cbytK8Ke47SgMlISyvTeZHhp+4smY/D8oMWYu8AifmjCXbXY/\nEoohgStCpKFmal8Nn9PWFjh1QDQ/HUhrWS5IPmPScQquUC0dfkP1h8nb5LS+QbIP\nCjhDXIuPH+6BbEH8JI/xpY7k0hFmQpQc0SruX/TVMQKBgQDglbEoXHtqzSKMb00u\nqrgk641zFEGODV1WAfqrEZ1Q1EYo0xq7k9ChxpLQ7wTbC0CAIDcDh3doKRDxjiM/\nLQSgRDibm5XWY30BkKihiTClgBjE06dqMEl7R4R5AEV5Q8odXOHk3P4geid4lBRZ\no1HCHXRMdWQ2UsNv7+QCHkQdSQKBgQC+XA49yPs1XMh6bTH/gfOOMfidiEo25365\nv8h4pEzqHbhjuyLF6ctXa3z0MNz91Zg/E+Hx43cchXSrYTDwkJ4KW0LC+mhBhpn5\nKP6vlrxwOoNDISQyVYUFpaOJTfByosD2HEkyDCl4TsXqR8j8toIz+Gc7tlGILpZW\ndxz336VI1QKBgEqFIR2VYlZT7uzOWbvsZeHKT0sqI35xLNFHItf0plCVvxn4wlwP\ndiDX9Qti5CeSmjppdhezsYlcZwTf9w4Vb/2F5Yqsm5Fhva7xQyMmlH+1+4IEAP8Z\nOqivWGOWFXdhaQVJNqNsON6p6cL2z7HWoWBZyac9JJ1p5POVlACn7k4RAoGAecIp\n/c0TGVPKi7xSkarOXXKLIkAtsCasQSVxlfEJnWn7Khdlq4/aV4VSPGMQx2+a3SXb\njLvA0UZvlLsq8YSfAeLTtiEzFE6DKALXvPo+d86FbSfCnktjNXR4QPfQR5Lgt8rp\n6pAq6mAAadUWssYOTC2j4mbAicm6sX2o0seDUi0CgYBg41UREx4puSVBGgvvQsJ9\nA/GiTgRGn54Z55ZSN3b/fF+foz+OSfLUNMFl5aHu4cHiRIJHc/eL29n5lKEmZLi2\nsOAKI71PgofARNr88nYNFCUdA8vRYl3hZByoZc3V/U/E/CyBv7KlZdUCnoRRBgVr\ngrOxZ8dpyCWMbHDMcNAlAw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "gcs-admin@parking-user-app.iam.gserviceaccount.com",
+  "client_id": "101194125753722383712",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gcs-admin%40parking-user-app.iam.gserviceaccount.com"
+}
