@@ -11,6 +11,9 @@ const Parking = db.parking;
 const dbConfig = require("../config/db.config");
 const url = dbConfig.URI;
 
+
+
+
 const connect = mongoose.createConnection(url, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -29,6 +32,7 @@ connect.once("open", async () => {
     bucketName: "parking",
   });
 });
+
 
 exports.uploadAvatar = async (req, res) => {
   try {
