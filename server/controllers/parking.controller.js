@@ -96,14 +96,17 @@ exports.reservationController = async (req, res) => {
   let { result, status } = await userServices.getUserById(userId);
   if (!status) {
     res.status(400).send({ message: result.message });
+    return;
   }
   let setCurrentSlots = parkingServices.updateParkingCurrentSlot(parkingId);
   if (!setCurrentSlots) {
     res.status(400).send({ message: "Some thing wrong in parkingDB" });
+    return;
   }
   let response = await vehicleService.getVehicleInfoByOwnerId(userId);
   if (!response.status) {
     res.status(400).send(response);
+    return;
   }
   let fullName = result.firstName + " " + result.lastName;
   let phoneNum = result.phoneNumber;
