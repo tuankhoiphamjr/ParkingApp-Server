@@ -35,3 +35,23 @@ exports.addVehicleController = async (req, res) => {
             result,
       });
 };
+
+exports.updateVehicleInfo = async (req, res) => {
+      let ownerId = req.userId;
+      let { type, licensePlates, color, modelName } = req.body;
+      let result = await vehicleService.updateVehicleInfo(
+            ownerId,
+            type,
+            licensePlates,
+            color,
+            modelName
+      );
+      if (!result.status) {
+            return res.status(400).send({
+                  message: "Update vehicle info failed.",
+            });
+      }
+      return res
+            .status(200)
+            .send({ message: "Update vehicle info successfully." });
+};
