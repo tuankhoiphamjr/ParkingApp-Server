@@ -1,8 +1,7 @@
 const vehicleService = require("../services/vehicle.service");
 
 exports.getVehicleInfoController = async (req, res) => {
-      let ownerId = "606d792624abc12898f84c24";
-      // let ownerId = req.userId;
+      let ownerId = req.userId;
       let { result, status } = await vehicleService.getVehicleInfoByOwnerId(
             ownerId
       );
@@ -15,8 +14,7 @@ exports.getVehicleInfoController = async (req, res) => {
 };
 
 exports.addVehicleController = async (req, res) => {
-      let ownerId = "606d792624abc12898f84c24";
-      // let ownerId = req.userId;
+      let ownerId = req.userId;
       let { type, licensePlates, color, modelName } = req.body;
       let { result, status } = await vehicleService.addVehicle(
             ownerId,
@@ -36,4 +34,24 @@ exports.addVehicleController = async (req, res) => {
             message: "Add vehicle Successfully",
             result,
       });
+};
+
+exports.updateVehicleInfo = async (req, res) => {
+      let ownerId = req.userId;
+      let { type, licensePlates, color, modelName } = req.body;
+      let result = await vehicleService.updateVehicleInfo(
+            ownerId,
+            type,
+            licensePlates,
+            color,
+            modelName
+      );
+      if (!result.status) {
+            return res.status(400).send({
+                  message: "Update vehicle info failed.",
+            });
+      }
+      return res
+            .status(200)
+            .send({ message: "Update vehicle info successfully." });
 };

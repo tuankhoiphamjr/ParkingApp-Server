@@ -96,9 +96,8 @@ exports.firstUpdateParkingInfoController = async (req, res) => {
 };
 
 exports.reservationController = async (req, res) => {
-  let userId = "606d792624abc12898f84c24";
   let parkingId = req.params.parkingId;
-  // let userId = req.userId;
+  let userId = req.userId;
   let { result, status } = await userServices.getUserById(userId);
   if (!status) {
     res.status(400).send({ message: result.message });
