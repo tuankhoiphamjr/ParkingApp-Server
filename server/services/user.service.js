@@ -11,7 +11,8 @@ createUser = async (
   role,
   firstName,
   lastName,
-  email
+  email, 
+  avatar
 ) => {
   let result = await User.create({
     phoneNumber,
@@ -20,6 +21,7 @@ createUser = async (
     firstName,
     lastName,
     email,
+    avatar
   });
   return { result, status: true };
 };
@@ -43,8 +45,8 @@ setUserStatus = async (userId, status) => {
 // Get all user info by number phone
 getUserByPhoneNumberAndRole = async (phoneNumber, role) => {
   let result = await User.findOne({ phoneNumber, role })
-    .populate("avatar", "-_id -__v")
-    .select("-__v");
+    // .populate("avatar", "-_id -__v")
+    // .select("-__v");
   if (!result) {
     return { message: `User with role ${role} not found`, status: false };
   }
