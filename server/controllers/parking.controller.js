@@ -17,7 +17,9 @@ exports.addNewParkingPlaceController = async (req, res) => {
     description,
     openTime,
     closeTime,
+    images
   } = req.body;
+  console.log(res.body);
   let ownerId = req.userId;
   let { result, status } = await parkingServices.createNewParkingPlace(
     ownerId,
@@ -29,7 +31,8 @@ exports.addNewParkingPlaceController = async (req, res) => {
     initialSlots,
     description,
     openTime,
-    closeTime
+    closeTime,
+    images
   );
 
   if (!status) {

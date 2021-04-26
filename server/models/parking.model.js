@@ -111,6 +111,10 @@ const ParkingSchema = new mongoose.Schema({
     type: Number,
     default: 0.1,
   },
+  images: {
+    type: Array,
+    default: []
+  }
 });
 
 module.exports = mongoose.model("Parking", ParkingSchema);

@@ -15,7 +15,8 @@ createNewParkingPlace = async (
   initialSlots,
   description,
   openTime,
-  closeTime
+  closeTime, 
+  images
 ) => {
   let result = await Parking.create({
     ownerId,
@@ -28,6 +29,7 @@ createNewParkingPlace = async (
     description,
     openTime,
     closeTime,
+    images
   });
 
   return { result, status: true };
