@@ -27,6 +27,7 @@ const MonitorParkingSchema = new mongoose.Schema({
             }
       },
       hasCome: {
+            type: Array,
             userId: {
                   type: ObjectId,
                   ref: "User",
@@ -49,4 +50,4 @@ const MonitorParkingSchema = new mongoose.Schema({
             }
       },
 });
-module.exports = mongoose.model("MonitorParkingSchema", MonitorParkingSchema);
+module.exports = mongoose.model("MonitorParking", MonitorParkingSchema);
