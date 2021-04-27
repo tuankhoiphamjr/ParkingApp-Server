@@ -23,6 +23,8 @@ router.use("/parkings", require("./routes/parkings.routes"));
 
 router.use("/notifications", require("./routes/notification"));
 
+router.use("/monitor", require("./routes/monitorParking.routes"));
+
 // router.use("/avatar", require("./routes/image"));
 
 module.exports = router;
