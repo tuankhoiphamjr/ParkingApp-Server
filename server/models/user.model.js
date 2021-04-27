@@ -40,9 +40,8 @@ const UserSchema = new mongoose.Schema({
   },
 
   avatar: {
-    type: mongoose.Types.ObjectId,
-    ref: "Avatar.Files",
-    default: dbConfig.defaultAvatarId,
+    type: String,
+    default: "",
   },
 
   isActive: {

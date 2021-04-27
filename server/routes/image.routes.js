@@ -29,6 +29,14 @@ router.post(
     return res.status(500).send('Unable to upload');
   },
 );
+router.post('/uploadmultiimgs', multer.array('images', 15), uploadimgGCS.sendMultiUploadToGCS, (req, res, next)=>{
+  if(req.files && req.files[0].gcsUrl){
+    return res.status(200).send(req.files.map(item =>  item.gcsUrl))
+  }
+  else{
+    return res.status(500).send('Unable to upload');
+  }
+})
 
 router.get("/avatar/:id", controller.showAvatarImage);
 
