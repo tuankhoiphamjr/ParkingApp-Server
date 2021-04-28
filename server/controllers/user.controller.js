@@ -53,13 +53,14 @@ exports.changePassword = async (req, res) => {
 };
 
 exports.updateUserInfo = async (req, res) => {
-      let { firstName, lastName, email } = req.body;
+      let { firstName, lastName, email, avatar } = req.body;
       let userId = req.userId;
       let result = await userServices.updateUserInfo(
             userId,
             firstName,
             lastName,
-            email
+            email, 
+            avatar
       );
       if (!result?.status) {
             return res.status(400).send({
