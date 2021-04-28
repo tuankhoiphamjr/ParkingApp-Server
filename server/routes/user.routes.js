@@ -24,7 +24,7 @@ router.post("/changePassword", controller.changePassword);
 
 router.post("/updateInfo", controller.updateUserInfo);
 
-router.get("/getInfo", controller.getUserInfo);
+router.get("/getUserInfoById/:userId", controller.getUserInfoById);
 
 
 module.exports = router;

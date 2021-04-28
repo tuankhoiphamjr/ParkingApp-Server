@@ -71,12 +71,12 @@ exports.updateUserInfo = async (req, res) => {
             .send({ message: "Update user info successfully." });
 };
 
-exports.getUserInfo = async (req, res) => {
-      let userId = "606043a9dbb53128dc928a9c";
-      // let userId = req.userId;
+exports.getUserInfoById = async (req, res) => {
+      let userId = req.params.userId;
+      console.log(userId);
       let { result, status } = await userServices.getUserById(userId);
       if (!status) {
-            res.status(400).send({ message: result.message });
+            res.status(400).send({ message: "Get user fail" });
             return;
       }
       res.status(200).json(result);

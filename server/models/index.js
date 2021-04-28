@@ -12,7 +12,8 @@ db.parkingImage = require("./parkingImage.model");
 db.role = require("./role.model");
 db.feedback = require("./feedback.model");
 db.vehicle = require("./vehicle.model");
-db.notifyToken = require("./notifyToken.model")
+db.notifyToken = require("./notifyToken.model");
+db.monitorParking = require("./monitorParking.model");
 
 db.ROLES = ["user", "admin", "moderator"];
 
