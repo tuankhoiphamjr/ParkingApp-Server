@@ -56,8 +56,6 @@ getUserByPhoneNumberAndRole = async (phoneNumber, role) => {
 // Get all user info by _id
 getUserById = async (userID) => {
   let result = await User.findOne({ _id: userID })
-    .populate("avatar", "-_id -__v")
-    .select("-__v");
   if (!result) {
     return { message: "User not found", status: false };
   }
@@ -97,11 +95,11 @@ updatePassword = async (userId, newPassword) => {
 };
 
 // Update user info in DB
-updateUserInfo = async (userId, firstName, lastName, email) => {
+updateUserInfo = async (userId, firstName, lastName, email, avatar) => {
   let result;
   await User.findOneAndUpdate(
     { _id: mongoose.Types.ObjectId(userId) },
-    { firstName: firstName, lastName: lastName, email: email },
+    { firstName: firstName, lastName: lastName, email: email, avatar: avatar },
     (err, data) => {
       if (err) {
         result = { message: err, status: false };
