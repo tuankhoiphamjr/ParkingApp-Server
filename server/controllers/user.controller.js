@@ -61,7 +61,7 @@ exports.updateUserInfo = async (req, res) => {
             lastName,
             email
       );
-      if (!result.status) {
+      if (!result?.status) {
             return res.status(400).send({
                   message: "Update user info failed.",
             });
