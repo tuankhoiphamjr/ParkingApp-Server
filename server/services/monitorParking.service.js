@@ -30,6 +30,7 @@ addComingVehicle = async (
       comingTime
 ) => {
       let result;
+
       // xét xem thông tin xe có chính xác hay không
       try {
             let filter = {
@@ -39,13 +40,13 @@ addComingVehicle = async (
             let res = await Vehicle.find(filter);
             if (res.length === 0) {
                   return (result = {
-                        message: 'Vehicle does not exist',
+                        message: "Vehicle does not exist",
                         status: false,
                   });
             }
       } catch (error) {
             return (result = {
-                  message: 'Error',
+                  message: "Error",
                   status: false,
             });
       }
@@ -116,7 +117,26 @@ showListComingVehicle = async (parkingId) => {
                   status: false,
             });
       }
-      result = { data: res[0].isComing, status: true };
+      let data = [];
+      for (const vehicle of res[0].isComing) {
+            const filter = {
+                  _id: mongoose.Types.ObjectId(vehicle.vehicleId),
+                  ownerId: mongoose.Types.ObjectId(vehicle.userId),
+            };
+            let rel = await Vehicle.find(filter);
+            if (rel.length === 0) {
+                  console.log("sdfsd");
+                  return (result = {
+                        message: `Vehicle does not exist: ${vehicle.vehicleId}`,
+                        status: false,
+                  });
+            }
+            let resu = { vehicleInfo:rel[0], comingTime: vehicle.comingTime };
+            // console.log(rel[0]);
+            data.push(resu);
+      }
+      console.log(data);
+      result = { data: data, status: true };
       return result;
 };
 
