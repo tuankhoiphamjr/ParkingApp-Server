@@ -15,7 +15,7 @@ createNewParkingPlace = async (
   initialSlots,
   description,
   openTime,
-  closeTime, 
+  closeTime,
   images
 ) => {
   let result = await Parking.create({
@@ -29,7 +29,7 @@ createNewParkingPlace = async (
     description,
     openTime,
     closeTime,
-    images
+    images,
   });
 
   return { result, status: true };
@@ -174,6 +174,27 @@ verifyParking = async (parkingId, status) => {
   return result;
 };
 
+// Open or Close a parking by owner (manage parking)
+/**
+ * @type {Bolean}
+ * status: false || true
+ */
+changeParkingOpenStatus = async (status, parkingId, ownerId) => {
+  let result = await Parking.findOneAndUpdate(
+    {
+      _id: mongoose.Types.ObjectId(parkingId),
+      ownerId: mongoose.Types.ObjectId(ownerId),
+    },
+    { isOpen: status }
+  );
+
+  if (!result) {
+    return { status: false, message: "Can't find Parking or Something went wrong" };
+  }
+
+  return { status: true, message: "Success" };
+};
+
 const parkingServices = {
   createNewParkingPlace,
   getParkingInfoById,
@@ -183,6 +204,7 @@ const parkingServices = {
   getParkingsByOwnerId,
   deleteParkingByOwner,
   verifyParking,
+  changeParkingOpenStatus
 };
 
 module.exports = parkingServices;
