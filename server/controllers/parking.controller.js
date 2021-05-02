@@ -4,7 +4,6 @@ const parkingServices = require("../services/parking.service");
 const userServices = require("../services/user.service");
 const vehicleService = require("../services/vehicle.service");
 
-
 // Add new Parking in DB
 exports.addNewParkingPlaceController = async (req, res) => {
   let {
@@ -17,7 +16,7 @@ exports.addNewParkingPlaceController = async (req, res) => {
     description,
     openTime,
     closeTime,
-    images
+    images,
   } = req.body;
   console.log(res.body);
   let ownerId = req.userId;
@@ -46,7 +45,6 @@ exports.addNewParkingPlaceController = async (req, res) => {
   });
 };
 
-
 // Get Parking Info by ID
 exports.getParkingInfoController = async (req, res) => {
   let parkingId = req.params.parkingId;
@@ -56,7 +54,6 @@ exports.getParkingInfoController = async (req, res) => {
   }
   return res.status(200).json({ status: true, result: result.result });
 };
-
 
 // Update Parking Info (NOT IMAGE YET)
 exports.firstUpdateParkingInfoController = async (req, res) => {
@@ -130,7 +127,6 @@ exports.reservationController = async (req, res) => {
   });
 };
 
-
 // Get all Parking that is verified
 exports.getAllVerifiedParkingInfoController = async (req, res) => {
   let result = await parkingServices.getAllVerifiedParkingInfo();
@@ -165,6 +161,27 @@ exports.deleteParkingController = async (req, res) => {
 exports.verifyParkingController = async (req, res) => {
   let parkingId = req.params.parkingId;
   let result = await parkingServices.verifyParking(parkingId, true);
+  if (!result.status) {
+    return res.status(400).json({ status: false, message: result.message });
+  }
+  return res.status(200).json({ status: true, result: result.message });
+};
+
+// Change status of Parking by Owner
+/**
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns {status, message}
+ */
+exports.changeParkingStatusController = async (req, res) => {
+  let { parkingId, status } = req.body;
+  let ownerId = req.userId;
+  let result = await parkingServices.changeParkingOpenStatus(
+    status,
+    parkingId,
+    ownerId
+  );
   if (!result.status) {
     return res.status(400).json({ status: false, message: result.message });
   }
