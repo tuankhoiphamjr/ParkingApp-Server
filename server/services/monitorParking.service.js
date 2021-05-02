@@ -5,6 +5,8 @@ const Parking = db.parking;
 const Vehicle = db.vehicle;
 
 createNewMonitor = async (ownerId, parkingId) => {
+      console.log(ownerId);
+      console.log(parkingId);
       const filter = {
             ownerId: mongoose.Types.ObjectId(ownerId),
             _id: mongoose.Types.ObjectId(parkingId),
@@ -22,15 +24,16 @@ createNewMonitor = async (ownerId, parkingId) => {
       }
 };
 
+// giao diện cần làm để người dùng sau khi nhấn đặt chỗ ko được nhấn đặt chỗ lần nữa
 addComingVehicle = async (
       ownerId,
       parkingId,
       userId,
       vehicleId,
-      comingTime
+      comingTime,
+      status
 ) => {
       let result;
-
       // xét xem thông tin xe có chính xác hay không
       try {
             let filter = {
@@ -53,25 +56,20 @@ addComingVehicle = async (
       // xét xem đã có monitor trong collection hay chưa
       const filter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
+            ownerId: mongoose.Types.ObjectId(ownerId),
       };
-      let res = await MonitorParking.find(filter);
+      let response = await MonitorParking.find(filter);
 
-      // nếu chưa có thì thêm monitor mới chỉ có ownerID với parkingId
-      if (res.length === 0) {
-            let response = await createNewMonitor(ownerId, parkingId);
-            if (response.status === false) {
-                  return (result = {
-                        message: response.message,
-                        status: false,
-                  });
-            }
+      // nếu chưa có thì trả về false
+      if (response.length === 0) {
+            return (result = {
+                  message: "Monitor does not exist",
+                  status: false,
+            });
       }
-
       // Đã có monitor trong collection(đã có hoặc đã thêm ở trên)
       // Cần thêm mới isComing (bao gồm những xe đã có + xe có info mới cần thêm vào)
       try {
-            // Tìm monitor đã có trong model
-            let response = await MonitorParking.find(filter);
             // lấy giá trị mảng isComing cũ + info xe mới
             let listIsComing = response[0].isComing;
 
@@ -79,6 +77,7 @@ addComingVehicle = async (
                   userId: userId,
                   vehicleId: vehicleId,
                   comingTime: comingTime,
+                  status: status,
             };
             listIsComing = [...listIsComing, isComing];
 
@@ -93,6 +92,74 @@ addComingVehicle = async (
                         result = {
                               message:
                                     "Add new vehicle to monitor parking successfully",
+                              status: true,
+                        };
+                  }
+            );
+            return result;
+      } catch (error) {
+            // console.log('sdfsdf');
+            return (result = { error, status: false });
+      }
+};
+
+deleteComingVehicle = async (parkingId, userId, vehicleId) => {
+      let result;
+      // xét xem thông tin xe có chính xác hay không
+      try {
+            let filter = {
+                  ownerId: mongoose.Types.ObjectId(userId),
+                  _id: mongoose.Types.ObjectId(vehicleId),
+            };
+            let res = await Vehicle.find(filter);
+            if (res.length === 0) {
+                  return (result = {
+                        message: "Vehicle does not exist",
+                        status: false,
+                  });
+            }
+      } catch (error) {
+            return (result = {
+                  message: "Error",
+                  status: false,
+            });
+      }
+      // Tìm monitor trong collection
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      let response = await MonitorParking.find(filter);
+
+      if (response.length === 0) {
+            return (result = {
+                  message: "Monitor does not exist",
+                  status: false,
+            });
+      }
+      // Đã có monitor trong collection(đã có hoặc đã thêm ở trên)
+      // Cần cập nhật lại isComing (bỏ đi vehicle cần bỏ)
+      try {
+            // lấy giá trị mảng isComing cũ - info xe cần bỏ
+            let listIsComing = response[0].isComing;
+
+            for (let i = 0; i < listIsComing.length; i++) {
+                  if (listIsComing[i].vehicleId === vehicleId) {
+                        listIsComing.splice(i, 1);
+                        break;
+                  }
+            }
+
+            // thêm vào model
+            await MonitorParking.findOneAndUpdate(
+                  { parkingId: mongoose.Types.ObjectId(parkingId) },
+                  { isComing: listIsComing },
+                  (err, data) => {
+                        if (err) {
+                              result = { message: err, status: false };
+                        }
+                        result = {
+                              message:
+                                    "Delete vehicle in monitor parking successfully",
                               status: true,
                         };
                   }
@@ -125,24 +192,223 @@ showListComingVehicle = async (parkingId) => {
             };
             let rel = await Vehicle.find(filter);
             if (rel.length === 0) {
-                  console.log("sdfsd");
                   return (result = {
                         message: `Vehicle does not exist: ${vehicle.vehicleId}`,
                         status: false,
                   });
             }
-            let resu = { vehicleInfo:rel[0], comingTime: vehicle.comingTime };
+            let resu = {
+                  vehicleInfo: rel[0],
+                  comingTime: vehicle.comingTime,
+                  status: vehicle.status,
+            };
             // console.log(rel[0]);
             data.push(resu);
       }
-      console.log(data);
       result = { data: data, status: true };
       return result;
+};
+
+addComeVehicle = async (ownerId, parkingId, userId, vehicleId, comingTime) => {
+      let result;
+      // xét xem thông tin xe có chính xác hay không
+      try {
+            let filter = {
+                  ownerId: mongoose.Types.ObjectId(userId),
+                  _id: mongoose.Types.ObjectId(vehicleId),
+            };
+            let res = await Vehicle.find(filter);
+            if (res.length === 0) {
+                  return (result = {
+                        message: "Vehicle does not exist",
+                        status: false,
+                  });
+            }
+      } catch (error) {
+            return (result = {
+                  message: "Error",
+                  status: false,
+            });
+      }
+      // xét xem đã có monitor trong collection hay chưa
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+            ownerId: mongoose.Types.ObjectId(ownerId),
+      };
+      let response = await MonitorParking.find(filter);
+
+      if (response.length === 0) {
+            return (result = {
+                  message: "Monitor does not exist",
+                  status: false,
+            });
+      }
+      // Đã có monitor trong collection(đã có hoặc đã thêm ở trên)
+      // Cần thêm mới hasCome (bao gồm những xe đã có + xe có info mới cần thêm vào)
+      try {
+            // lấy giá trị mảng hasCome cũ + info xe mới
+            let listHasCome = response[0].hasCome;
+
+            let newCome = {
+                  userId: userId,
+                  vehicleId: vehicleId,
+                  isOut: false,
+                  comingTime: comingTime,
+            };
+            listHasCome = [...listHasCome, newCome];
+
+            // thêm vào model
+            await MonitorParking.findOneAndUpdate(
+                  { parkingId: mongoose.Types.ObjectId(parkingId) },
+                  { hasCome: listHasCome },
+                  (err, data) => {
+                        if (err) {
+                              result = { message: err, status: false };
+                        }
+                        result = {
+                              message: "Add new vehicle parking successfully",
+                              status: true,
+                        };
+                  }
+            );
+            return result;
+      } catch (error) {
+            // console.log('sdfsdf');
+            return (result = { error, status: false });
+      }
+};
+
+showListVehicleInParking = async (parkingId) => {
+      let result;
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter);
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let data = [];
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.isOut === false) {
+                  const filter = {
+                        _id: mongoose.Types.ObjectId(vehicle.vehicleId),
+                        ownerId: mongoose.Types.ObjectId(vehicle.userId),
+                  };
+                  let rel = await Vehicle.find(filter);
+                  if (rel.length === 0) {
+                        return (result = {
+                              message: `Vehicle does not exist: ${vehicle.vehicleId}`,
+                              status: false,
+                        });
+                  }
+                  let resu = {
+                        vehicleInfo: rel[0],
+                        comingTime: vehicle.comingTime,
+                  };
+                  data.push(resu);
+            }
+      }
+      result = { data: data, status: true };
+      return result;
+};
+
+addOutVehicle = async (
+      ownerId,
+      parkingId,
+      userId,
+      vehicleId,
+      comingTime,
+      outTime,
+      price
+) => {
+      let result;
+      // xét xem thông tin xe có chính xác hay không
+      try {
+            let filter = {
+                  ownerId: mongoose.Types.ObjectId(userId),
+                  _id: mongoose.Types.ObjectId(vehicleId),
+            };
+            let res = await Vehicle.find(filter);
+            if (res.length === 0) {
+                  return (result = {
+                        message: "Vehicle does not exist",
+                        status: false,
+                  });
+            }
+      } catch (error) {
+            return (result = {
+                  message: "Error",
+                  status: false,
+            });
+      }
+      // xét xem đã có monitor trong collection hay chưa
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+            ownerId: mongoose.Types.ObjectId(ownerId),
+      };
+      let response = await MonitorParking.find(filter);
+
+      if (response.length === 0) {
+            return (result = {
+                  message: "Monitor does not exist",
+                  status: false,
+            });
+      }
+      // Đã có monitor trong collection(đã có hoặc đã thêm ở trên)
+      // Cần thêm mới hasCome (bao gồm những xe đã có + xe có info mới cần thêm vào)
+      try {
+            // lấy giá trị mảng hasCome cũ + info xe mới
+            let listHasCome = response[0].hasCome;
+
+            for (let i = 0; i < listHasCome.length; i++) {
+                  if (
+                        listHasCome[i].vehicleId === vehicleId &&
+                        listHasCome[i].comingTime === comingTime
+                  ) {
+                        listHasCome[i] = {
+                              userId: userId,
+                              vehicleId: vehicleId,
+                              isOut: true,
+                              comingTime: comingTime,
+                              outTime: outTime,
+                              price: price,
+                        };
+                        break;
+                  }
+            }
+
+            // thêm vào model
+            await MonitorParking.findOneAndUpdate(
+                  { parkingId: mongoose.Types.ObjectId(parkingId) },
+                  { hasCome: listHasCome },
+                  (err, data) => {
+                        if (err) {
+                              result = { message: err, status: false };
+                        }
+                        result = {
+                              message: "An vehicle has come out parking",
+                              status: true,
+                        };
+                  }
+            );
+            return result;
+      } catch (error) {
+            // console.log('sdfsdf');
+            return (result = { error, status: false });
+      }
 };
 
 const monitorParkingService = {
       createNewMonitor,
       addComingVehicle,
       showListComingVehicle,
+      deleteComingVehicle,
+      addComeVehicle,
+      showListVehicleInParking,
+      addOutVehicle,
 };
 module.exports = monitorParkingService;

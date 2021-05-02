@@ -24,7 +24,10 @@ const MonitorParkingSchema = new mongoose.Schema({
             },
             comingTime: {
                   type: String,
-            }
+            },
+            status: {
+                  type: String,
+            },
       },
       hasCome: {
             type: Array,
@@ -36,8 +39,8 @@ const MonitorParkingSchema = new mongoose.Schema({
                   type: ObjectId,
                   ref: "Vehicle",
             },
-            isOut:{
-                  type:Boolean,
+            isOut: {
+                  type: Boolean,
             },
             comingTime: {
                   type: String,
@@ -45,9 +48,9 @@ const MonitorParkingSchema = new mongoose.Schema({
             outTime: {
                   type: String,
             },
-            price:{
-                  type:Number,
-            }
+            price: {
+                  type: Number,
+            },
       },
 });
 module.exports = mongoose.model("MonitorParking", MonitorParkingSchema);
