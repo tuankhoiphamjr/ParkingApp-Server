@@ -27,7 +27,7 @@ exports.addComingVehicleToMonitor = async (req, res) => {
             status
       );
       // Bug tại đay nhưng không hiểu tại sao
-      if (!result?.status) {
+      if (!result.status) {
             res.status(400).json({ message: "message" });
             return;
       }
@@ -42,7 +42,7 @@ exports.deleteComingVehicleInMonitor = async (req, res) => {
             vehicleId
       );
       // Bug tại đay nhưng không hiểu tại sao
-      if (!result?.status) {
+      if (!result.status) {
             res.status(400).json({ message: "message" });
             return;
       }
@@ -71,7 +71,7 @@ exports.addNewComingVehicleToMonitor = async (req, res) => {
             comingTime
       );
       // Bug tại đay nhưng không hiểu tại sao
-      if (!result?.status) {
+      if (!result.status) {
             res.status(400).json({ message: "Add new vehicle to monitor fail" });
             return;
       }
