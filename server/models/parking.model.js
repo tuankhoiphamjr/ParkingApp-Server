@@ -114,6 +114,11 @@ const ParkingSchema = new mongoose.Schema({
   images: {
     type: Array,
     default: []
+  },
+
+  isOpen: {
+    type: Boolean,
+    default: true,
   }
 });
 
