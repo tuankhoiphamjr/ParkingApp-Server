@@ -14,13 +14,14 @@ getVehicleInfoByOwnerId = async (ownerId) => {
       return { result, status: true };
 };
 
-addVehicle = async (ownerId, type, licensePlates, color, modelName) => {
+addVehicle = async (ownerId, type, licensePlates, color, modelName, images) => {
       let result = await Vehicle.create({
             ownerId,
             type,
             licensePlates,
             color,
             modelName,
+            images
       });
 
       return { result, status: true };
