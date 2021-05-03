@@ -21,5 +21,8 @@ const VehicleSchema = new mongoose.Schema({
       modelName: {
             type: String,
       },
+      images:{
+            type: Array,
+      }
 });
 module.exports = mongoose.model("Vehicle", VehicleSchema);
