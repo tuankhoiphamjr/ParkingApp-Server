@@ -27,8 +27,8 @@ exports.addComingVehicleToMonitor = async (req, res) => {
             status
       );
       // Bug tại đay nhưng không hiểu tại sao
-      if (!result.status) {
-            res.status(400).json({ message: "message" });
+      if (!result?.status) {
+            res.status(400).json({ message: "Add Coming Vehicle fail" });
             return;
       }
       res.status(200).json(result);
@@ -42,8 +42,8 @@ exports.deleteComingVehicleInMonitor = async (req, res) => {
             vehicleId
       );
       // Bug tại đay nhưng không hiểu tại sao
-      if (!result.status) {
-            res.status(400).json({ message: "message" });
+      if (!result?.status) {
+            res.status(400).json({ message: "Delete fail" });
             return;
       }
       res.status(200).json(result);

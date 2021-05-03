@@ -97,7 +97,7 @@
             - SUCCESS: return {status: true, result},
             - FAILED: return { status: false, message: result.message }
 
-    
+
         api/parkings/all/getinfo/:ownerId  (Get parking by ownerID)
             - SUCCESS: return {status: true, result},
 
@@ -126,7 +126,7 @@
                             "status": true,
                             "result": "Delete Parking successfully"
                         }
-            
+
             - FAILED:   {
                             "status": false,
                             "message": "Parking not Found or Deleted Or user are not owner of parking"
@@ -141,7 +141,7 @@
                             "status": true,
                             "result": "Parking are verify to true"
                         }
-            
+
             - FAILED :  {
                             "status": false,
                             "message": "Parking not found or something went wrong"
@@ -154,7 +154,6 @@
     POST: api/image/avatar/del/:id (cần token hợp lệ) => xóa avatar với id của hình
     GET:  api/image/avatar/:id                        => show hình avatar với id của hình
     GET:  api/image/avatar/:id                        => show hình parking với id của hình
-
 
 # Notifications
 
@@ -175,11 +174,11 @@
     POST: api/notifications/topic/:role  (gửi thông báo đi tới role user, owner hay cả 2)
 
           role: user, owner, all,
-            {   
+            {
                 "title" : "Có người đang tới bãi đỗ xe",
                 "body": "Xe F1",
                 "sendUserId": ""
-            }   
+            }
 
             - SUCCESS: return {
                                 status: true,
@@ -190,18 +189,18 @@
 
     POST: api/notifications            (gửi thông báo đến user cụ thể sử dụng token đã lưu trong DB)
 
-            {   
+            {
                 "title" : "Có người đang tới bãi đỗ xe",
                 "body": "Xe F1",
                 "receivedUsersId": ["60758290432b1241ec881263"],
                 "sendUserId" :""
-            }   
+            }
 
             - SUCCESS:  {
                             status: true,
                             message: `Successfully sent notifications to user has id: ${receivedUsersId}`,
                         }
-            
+
             - FAILED:  return { status: false, message: "Something went wrong" }
 
     POST: api/notifications/checkDevice          (kiểm tra xem thiết bị của người dùng đã đăng nhập đã đăng ký nhận thông báo chưa trong DB)
@@ -216,3 +215,94 @@
                                     status: true,
                                 }
             - FAILED: return { message: "Device has not been registered yet", status: false }
+
+# Booking
+
+    POST: api/monitor/     (thêm document monitor sau khi bãi xe được duyệt)
+            {
+                "parkingId": "165d6caf46a7880a"
+            }
+
+            - SUCCESS: return {status: true, result}
+            - FAILED:  return { status: false, message: "Add monitor fail" }
+
+    POST: api/monitor/addComingVehicle/:parkingId     (Sau khi người dùng nhấn đặt chỗ thì gọi api này )
+            {
+                "userId": "165d6caf46a7880a",
+                "vehicleId" : "1231232",
+                "comingTime" : "Bắt người dùng nhập ngày giờ",
+                "status" : "Xe đẹp cẩn thận - cái này do người dùng nhập"
+            }
+
+            - SUCCESS: return {status: true, message:  "Add new vehicle to monitor parking successfully"}
+            - FAILED:  return { status: false, message: "Add Coming Vehicle fail" }
+
+    GET: api/monitor/getComingVehicle/:parkingId     (Sau khi gọi api trên success thì bên app owner dùng api này để show những xe đã đặt chỗ)
+
+            - SUCCESS:
+                return {
+                    status: true,
+                    result:{
+                        data:[
+                            {
+                                vehicleInfo:{},
+                                userInfo:{}(cái này t chưa thêm),
+                                comingTime
+                                status
+                            }
+                            (data gồm nhiều object này, mỗi object là thông tin 1 booking)
+                        ]
+                    }
+                 }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+     POST: api/monitor/addNewComingVehicleToMonitor/:parkingId     (xe sau khi đặt chỗ thành công, xe đó tới bãi và vào bãi thì gọi api này cới api bên dưới)
+            {
+                "userId": "165d6caf46a7880a",
+                "vehicleId" : "1231232",
+                "comingTime" : "ngày giờ"
+            }
+
+            - SUCCESS: return {status: true, message: "Add new vehicle parking successfully"}
+            - FAILED:  return { status: false, message: "Add new vehicle to monitor fail" }
+
+     POST: api/monitor/deleteComingVehicle     (xóa bản ghi xe đã đặt chỗ khi xe vào bãi)
+            {
+                "parkingId": "165d6caf46a7880a",
+                "userId" : "1231232",
+                "vehicleId" : "60758290432b1241ec881263"
+            }
+
+            - SUCCESS: return {status: true, message: "Delete vehicle in monitor parking successfully"}
+            - FAILED:  return { status: false, message: "Delete fail" }
+
+     POST: api/monitor/getVehicleInParking/:parkingId     (sau khi xe vào bãi, app chủ bãi muốn show tất cả các xe đang đỗ trong bãi thì gọi api này)
+
+            - SUCCESS: 
+                return {
+                        status: true,
+                        result:{
+                            data:[
+                                {
+                                    vehicleInfo:{},
+                                    userInfo:{}(cái này t chưa thêm),
+                                    comingTime
+                                }
+                                (data gồm nhiều object này, mỗi object là thông tin 1 xe và chủ xe trong bãi)
+                            ]
+                        }
+                    }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+     POST: api/monitor/addOutVehicle/:parkingId     (khi xe tính tiền và rời bãi thì gọi api này)
+            {
+                "userId": "165d6caf46a7880a",
+                "vehicleId" : "1231232",
+                "comingTime" : "ngày giờ",
+                "outTime" : "ngày giờ",
+                "price" : 10000
+            }
+
+            - SUCCESS: return {status: true, message: "An vehicle has come out parking"}
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
