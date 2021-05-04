@@ -220,15 +220,16 @@
 
     POST: api/monitor/     (thêm document monitor sau khi bãi xe được duyệt)
             {
+                "ownerId": "165d6caf46a7880a",
                 "parkingId": "165d6caf46a7880a"
             }
 
             - SUCCESS: return {status: true, result}
             - FAILED:  return { status: false, message: "Add monitor fail" }
 
-    POST: api/monitor/addComingVehicle/:parkingId     (Sau khi người dùng nhấn đặt chỗ thì gọi api này )
+    POST: api/monitor/addComingVehicle/:parkingId     (Sau khi người dùng nhấn đặt chỗ thì gọi api này, gọi api này ở app user )
             {
-                "userId": "165d6caf46a7880a",
+                "ownerId": "165d6caf46a7880a",(id của chủ bãi)
                 "vehicleId" : "1231232",
                 "comingTime" : "Bắt người dùng nhập ngày giờ",
                 "status" : "Xe đẹp cẩn thận - cái này do người dùng nhập"
@@ -256,7 +257,7 @@
                  }
             - FAILED:  return { status: false, message: message báo lỗi bên server }
 
-     POST: api/monitor/addNewComingVehicleToMonitor/:parkingId     (xe sau khi đặt chỗ thành công, xe đó tới bãi và vào bãi thì gọi api này cới api bên dưới)
+     POST: api/monitor/addNewComingVehicleToMonitor/:parkingId     (xe sau khi đặt chỗ thành công, xe đó tới bãi và vào bãi thì gọi api này với api bên dưới)
             {
                 "userId": "165d6caf46a7880a",
                 "vehicleId" : "1231232",

@@ -3,10 +3,9 @@ const db = require("../models");
 const MonitorParking = db.monitorParking;
 const Parking = db.parking;
 const Vehicle = db.vehicle;
+const User = db.user;
 
 createNewMonitor = async (ownerId, parkingId) => {
-      console.log(ownerId);
-      console.log(parkingId);
       const filter = {
             ownerId: mongoose.Types.ObjectId(ownerId),
             _id: mongoose.Types.ObjectId(parkingId),
@@ -186,18 +185,29 @@ showListComingVehicle = async (parkingId) => {
       }
       let data = [];
       for (const vehicle of res[0].isComing) {
-            const filter = {
+            const filterVehicle = {
                   _id: mongoose.Types.ObjectId(vehicle.vehicleId),
                   ownerId: mongoose.Types.ObjectId(vehicle.userId),
             };
-            let rel = await Vehicle.find(filter);
+            let rel = await Vehicle.find(filterVehicle);
             if (rel.length === 0) {
                   return (result = {
                         message: `Vehicle does not exist: ${vehicle.vehicleId}`,
                         status: false,
                   });
             }
+            const filterUser = {
+                  _id: mongoose.Types.ObjectId(vehicle.userId),
+            };
+            let userInfo = await User.find(filterUser);
+            if (userInfo.length === 0) {
+                  return (result = {
+                        message: `User does not exist: ${vehicle.userId}`,
+                        status: false,
+                  });
+            }
             let resu = {
+                  userInfo: userInfo[0],
                   vehicleInfo: rel[0],
                   comingTime: vehicle.comingTime,
                   status: vehicle.status,
@@ -294,18 +304,29 @@ showListVehicleInParking = async (parkingId) => {
       let data = [];
       for (const vehicle of res[0].hasCome) {
             if (vehicle.isOut === false) {
-                  const filter = {
+                  const filterVehicle = {
                         _id: mongoose.Types.ObjectId(vehicle.vehicleId),
                         ownerId: mongoose.Types.ObjectId(vehicle.userId),
                   };
-                  let rel = await Vehicle.find(filter);
+                  let rel = await Vehicle.find(filterVehicle);
                   if (rel.length === 0) {
                         return (result = {
                               message: `Vehicle does not exist: ${vehicle.vehicleId}`,
                               status: false,
                         });
                   }
+                  const filterUser = {
+                        _id: mongoose.Types.ObjectId(vehicle.userId),
+                  };
+                  let userInfo = await User.find(filterUser);
+                  if (userInfo.length === 0) {
+                        return (result = {
+                              message: `User does not exist: ${vehicle.userId}`,
+                              status: false,
+                        });
+                  }
                   let resu = {
+                        userInfo: userInfo[0],
                         vehicleInfo: rel[0],
                         comingTime: vehicle.comingTime,
                   };
