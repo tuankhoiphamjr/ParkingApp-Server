@@ -1,8 +1,7 @@
 const monitorParkingService = require("../services/monitorParking.service");
 
 exports.addMonitorParking = async (req, res) => {
-      let parkingId = req.body.parkingId;
-      let ownerId = req.userId;
+      let { ownerId, parkingId } = req.body;
       let { result, status } = await monitorParkingService.createNewMonitor(
             ownerId,
             parkingId
@@ -15,9 +14,9 @@ exports.addMonitorParking = async (req, res) => {
 };
 
 exports.addComingVehicleToMonitor = async (req, res) => {
-      let ownerId = req.userId;
+      let userId = req.userId;
       let parkingId = req.params.parkingId;
-      let { userId, vehicleId, comingTime, status } = req.body;
+      let { ownerId, vehicleId, comingTime, status } = req.body;
       let result = await monitorParkingService.addComingVehicle(
             ownerId,
             parkingId,
@@ -72,7 +71,9 @@ exports.addNewComingVehicleToMonitor = async (req, res) => {
       );
       // Bug tại đay nhưng không hiểu tại sao
       if (!result.status) {
-            res.status(400).json({ message: "Add new vehicle to monitor fail" });
+            res.status(400).json({
+                  message: "Add new vehicle to monitor fail",
+            });
             return;
       }
       res.status(200).json(result);
@@ -93,13 +94,7 @@ exports.getVehicleInParking = async (req, res) => {
 exports.addVehicleHasOutOfParking = async (req, res) => {
       let ownerId = req.userId;
       let parkingId = req.params.parkingId;
-      let {
-            userId,
-            vehicleId,
-            comingTime,
-            outTime,
-            price,
-      } = req.body;
+      let { userId, vehicleId, comingTime, outTime, price } = req.body;
       let result = await monitorParkingService.addOutVehicle(
             ownerId,
             parkingId,
