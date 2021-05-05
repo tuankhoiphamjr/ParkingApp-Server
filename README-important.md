@@ -135,7 +135,7 @@
 
 
 
-    GET:     api/parkings/admin/verify/:parkingId        (dùng cho admin)
+    GET:     api/adminParking/verify/:parkingId        (dùng cho admin)
 
             - SUCCESS:   {
                             "status": true,

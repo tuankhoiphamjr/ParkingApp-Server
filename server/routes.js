@@ -11,7 +11,11 @@ router.use("/image", require("./routes/image.routes"));
 
 router.use("/feedback", require("./routes/feedback.routes"));
 
-router.use("/vehicle",[authJwt.verifyToken], require("./routes/vehicle.routes"));
+router.use(
+      "/vehicle",
+      [authJwt.verifyToken],
+      require("./routes/vehicle.routes")
+);
 
 router.use(
       "/parking",
@@ -19,11 +23,21 @@ router.use(
       require("./routes/parking.routes")
 );
 
+router.use(
+      "/adminParking",
+      [authJwt.verifyToken, authJwt.isAdmin],
+      require("./routes/adminParking.routes")
+);
+
 router.use("/parkings", require("./routes/parkings.routes"));
 
 router.use("/notifications", require("./routes/notification"));
 
-router.use("/monitor",[authJwt.verifyToken], require("./routes/monitorParking.routes"));
+router.use(
+      "/monitor",
+      [authJwt.verifyToken],
+      require("./routes/monitorParking.routes")
+);
 
 // router.use("/avatar", require("./routes/image"));
 

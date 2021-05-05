@@ -1,3 +1,4 @@
+const { user } = require("../models");
 const monitorParkingService = require("../services/monitorParking.service");
 
 exports.addMonitorParking = async (req, res) => {
@@ -28,6 +29,20 @@ exports.addComingVehicleToMonitor = async (req, res) => {
       // Bug tại đay nhưng không hiểu tại sao
       if (!result?.status) {
             res.status(400).json({ message: "Add Coming Vehicle fail" });
+            return;
+      }
+      res.status(200).json(result);
+};
+
+exports.getBookingInfo = async (req, res) => {
+      let parkingId = req.body.parkingId;
+      let userId = req.userId;
+      let result = await monitorParkingService.showBookingInfo(
+            parkingId,
+            userId
+      );
+      if (!result?.status) {
+            res.status(400).send({ message: result.message });
             return;
       }
       res.status(200).json(result);
