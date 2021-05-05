@@ -19,34 +19,23 @@ verifyToken = (req, res, next) => {
   });
 };
 
-// isAdmin = (req, res, next) => {
-//   User.findById(req.userId).exec((err, user) => {
-//     if (err) {
-//       res.status(500).send({ message: err });
-//       return;
-//     }
+isAdmin = (req, res, next) => {
+  let userId = req.userId;
+  User.findOne({ _id: userId, role: "admin" }).exec((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
 
-//     Role.find(
-//       {
-//         role: user.role,
-//       },
-//       (err, role) => {
-//         if (err) {
-//           res.status(500).send({ message: err });
-//           return;
-//         }
+    if (user) {
+      next();
+      return;
+    }
 
-//         if (role === "admin") {
-//           next();
-//           return;
-//         }
-
-//         res.status(403).send({ message: "Require Admin Role!" });
-//         return;
-//       }
-//     );
-//   });
-// };
+    res.status(403).send({ message: "Require Admin Role!" });
+    return;
+  });
+};
 
 isOwner = (req, res, next) => {
   let userId = req.userId;
@@ -68,6 +57,7 @@ isOwner = (req, res, next) => {
 
 const authJwt = {
   verifyToken,
+  isAdmin,
   isOwner,
 };
 module.exports = authJwt;

@@ -146,6 +146,15 @@ exports.getParkingsOfOwnerController = async (req, res) => {
   return res.status(200).json({ status: true, result: result.result });
 };
 
+// Get all parking has field isVerified equal to false info
+exports.getParkingsNeedVerified = async (req, res) => {
+  let result = await parkingServices.getCensorshipParking();
+  if (!result.status) {
+    return res.status(400).json({ status: false, message: result.message });
+  }
+  return res.status(200).json({ status: true, result: result.result });
+};
+
 // Delete a Parking By Owner
 exports.deleteParkingController = async (req, res) => {
   let ownerId = req.body.ownerId;
