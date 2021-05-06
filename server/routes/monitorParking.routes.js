@@ -8,6 +8,10 @@ router.post("/", controller.addMonitorParking);
 
 router.get("/getBookingInfo", controller.getBookingInfo);
 
+router.get("/getParkingInfo", controller.getParkingInfo);
+
+router.get("/getParkingHistoryInfo", controller.getParkingHistoryInfo);
+
 router.get("/getComingVehicle/:parkingId", controller.getIsComingVehicle);
 
 router.get("/getVehicleInParking/:parkingId", controller.getVehicleInParking);
