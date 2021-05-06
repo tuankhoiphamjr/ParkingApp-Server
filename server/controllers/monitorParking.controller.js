@@ -35,10 +35,8 @@ exports.addComingVehicleToMonitor = async (req, res) => {
 };
 
 exports.getBookingInfo = async (req, res) => {
-      let parkingId = req.body.parkingId;
       let userId = req.userId;
       let result = await monitorParkingService.showBookingInfo(
-            parkingId,
             userId
       );
       if (!result?.status) {
