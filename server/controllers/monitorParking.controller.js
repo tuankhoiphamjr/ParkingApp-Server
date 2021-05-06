@@ -46,6 +46,30 @@ exports.getBookingInfo = async (req, res) => {
       res.status(200).json(result);
 };
 
+exports.getParkingInfo = async (req, res) => {
+      let userId = req.userId;
+      let result = await monitorParkingService.showParkingInfo(
+            userId
+      );
+      if (!result?.status) {
+            res.status(400).send({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};
+
+exports.getParkingHistoryInfo = async (req, res) => {
+      let userId = req.userId;
+      let result = await monitorParkingService.showParkingHistoryInfo(
+            userId
+      );
+      if (!result?.status) {
+            res.status(400).send({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};
+
 exports.deleteComingVehicleInMonitor = async (req, res) => {
       let { parkingId, userId, vehicleId } = req.body;
       let result = await monitorParkingService.deleteComingVehicle(

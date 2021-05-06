@@ -175,6 +175,122 @@ showBookingInfo = async (userId) => {
       return (result = { message: "No booking has found", status: false });
 };
 
+showParkingInfo = async (userId) => {
+      let result;
+      let parkingId = "";
+      const userFilter = {
+            userId: mongoose.Types.ObjectId(userId),
+      };
+      let response = await BookingHistory.find(userFilter);
+      if (response.length === 0) {
+            return (result = {
+                  message: "User does not have booking history",
+                  status: false,
+            });
+      }
+
+      for (let booking of response) {
+            if (!booking.parkingId) {
+                  continue;
+            }
+            parkingId = booking.parkingId;
+      }
+      if (parkingId === "") {
+            return (result = {
+                  message: "User does not have booking",
+                  status: false,
+            });
+      }
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter).populate("parkingId");
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let data;
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.userId === userId && vehicle.isOut === false) {
+                  data = {
+                        ownerId: res[0].ownerId,
+                        userId: vehicle.userId,
+                        vehicleId: vehicle.vehicleId,
+                        parkingId: res[0].parkingId._id,
+                        parkingName: res[0].parkingId.parkingName,
+                        parkingAddress: res[0].parkingId.parkingAddress,
+                        coordinate: res[0].parkingId.coordinate,
+                        comingTime: vehicle.comingTime,
+                  };
+                  return (result = { data: data, status: true });
+            }
+      }
+
+      return (result = { message: "No parking has found", status: false });
+};
+
+showParkingHistoryInfo = async (userId) => {
+      let result;
+      let parkingId = "";
+      const userFilter = {
+            userId: mongoose.Types.ObjectId(userId),
+      };
+      let response = await BookingHistory.find(userFilter);
+      if (response.length === 0) {
+            return (result = {
+                  message: "User does not have booking history",
+                  status: false,
+            });
+      }
+
+      for (let booking of response) {
+            if (!booking.parkingId) {
+                  continue;
+            }
+            parkingId = booking.parkingId;
+      }
+      if (parkingId === "") {
+            return (result = {
+                  message: "User does not have parking history",
+                  status: false,
+            });
+      }
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter).populate("parkingId");
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let data = [];
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.userId === userId && vehicle.isOut === true) {
+                  data.push({
+                        ownerId: res[0].ownerId,
+                        userId: vehicle.userId,
+                        vehicleId: vehicle.vehicleId,
+                        parkingId: res[0].parkingId._id,
+                        parkingName: res[0].parkingId.parkingName,
+                        parkingAddress: res[0].parkingId.parkingAddress,
+                        coordinate: res[0].parkingId.coordinate,
+                        comingTime: vehicle.comingTime,
+                  });
+            }
+      }
+      if (data.length !== 0) {
+            return (result = { data: data, status: true });
+      }
+
+      return (result = { message: "No parking history has found", status: false });
+};
+
 deleteComingVehicle = async (parkingId, userId, vehicleId) => {
       let result;
       // xét xem thông tin xe có chính xác hay không
@@ -552,6 +668,8 @@ const monitorParkingService = {
       createNewMonitor,
       addComingVehicle,
       showBookingInfo,
+      showParkingInfo,
+      showParkingHistoryInfo,
       showListComingVehicle,
       deleteComingVehicle,
       addComeVehicle,
