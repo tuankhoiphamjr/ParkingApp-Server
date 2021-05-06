@@ -307,3 +307,73 @@
             - SUCCESS: return {status: true, message: "An vehicle has come out parking"}
             - FAILED:  return { status: false, message: message báo lỗi bên server }
 
+    <!-- Dành cho user -->
+    GET: api/monitor/getBookingInfo    (Xem thông tin bãi xe mà user đang đặt)
+
+            - SUCCESS:
+                return {
+                    "data": {
+                        "ownerId": "608e566af0bfbb0015d99b93",
+                        "userId": "608e8a2294039929a4e6a77c",
+                        "vehicleId": "6093b537c293ad22149650f1",
+                        "parkingId": "608e56bbf0bfbb0015d99b94",
+                        "parkingName": "Bãi xe Dương Quảng Hàm",
+                        "parkingAddress": "495 Dương Quảng Hàm, phường 6, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam",
+                        "coordinate": {
+                            "latitude": 10.8382164,
+                            "longitude": 106.6825801
+                        },
+                        "comingTime": "12:30"
+                    },
+                    "status": true
+                }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+    GET: api/monitor/getParkingInfo    (Xem thông tin bãi xe mà user đang đỗ)
+
+            - SUCCESS:
+                return {
+                    "data": {
+                        "ownerId": "608e566af0bfbb0015d99b93",
+                        "userId": "608e8a2294039929a4e6a77c",
+                        "vehicleId": "6093b537c293ad22149650f1",
+                        "parkingId": "608e56bbf0bfbb0015d99b94",
+                        "parkingName": "Bãi xe Dương Quảng Hàm",
+                        "parkingAddress": "495 Dương Quảng Hàm, phường 6, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam",
+                        "coordinate": {
+                            "latitude": 10.8382164,
+                            "longitude": 106.6825801
+                        },
+                        "comingTime": "12:30"
+                    },
+                    "status": true
+                }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+    GET: api/monitor/getParkingHistoryInfo    (Xem thông tin các bãi xe mà user đã từng đỗ, trả về mảng data gồm thông tin các bãi xe đã đỗ)
+
+            - SUCCESS:
+                return {
+                    "data": [
+                        {
+                            "ownerId": "608e566af0bfbb0015d99b93",
+                            "userId": "608e8a2294039929a4e6a77c",
+                            "vehicleId": "6093b537c293ad22149650f1",
+                            "parkingId": "608e56bbf0bfbb0015d99b94",
+                            "parkingName": "Bãi xe Dương Quảng Hàm",
+                            "parkingAddress": "495 Dương Quảng Hàm, phường 6, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam",
+                            "coordinate": {
+                                "latitude": 10.8382164,
+                                "longitude": 106.6825801
+                            },
+                            "comingTime": "12:30",
+                            "outTime": "15:30",
+                            "price": 10000
+                        },{nếu đã đỗ ở nhiều bãi thì nhiều object hơn}
+                    ],
+                    "status": true
+                }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+
+

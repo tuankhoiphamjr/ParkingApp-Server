@@ -281,6 +281,8 @@ showParkingHistoryInfo = async (userId) => {
                         parkingAddress: res[0].parkingId.parkingAddress,
                         coordinate: res[0].parkingId.coordinate,
                         comingTime: vehicle.comingTime,
+                        outTime: vehicle.outTime,
+                        price: vehicle.price,
                   });
             }
       }
