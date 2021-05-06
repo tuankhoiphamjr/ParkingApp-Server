@@ -4,6 +4,7 @@ const MonitorParking = db.monitorParking;
 const Parking = db.parking;
 const Vehicle = db.vehicle;
 const User = db.user;
+const BookingHistory = db.bookingHistory;
 
 createNewMonitor = async (ownerId, parkingId) => {
       const filter = {
@@ -71,7 +72,6 @@ addComingVehicle = async (
       try {
             // lấy giá trị mảng isComing cũ + info xe mới
             let listIsComing = response[0].isComing;
-
             let isComing = {
                   userId: userId,
                   vehicleId: vehicleId,
@@ -81,20 +81,36 @@ addComingVehicle = async (
             listIsComing = [...listIsComing, isComing];
 
             // thêm vào model
+
             await MonitorParking.findOneAndUpdate(
                   { parkingId: mongoose.Types.ObjectId(parkingId) },
                   { isComing: listIsComing },
                   (err, data) => {
                         if (err) {
                               result = { message: err, status: false };
+                        } else {
+                              result = {
+                                    message:
+                                          "Add new vehicle to monitor parking successfully",
+                                    status: true,
+                              };
                         }
-                        result = {
-                              message:
-                                    "Add new vehicle to monitor parking successfully",
-                              status: true,
-                        };
                   }
             );
+
+            let bookingFilter = {
+                  vehicleId: mongoose.Types.ObjectId(vehicleId),
+                  userId: mongoose.Types.ObjectId(userId),
+            };
+            let booking = await BookingHistory.findOneAndUpdate(bookingFilter, {
+                  parkingBookingId: parkingId,
+            });
+            if (booking.length === 0) {
+                  result = {
+                        message: "Add booking fail",
+                        status: false,
+                  };
+            }
             return result;
       } catch (error) {
             // console.log('sdfsdf');
@@ -102,8 +118,32 @@ addComingVehicle = async (
       }
 };
 
-showBookingInfo = async (parkingId, userId) => {
+showBookingInfo = async (userId) => {
       let result;
+      let parkingId = "";
+      const userFilter = {
+            userId: mongoose.Types.ObjectId(userId),
+      };
+      let response = await BookingHistory.find(userFilter);
+      if (response.length === 0) {
+            return (result = {
+                  message: "User does not have booking history",
+                  status: false,
+            });
+      }
+
+      for (let booking of response) {
+            if (!booking.parkingBookingId) {
+                  continue;
+            }
+            parkingId = booking.parkingBookingId;
+      }
+      if (parkingId === "") {
+            return (result = {
+                  message: "User does not have booking",
+                  status: false,
+            });
+      }
       const filter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
       };
@@ -188,14 +228,27 @@ deleteComingVehicle = async (parkingId, userId, vehicleId) => {
                   (err, data) => {
                         if (err) {
                               result = { message: err, status: false };
-                        }
-                        result = {
-                              message:
-                                    "Delete vehicle in monitor parking successfully",
-                              status: true,
-                        };
+                        } else
+                              result = {
+                                    message:
+                                          "Delete vehicle in monitor parking successfully",
+                                    status: true,
+                              };
                   }
             );
+            let bookingFilter = {
+                  vehicleId: mongoose.Types.ObjectId(vehicleId),
+                  userId: mongoose.Types.ObjectId(userId),
+            };
+            let booking = await BookingHistory.findOneAndUpdate(bookingFilter, {
+                  $unset: { parkingBookingId: 1 },
+            });
+            if (booking.length === 0) {
+                  result = {
+                        message: "Delete booking fail",
+                        status: false,
+                  };
+            }
             return result;
       } catch (error) {
             // console.log('sdfsdf');
@@ -307,13 +360,27 @@ addComeVehicle = async (ownerId, parkingId, userId, vehicleId, comingTime) => {
                   (err, data) => {
                         if (err) {
                               result = { message: err, status: false };
-                        }
-                        result = {
-                              message: "Add new vehicle parking successfully",
-                              status: true,
-                        };
+                        } else
+                              result = {
+                                    message:
+                                          "Add new vehicle parking successfully",
+                                    status: true,
+                              };
                   }
             );
+            let bookingFilter = {
+                  vehicleId: mongoose.Types.ObjectId(vehicleId),
+                  userId: mongoose.Types.ObjectId(userId),
+            };
+            let booking = await BookingHistory.findOneAndUpdate(bookingFilter, {
+                  parkingId: parkingId,
+            });
+            if (booking.length === 0) {
+                  result = {
+                        message: "Add parking info fail",
+                        status: false,
+                  };
+            }
             return result;
       } catch (error) {
             // console.log('sdfsdf');
@@ -442,13 +509,38 @@ addOutVehicle = async (
                   (err, data) => {
                         if (err) {
                               result = { message: err, status: false };
-                        }
-                        result = {
-                              message: "An vehicle has come out parking",
-                              status: true,
-                        };
+                        } else
+                              result = {
+                                    message: "An vehicle has come out parking",
+                                    status: true,
+                              };
                   }
             );
+            let bookingFilter = {
+                  vehicleId: mongoose.Types.ObjectId(vehicleId),
+                  userId: mongoose.Types.ObjectId(userId),
+            };
+            let parkingHistory = await BookingHistory.find(bookingFilter);
+            if (!parkingHistory) {
+                  result = {
+                        message: "Vehicle not has parking history",
+                        status: false,
+                  };
+            } else {
+                  console.log(parkingHistory);
+                  let history = parkingHistory[0].parkingHistory;
+                  history.push({ parkingId: parkingId });
+                  let booking = await BookingHistory.findOneAndUpdate(
+                        bookingFilter,
+                        { $unset: { parkingId: 1 }, parkingHistory: history }
+                  );
+                  if (booking.length === 0) {
+                        result = {
+                              message: "Delete booking fail",
+                              status: false,
+                        };
+                  }
+            }
             return result;
       } catch (error) {
             // console.log('sdfsdf');

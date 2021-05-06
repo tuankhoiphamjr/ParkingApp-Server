@@ -6,7 +6,7 @@ const controller = require("../controllers/monitorParking.controller");
 // router.get("/:parkingId", controller.showFeedbackController);
 router.post("/", controller.addMonitorParking);
 
-router.post("/getBookingInfo", controller.getBookingInfo);
+router.get("/getBookingInfo", controller.getBookingInfo);
 
 router.get("/getComingVehicle/:parkingId", controller.getIsComingVehicle);
 
