@@ -748,7 +748,6 @@ getRevenueOfParkingByMonth = async (month, year, parkingId) => {
             if (vehicle.isOut === true) {
                   let outTime = vehicle.outTime.split(" ");
                   let date = outTime[0].split("/");
-                  console.log(date);
                   if (date[1] === month && date[2] === year) {
                         let day = parseInt(date[0]);
                         if (day <= 5) {
