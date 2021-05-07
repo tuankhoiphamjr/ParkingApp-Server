@@ -1,7 +1,19 @@
 const mongoose = require("mongoose");
 const db = require("../models");
+const { validate } = require("../models/monitorParking.model");
 const Vehicle = db.vehicle;
 const BookingHistory = db.bookingHistory;
+
+validateLicensePlates = async (licensePlates) => {
+      const filter = {
+            licensePlates: licensePlates,
+      };
+      let result = await Vehicle.find(filter);
+      if (result.length === 0) {
+            return true;
+      }
+      return false;
+};
 
 // Get vehicle of user
 getVehicleInfoByOwnerId = async (ownerId) => {
@@ -16,6 +28,13 @@ getVehicleInfoByOwnerId = async (ownerId) => {
 };
 
 addVehicle = async (ownerId, type, licensePlates, color, modelName) => {
+      let validate = await validateLicensePlates(licensePlates);
+      if (validate === false) {
+            return {
+                  message: "License Plates has been duplicated!",
+                  status: false,
+            };
+      }
       let result = await Vehicle.create({
             ownerId,
             type,
