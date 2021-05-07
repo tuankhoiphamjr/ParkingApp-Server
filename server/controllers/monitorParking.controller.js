@@ -148,10 +148,25 @@ exports.addVehicleHasOutOfParking = async (req, res) => {
 
 exports.getRevenueOfParkingByDateController = async (req, res) => {
       let parkingId = req.params.parkingId;
-      let date = "07/05/2021";
-      // let date = req.body.date;
+      let date = req.body.date;
       let result = await monitorParkingService.getRevenueOfParkingByDate(
             date,
+            parkingId
+      );
+      if (!result.status) {
+            res.status(400).send({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};
+
+exports.getRevenueOfParkingByMonthController = async (req, res) => {
+      let parkingId = req.params.parkingId;
+      let dateBody = req.body.date;
+      let date = dateBody.split("/");
+      let result = await monitorParkingService.getRevenueOfParkingByMonth(
+            date[0],
+            date[1],
             parkingId
       );
       if (!result.status) {
