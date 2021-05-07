@@ -290,7 +290,10 @@ showParkingHistoryInfo = async (userId) => {
             return (result = { data: data, status: true });
       }
 
-      return (result = { message: "No parking history has found", status: false });
+      return (result = {
+            message: "No parking history has found",
+            status: false,
+      });
 };
 
 deleteComingVehicle = async (parkingId, userId, vehicleId) => {
@@ -666,6 +669,38 @@ addOutVehicle = async (
       }
 };
 
+getRevenueOfParkingByDate = async (date, parkingId) => {
+      let result;
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter);
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let count = 0;
+      let revenue = 0;
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.isOut === true) {
+                  let outTime = vehicle.outTime.split(" ");
+                  if (outTime[0] === date) {
+                        count++;
+                        revenue += vehicle.price;
+                  }
+            }
+      }
+      let data = {
+            vehicleNumber: count,
+            revenue: revenue,
+      };
+      result = { data: data, status: true };
+      return result;
+};
+
 const monitorParkingService = {
       createNewMonitor,
       addComingVehicle,
@@ -677,5 +712,6 @@ const monitorParkingService = {
       addComeVehicle,
       showListVehicleInParking,
       addOutVehicle,
+      getRevenueOfParkingByDate,
 };
 module.exports = monitorParkingService;
