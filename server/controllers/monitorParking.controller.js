@@ -36,9 +36,7 @@ exports.addComingVehicleToMonitor = async (req, res) => {
 
 exports.getBookingInfo = async (req, res) => {
       let userId = req.userId;
-      let result = await monitorParkingService.showBookingInfo(
-            userId
-      );
+      let result = await monitorParkingService.showBookingInfo(userId);
       if (!result?.status) {
             res.status(400).send({ message: result.message });
             return;
@@ -48,9 +46,7 @@ exports.getBookingInfo = async (req, res) => {
 
 exports.getParkingInfo = async (req, res) => {
       let userId = req.userId;
-      let result = await monitorParkingService.showParkingInfo(
-            userId
-      );
+      let result = await monitorParkingService.showParkingInfo(userId);
       if (!result?.status) {
             res.status(400).send({ message: result.message });
             return;
@@ -60,9 +56,7 @@ exports.getParkingInfo = async (req, res) => {
 
 exports.getParkingHistoryInfo = async (req, res) => {
       let userId = req.userId;
-      let result = await monitorParkingService.showParkingHistoryInfo(
-            userId
-      );
+      let result = await monitorParkingService.showParkingHistoryInfo(userId);
       if (!result?.status) {
             res.status(400).send({ message: result.message });
             return;
@@ -145,6 +139,36 @@ exports.addVehicleHasOutOfParking = async (req, res) => {
             res.status(400).send({ message: "Something wrong" });
             return;
       }
+      if (!result.status) {
+            res.status(400).send({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};
+
+exports.getRevenueOfParkingByDateController = async (req, res) => {
+      let parkingId = req.params.parkingId;
+      let date = req.body.date;
+      let result = await monitorParkingService.getRevenueOfParkingByDate(
+            date,
+            parkingId
+      );
+      if (!result.status) {
+            res.status(400).send({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};
+
+exports.getRevenueOfParkingByMonthController = async (req, res) => {
+      let parkingId = req.params.parkingId;
+      let dateBody = req.body.date;
+      let date = dateBody.split("/");
+      let result = await monitorParkingService.getRevenueOfParkingByMonth(
+            date[0],
+            date[1],
+            parkingId
+      );
       if (!result.status) {
             res.status(400).send({ message: result.message });
             return;

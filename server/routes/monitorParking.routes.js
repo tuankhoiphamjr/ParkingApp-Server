@@ -24,4 +24,8 @@ router.post("/addNewComingVehicleToMonitor/:parkingId", controller.addNewComingV
 
 router.post("/addOutVehicle/:parkingId", controller.addVehicleHasOutOfParking);
 
+router.post("/getRevenueOfParkingByDate/:parkingId", controller.getRevenueOfParkingByDateController);
+
+router.post("/getRevenueOfParkingByMonth/:parkingId", controller.getRevenueOfParkingByMonthController);
+
 module.exports = router;

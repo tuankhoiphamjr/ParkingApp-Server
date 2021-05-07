@@ -290,7 +290,10 @@ showParkingHistoryInfo = async (userId) => {
             return (result = { data: data, status: true });
       }
 
-      return (result = { message: "No parking history has found", status: false });
+      return (result = {
+            message: "No parking history has found",
+            status: false,
+      });
 };
 
 deleteComingVehicle = async (parkingId, userId, vehicleId) => {
@@ -666,6 +669,113 @@ addOutVehicle = async (
       }
 };
 
+getRevenueOfParkingByDate = async (date, parkingId) => {
+      let result;
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter);
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let count = 0;
+      let revenue = 0;
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.isOut === true) {
+                  let outTime = vehicle.outTime.split(" ");
+                  if (outTime[0] === date) {
+                        count++;
+                        revenue += vehicle.price;
+                  }
+            }
+      }
+      let data = {
+            vehicleNumber: count,
+            revenue: revenue,
+      };
+      result = { data: data, status: true };
+      return result;
+};
+
+getRevenueOfParkingByMonth = async (month, year, parkingId) => {
+      let result;
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter);
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let data = [
+            {
+                  vehicleNumber: 0,
+                  revenue: 0,
+            },
+            {
+                  vehicleNumber: 0,
+                  revenue: 0,
+            },
+            {
+                  vehicleNumber: 0,
+                  revenue: 0,
+            },
+            {
+                  vehicleNumber: 0,
+                  revenue: 0,
+            },
+            {
+                  vehicleNumber: 0,
+                  revenue: 0,
+            },
+            {
+                  vehicleNumber: 0,
+                  revenue: 0,
+            },
+            {
+                  vehicleNumber: 0,
+                  revenue: 0,
+            },
+      ];
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.isOut === true) {
+                  let outTime = vehicle.outTime.split(" ");
+                  let date = outTime[0].split("/");
+                  if (date[1] === month && date[2] === year) {
+                        let day = parseInt(date[0]);
+                        if (day <= 5) {
+                              data[0].vehicleNumber++;
+                              data[0].revenue += vehicle.price;
+                        } else if (day <= 10) {
+                              data[1].vehicleNumber++;
+                              data[1].revenue += vehicle.price;
+                        } else if (day <= 15) {
+                              data[2].vehicleNumber++;
+                              data[2].revenue += vehicle.price;
+                        } else if (day <= 20) {
+                              data[3].vehicleNumber++;
+                              data[3].revenue += vehicle.price;
+                        } else if (day <= 25) {
+                              data[4].vehicleNumber++;
+                              data[4].revenue += vehicle.price;
+                        } else {
+                              data[5].vehicleNumber++;
+                              data[5].revenue += vehicle.price;
+                        }
+                  }
+            }
+      }
+      result = { data: data, status: true };
+      return result;
+};
+
 const monitorParkingService = {
       createNewMonitor,
       addComingVehicle,
@@ -677,5 +787,7 @@ const monitorParkingService = {
       addComeVehicle,
       showListVehicleInParking,
       addOutVehicle,
+      getRevenueOfParkingByDate,
+      getRevenueOfParkingByMonth,
 };
 module.exports = monitorParkingService;

@@ -375,5 +375,59 @@
                 }
             - FAILED:  return { status: false, message: message báo lỗi bên server }
 
+     <!-- Dành cho owner -->
+        POST: api/monitor/getRevenueOfParkingByDate/:parkingId    (Trả về số xe đã đỗ trong bãi và doanh thu trong ngày được chọn)
+            {
+                "date":"07/05/2021" (lưu ý chuỗi ngày tháng năm phải lưu đúng định dạng ngày/tháng/năm giống mẫu mới ra- chơi 07-05-2021 hay 07.05.2021 là nó ko ra ráng chịu)
+            }
+            - SUCCESS:
+                return {
+                    "data": {
+                        "vehicleNumber": 0,
+                        "revenue": 0
+                    },
+                    "status": true
+                }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+        POST: api/monitor/getRevenueOfParkingByMonth/:parkingId    (Trả về số xe đã đỗ trong bãi và doanh thu trong tháng được chọn, đã chia theo từng khoảng như trên trello, mảng có 6 element, thứ tự như trên trello luôn, lúc lấy thì data[0] là từ ngày 1-5)
+            {
+                "date":"05/2021" (lưu ý chuỗi này nhập là tháng năm và phải lưu đúng định dạng tháng/năm giống mẫu mới ra - chú ý giống như trên)
+            }
+            - SUCCESS:
+                return {
+                    "data": [
+                        {
+                            "vehicleNumber": 0,
+                            "revenue": 0
+                        },
+                        {
+                            "vehicleNumber": 1,
+                            "revenue": 10000
+                        },
+                        {
+                            "vehicleNumber": 0,
+                            "revenue": 0
+                        },
+                        {
+                            "vehicleNumber": 0,
+                            "revenue": 0
+                        },
+                        {
+                            "vehicleNumber": 0,
+                            "revenue": 0
+                        },
+                        {
+                            "vehicleNumber": 0,
+                            "revenue": 0
+                        },
+                        {
+                            "vehicleNumber": 0,
+                            "revenue": 0
+                        }
+                    ],
+                    "status": true
+                }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
 
 
