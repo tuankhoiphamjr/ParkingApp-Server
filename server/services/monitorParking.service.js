@@ -3,10 +3,10 @@ const db = require("../models");
 const MonitorParking = db.monitorParking;
 const Parking = db.parking;
 const Vehicle = db.vehicle;
+const User = db.user;
+const BookingHistory = db.bookingHistory;
 
 createNewMonitor = async (ownerId, parkingId) => {
-      console.log(ownerId);
-      console.log(parkingId);
       const filter = {
             ownerId: mongoose.Types.ObjectId(ownerId),
             _id: mongoose.Types.ObjectId(parkingId),
@@ -72,7 +72,6 @@ addComingVehicle = async (
       try {
             // lấy giá trị mảng isComing cũ + info xe mới
             let listIsComing = response[0].isComing;
-
             let isComing = {
                   userId: userId,
                   vehicleId: vehicleId,
@@ -82,25 +81,219 @@ addComingVehicle = async (
             listIsComing = [...listIsComing, isComing];
 
             // thêm vào model
+
             await MonitorParking.findOneAndUpdate(
                   { parkingId: mongoose.Types.ObjectId(parkingId) },
                   { isComing: listIsComing },
                   (err, data) => {
                         if (err) {
                               result = { message: err, status: false };
+                        } else {
+                              result = {
+                                    message:
+                                          "Add new vehicle to monitor parking successfully",
+                                    status: true,
+                              };
                         }
-                        result = {
-                              message:
-                                    "Add new vehicle to monitor parking successfully",
-                              status: true,
-                        };
                   }
             );
+
+            let bookingFilter = {
+                  vehicleId: mongoose.Types.ObjectId(vehicleId),
+                  userId: mongoose.Types.ObjectId(userId),
+            };
+            let booking = await BookingHistory.findOneAndUpdate(bookingFilter, {
+                  parkingBookingId: parkingId,
+            });
+            if (booking.length === 0) {
+                  result = {
+                        message: "Add booking fail",
+                        status: false,
+                  };
+            }
             return result;
       } catch (error) {
             // console.log('sdfsdf');
             return (result = { error, status: false });
       }
+};
+
+showBookingInfo = async (userId) => {
+      let result;
+      let parkingId = "";
+      const userFilter = {
+            userId: mongoose.Types.ObjectId(userId),
+      };
+      let response = await BookingHistory.find(userFilter);
+      if (response.length === 0) {
+            return (result = {
+                  message: "User does not have booking history",
+                  status: false,
+            });
+      }
+
+      for (let booking of response) {
+            if (!booking.parkingBookingId) {
+                  continue;
+            }
+            parkingId = booking.parkingBookingId;
+      }
+      if (parkingId === "") {
+            return (result = {
+                  message: "User does not have booking",
+                  status: false,
+            });
+      }
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter).populate("parkingId");
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let data;
+      for (const vehicle of res[0].isComing) {
+            if (vehicle.userId === userId) {
+                  data = {
+                        ownerId: res[0].ownerId,
+                        userId: vehicle.userId,
+                        vehicleId: vehicle.vehicleId,
+                        parkingId: res[0].parkingId._id,
+                        parkingName: res[0].parkingId.parkingName,
+                        parkingAddress: res[0].parkingId.parkingAddress,
+                        coordinate: res[0].parkingId.coordinate,
+                        comingTime: vehicle.comingTime,
+                  };
+                  return (result = { data: data, status: true });
+            }
+      }
+
+      return (result = { message: "No booking has found", status: false });
+};
+
+showParkingInfo = async (userId) => {
+      let result;
+      let parkingId = "";
+      const userFilter = {
+            userId: mongoose.Types.ObjectId(userId),
+      };
+      let response = await BookingHistory.find(userFilter);
+      if (response.length === 0) {
+            return (result = {
+                  message: "User does not have booking history",
+                  status: false,
+            });
+      }
+
+      for (let booking of response) {
+            if (!booking.parkingId) {
+                  continue;
+            }
+            parkingId = booking.parkingId;
+      }
+      if (parkingId === "") {
+            return (result = {
+                  message: "User does not have booking",
+                  status: false,
+            });
+      }
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter).populate("parkingId");
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let data;
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.userId === userId && vehicle.isOut === false) {
+                  data = {
+                        ownerId: res[0].ownerId,
+                        userId: vehicle.userId,
+                        vehicleId: vehicle.vehicleId,
+                        parkingId: res[0].parkingId._id,
+                        parkingName: res[0].parkingId.parkingName,
+                        parkingAddress: res[0].parkingId.parkingAddress,
+                        coordinate: res[0].parkingId.coordinate,
+                        comingTime: vehicle.comingTime,
+                  };
+                  return (result = { data: data, status: true });
+            }
+      }
+
+      return (result = { message: "No parking has found", status: false });
+};
+
+showParkingHistoryInfo = async (userId) => {
+      let result;
+      let parkingId = "";
+      const userFilter = {
+            userId: mongoose.Types.ObjectId(userId),
+      };
+      let response = await BookingHistory.find(userFilter);
+      if (response.length === 0) {
+            return (result = {
+                  message: "User does not have booking history",
+                  status: false,
+            });
+      }
+
+      for (let booking of response) {
+            if (!booking.parkingId) {
+                  continue;
+            }
+            parkingId = booking.parkingId;
+      }
+      if (parkingId === "") {
+            return (result = {
+                  message: "User does not have parking history",
+                  status: false,
+            });
+      }
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter).populate("parkingId");
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let data = [];
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.userId === userId && vehicle.isOut === true) {
+                  data.push({
+                        ownerId: res[0].ownerId,
+                        userId: vehicle.userId,
+                        vehicleId: vehicle.vehicleId,
+                        parkingId: res[0].parkingId._id,
+                        parkingName: res[0].parkingId.parkingName,
+                        parkingAddress: res[0].parkingId.parkingAddress,
+                        coordinate: res[0].parkingId.coordinate,
+                        comingTime: vehicle.comingTime,
+                        outTime: vehicle.outTime,
+                        price: vehicle.price,
+                  });
+            }
+      }
+      if (data.length !== 0) {
+            return (result = { data: data, status: true });
+      }
+
+      return (result = {
+            message: "No parking history has found",
+            status: false,
+      });
 };
 
 deleteComingVehicle = async (parkingId, userId, vehicleId) => {
@@ -156,14 +349,27 @@ deleteComingVehicle = async (parkingId, userId, vehicleId) => {
                   (err, data) => {
                         if (err) {
                               result = { message: err, status: false };
-                        }
-                        result = {
-                              message:
-                                    "Delete vehicle in monitor parking successfully",
-                              status: true,
-                        };
+                        } else
+                              result = {
+                                    message:
+                                          "Delete vehicle in monitor parking successfully",
+                                    status: true,
+                              };
                   }
             );
+            let bookingFilter = {
+                  vehicleId: mongoose.Types.ObjectId(vehicleId),
+                  userId: mongoose.Types.ObjectId(userId),
+            };
+            let booking = await BookingHistory.findOneAndUpdate(bookingFilter, {
+                  $unset: { parkingBookingId: 1 },
+            });
+            if (booking.length === 0) {
+                  result = {
+                        message: "Delete booking fail",
+                        status: false,
+                  };
+            }
             return result;
       } catch (error) {
             // console.log('sdfsdf');
@@ -186,18 +392,29 @@ showListComingVehicle = async (parkingId) => {
       }
       let data = [];
       for (const vehicle of res[0].isComing) {
-            const filter = {
+            const filterVehicle = {
                   _id: mongoose.Types.ObjectId(vehicle.vehicleId),
                   ownerId: mongoose.Types.ObjectId(vehicle.userId),
             };
-            let rel = await Vehicle.find(filter);
+            let rel = await Vehicle.find(filterVehicle);
             if (rel.length === 0) {
                   return (result = {
                         message: `Vehicle does not exist: ${vehicle.vehicleId}`,
                         status: false,
                   });
             }
+            const filterUser = {
+                  _id: mongoose.Types.ObjectId(vehicle.userId),
+            };
+            let userInfo = await User.find(filterUser);
+            if (userInfo.length === 0) {
+                  return (result = {
+                        message: `User does not exist: ${vehicle.userId}`,
+                        status: false,
+                  });
+            }
             let resu = {
+                  userInfo: userInfo[0],
                   vehicleInfo: rel[0],
                   comingTime: vehicle.comingTime,
                   status: vehicle.status,
@@ -264,13 +481,27 @@ addComeVehicle = async (ownerId, parkingId, userId, vehicleId, comingTime) => {
                   (err, data) => {
                         if (err) {
                               result = { message: err, status: false };
-                        }
-                        result = {
-                              message: "Add new vehicle parking successfully",
-                              status: true,
-                        };
+                        } else
+                              result = {
+                                    message:
+                                          "Add new vehicle parking successfully",
+                                    status: true,
+                              };
                   }
             );
+            let bookingFilter = {
+                  vehicleId: mongoose.Types.ObjectId(vehicleId),
+                  userId: mongoose.Types.ObjectId(userId),
+            };
+            let booking = await BookingHistory.findOneAndUpdate(bookingFilter, {
+                  parkingId: parkingId,
+            });
+            if (booking.length === 0) {
+                  result = {
+                        message: "Add parking info fail",
+                        status: false,
+                  };
+            }
             return result;
       } catch (error) {
             // console.log('sdfsdf');
@@ -294,18 +525,29 @@ showListVehicleInParking = async (parkingId) => {
       let data = [];
       for (const vehicle of res[0].hasCome) {
             if (vehicle.isOut === false) {
-                  const filter = {
+                  const filterVehicle = {
                         _id: mongoose.Types.ObjectId(vehicle.vehicleId),
                         ownerId: mongoose.Types.ObjectId(vehicle.userId),
                   };
-                  let rel = await Vehicle.find(filter);
+                  let rel = await Vehicle.find(filterVehicle);
                   if (rel.length === 0) {
                         return (result = {
                               message: `Vehicle does not exist: ${vehicle.vehicleId}`,
                               status: false,
                         });
                   }
+                  const filterUser = {
+                        _id: mongoose.Types.ObjectId(vehicle.userId),
+                  };
+                  let userInfo = await User.find(filterUser);
+                  if (userInfo.length === 0) {
+                        return (result = {
+                              message: `User does not exist: ${vehicle.userId}`,
+                              status: false,
+                        });
+                  }
                   let resu = {
+                        userInfo: userInfo[0],
                         vehicleInfo: rel[0],
                         comingTime: vehicle.comingTime,
                   };
@@ -388,13 +630,38 @@ addOutVehicle = async (
                   (err, data) => {
                         if (err) {
                               result = { message: err, status: false };
-                        }
-                        result = {
-                              message: "An vehicle has come out parking",
-                              status: true,
-                        };
+                        } else
+                              result = {
+                                    message: "An vehicle has come out parking",
+                                    status: true,
+                              };
                   }
             );
+            let bookingFilter = {
+                  vehicleId: mongoose.Types.ObjectId(vehicleId),
+                  userId: mongoose.Types.ObjectId(userId),
+            };
+            let parkingHistory = await BookingHistory.find(bookingFilter);
+            if (!parkingHistory) {
+                  result = {
+                        message: "Vehicle not has parking history",
+                        status: false,
+                  };
+            } else {
+                  console.log(parkingHistory);
+                  let history = parkingHistory[0].parkingHistory;
+                  history.push({ parkingId: parkingId });
+                  let booking = await BookingHistory.findOneAndUpdate(
+                        bookingFilter,
+                        { $unset: { parkingId: 1 }, parkingHistory: history }
+                  );
+                  if (booking.length === 0) {
+                        result = {
+                              message: "Delete booking fail",
+                              status: false,
+                        };
+                  }
+            }
             return result;
       } catch (error) {
             // console.log('sdfsdf');
@@ -402,13 +669,101 @@ addOutVehicle = async (
       }
 };
 
+getRevenueOfParkingByDate = async (date, parkingId) => {
+      let result;
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter);
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let count = 0;
+      let revenue = 0;
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.isOut === true) {
+                  let outTime = vehicle.outTime.split(" ");
+                  if (outTime[0] === date) {
+                        count++;
+                        revenue += vehicle.price;
+                  }
+            }
+      }
+      let data = {
+            vehicleNumber: count,
+            revenue: revenue,
+      };
+      result = { data: data, status: true };
+      return result;
+};
+
+getRevenueOfParkingByMonth = async (month, year, parkingId) => {
+      let result;
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter);
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let revenue = [0, 0, 0, 0, 0, 0];
+      let vehicleNumber = [0, 0, 0, 0, 0, 0];
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.isOut === true) {
+                  let outTime = vehicle.outTime.split(" ");
+                  let date = outTime[0].split("/");
+                  if (date[1] === month && date[2] === year) {
+                        let day = parseInt(date[0]);
+                        if (day <= 5) {
+                              vehicleNumber[0]++;
+                              revenue[0] += vehicle.price;
+                        } else if (day <= 10) {
+                              vehicleNumber[1]++;
+                              revenue[1] += vehicle.price;
+                        } else if (day <= 15) {
+                              vehicleNumber[2]++;
+                              revenue[2] += vehicle.price;
+                        } else if (day <= 20) {
+                              vehicleNumber[3]++;
+                              revenue[3] += vehicle.price;
+                        } else if (day <= 25) {
+                              vehicleNumber[4]++;
+                              revenue[4] += vehicle.price;
+                        } else {
+                              vehicleNumber[5]++;
+                              revenue[5] += vehicle.price;
+                        }
+                  }
+            }
+      }
+      let data = {
+            revenue: revenue,
+            vehicleNumber: vehicleNumber,
+      };
+      result = { data: data, status: true };
+      return result;
+};
+
 const monitorParkingService = {
       createNewMonitor,
       addComingVehicle,
+      showBookingInfo,
+      showParkingInfo,
+      showParkingHistoryInfo,
       showListComingVehicle,
       deleteComingVehicle,
       addComeVehicle,
       showListVehicleInParking,
       addOutVehicle,
+      getRevenueOfParkingByDate,
+      getRevenueOfParkingByMonth,
 };
 module.exports = monitorParkingService;

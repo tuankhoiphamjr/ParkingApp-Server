@@ -128,6 +128,15 @@ getParkingByOwnerIdAndParkingId = async (ownerId, parkingId) => {
   return { status: true, result: result };
 };
 
+// Get parking has field status equal to false info
+getCensorshipParking = async () => {
+  let result = await Parking.find({ isVerified: false});
+  if (!result) {
+    return { status: false, message: "Something went wrong" };
+  }
+  return { status: true, result: result };
+};
+
 // Delete a parking by owner
 deleteParkingByOwner = async (ownerId, parkingId) => {
   let result;
@@ -202,6 +211,7 @@ const parkingServices = {
   updateParkingCurrentSlot,
   getAllVerifiedParkingInfo,
   getParkingsByOwnerId,
+  getCensorshipParking,
   deleteParkingByOwner,
   verifyParking,
   changeParkingOpenStatus

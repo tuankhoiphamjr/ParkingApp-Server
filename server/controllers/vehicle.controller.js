@@ -25,6 +25,7 @@ exports.addVehicleController = async (req, res) => {
       );
 
       if (!status) {
+            console.log(result);
             res.status(400).json({
                   message: "Something went wrong in vehicle controller",
             });

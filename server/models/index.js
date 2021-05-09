@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
 const db = {};
@@ -14,6 +14,7 @@ db.feedback = require("./feedback.model");
 db.vehicle = require("./vehicle.model");
 db.notifyToken = require("./notifyToken.model");
 db.monitorParking = require("./monitorParking.model");
+db.bookingHistory = require("./bookingHistory.model");
 
 db.ROLES = ["user", "admin", "moderator"];
 

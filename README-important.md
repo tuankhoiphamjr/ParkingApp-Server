@@ -135,7 +135,7 @@
 
 
 
-    GET:     api/parkings/admin/verify/:parkingId        (dùng cho admin)
+    GET:     api/adminParking/verify/:parkingId        (dùng cho admin)
 
             - SUCCESS:   {
                             "status": true,
@@ -220,15 +220,16 @@
 
     POST: api/monitor/     (thêm document monitor sau khi bãi xe được duyệt)
             {
+                "ownerId": "165d6caf46a7880a",
                 "parkingId": "165d6caf46a7880a"
             }
 
             - SUCCESS: return {status: true, result}
             - FAILED:  return { status: false, message: "Add monitor fail" }
 
-    POST: api/monitor/addComingVehicle/:parkingId     (Sau khi người dùng nhấn đặt chỗ thì gọi api này )
+    POST: api/monitor/addComingVehicle/:parkingId     (Sau khi người dùng nhấn đặt chỗ thì gọi api này, gọi api này ở app user )
             {
-                "userId": "165d6caf46a7880a",
+                "ownerId": "165d6caf46a7880a",(id của chủ bãi)
                 "vehicleId" : "1231232",
                 "comingTime" : "Bắt người dùng nhập ngày giờ",
                 "status" : "Xe đẹp cẩn thận - cái này do người dùng nhập"
@@ -256,7 +257,7 @@
                  }
             - FAILED:  return { status: false, message: message báo lỗi bên server }
 
-     POST: api/monitor/addNewComingVehicleToMonitor/:parkingId     (xe sau khi đặt chỗ thành công, xe đó tới bãi và vào bãi thì gọi api này cới api bên dưới)
+     POST: api/monitor/addNewComingVehicleToMonitor/:parkingId     (xe sau khi đặt chỗ thành công, xe đó tới bãi và vào bãi thì gọi api này với api bên dưới)
             {
                 "userId": "165d6caf46a7880a",
                 "vehicleId" : "1231232",
@@ -305,4 +306,116 @@
 
             - SUCCESS: return {status: true, message: "An vehicle has come out parking"}
             - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+    <!-- Dành cho user -->
+    GET: api/monitor/getBookingInfo    (Xem thông tin bãi xe mà user đang đặt)
+
+            - SUCCESS:
+                return {
+                    "data": {
+                        "ownerId": "608e566af0bfbb0015d99b93",
+                        "userId": "608e8a2294039929a4e6a77c",
+                        "vehicleId": "6093b537c293ad22149650f1",
+                        "parkingId": "608e56bbf0bfbb0015d99b94",
+                        "parkingName": "Bãi xe Dương Quảng Hàm",
+                        "parkingAddress": "495 Dương Quảng Hàm, phường 6, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam",
+                        "coordinate": {
+                            "latitude": 10.8382164,
+                            "longitude": 106.6825801
+                        },
+                        "comingTime": "12:30"
+                    },
+                    "status": true
+                }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+    GET: api/monitor/getParkingInfo    (Xem thông tin bãi xe mà user đang đỗ)
+
+            - SUCCESS:
+                return {
+                    "data": {
+                        "ownerId": "608e566af0bfbb0015d99b93",
+                        "userId": "608e8a2294039929a4e6a77c",
+                        "vehicleId": "6093b537c293ad22149650f1",
+                        "parkingId": "608e56bbf0bfbb0015d99b94",
+                        "parkingName": "Bãi xe Dương Quảng Hàm",
+                        "parkingAddress": "495 Dương Quảng Hàm, phường 6, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam",
+                        "coordinate": {
+                            "latitude": 10.8382164,
+                            "longitude": 106.6825801
+                        },
+                        "comingTime": "12:30"
+                    },
+                    "status": true
+                }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+    GET: api/monitor/getParkingHistoryInfo    (Xem thông tin các bãi xe mà user đã từng đỗ, trả về mảng data gồm thông tin các bãi xe đã đỗ)
+
+            - SUCCESS:
+                return {
+                    "data": [
+                        {
+                            "ownerId": "608e566af0bfbb0015d99b93",
+                            "userId": "608e8a2294039929a4e6a77c",
+                            "vehicleId": "6093b537c293ad22149650f1",
+                            "parkingId": "608e56bbf0bfbb0015d99b94",
+                            "parkingName": "Bãi xe Dương Quảng Hàm",
+                            "parkingAddress": "495 Dương Quảng Hàm, phường 6, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam",
+                            "coordinate": {
+                                "latitude": 10.8382164,
+                                "longitude": 106.6825801
+                            },
+                            "comingTime": "12:30",
+                            "outTime": "15:30",
+                            "price": 10000
+                        },{nếu đã đỗ ở nhiều bãi thì nhiều object hơn}
+                    ],
+                    "status": true
+                }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+     <!-- Dành cho owner -->
+        POST: api/monitor/getRevenueOfParkingByDate/:parkingId    (Trả về số xe đã đỗ trong bãi và doanh thu trong ngày được chọn)
+            {
+                "date":"07/05/2021" (lưu ý chuỗi ngày tháng năm phải lưu đúng định dạng ngày/tháng/năm giống mẫu mới ra- chơi 07-05-2021 hay 07.05.2021 là nó ko ra ráng chịu)
+            }
+            - SUCCESS:
+                return {
+                    "data": {
+                        "vehicleNumber": 0,
+                        "revenue": 0
+                    },
+                    "status": true
+                }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+        POST: api/monitor/getRevenueOfParkingByMonth/:parkingId    (Trả về số xe đã đỗ trong bãi và doanh thu trong tháng được chọn, đã chia theo từng khoảng như trên trello)
+            {
+                "date":"05/2021" (lưu ý chuỗi này nhập là tháng năm và phải lưu đúng định dạng tháng/năm giống mẫu mới ra - chú ý giống như trên)
+            }
+            - SUCCESS:
+                return {
+                        "data": {
+                            "revenue": [
+                                0,
+                                10000,
+                                0,
+                                0,
+                                0,
+                                0
+                            ],
+                            "vehicleNumber": [
+                                0,
+                                1,
+                                0,
+                                0,
+                                0,
+                                0
+                            ]
+                        },
+                        "status": true
+                    }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
 
