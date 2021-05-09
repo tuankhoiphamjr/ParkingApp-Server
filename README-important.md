@@ -100,6 +100,8 @@
 
         api/parkings/all/getinfo/:ownerId  (Get parking by ownerID)
             - SUCCESS: return {status: true, result},
+        
+        api/parkings/info/user/:parkingId (lấy thông tin cho user)
 
 
     POST:    api/parking/:parkingId/update_1     (cần header có token và thay :parkingId bằng id của bãi đỗ xe)
