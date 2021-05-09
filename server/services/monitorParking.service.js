@@ -714,36 +714,8 @@ getRevenueOfParkingByMonth = async (month, year, parkingId) => {
                   status: false,
             });
       }
-      let data = [
-            {
-                  vehicleNumber: 0,
-                  revenue: 0,
-            },
-            {
-                  vehicleNumber: 0,
-                  revenue: 0,
-            },
-            {
-                  vehicleNumber: 0,
-                  revenue: 0,
-            },
-            {
-                  vehicleNumber: 0,
-                  revenue: 0,
-            },
-            {
-                  vehicleNumber: 0,
-                  revenue: 0,
-            },
-            {
-                  vehicleNumber: 0,
-                  revenue: 0,
-            },
-            {
-                  vehicleNumber: 0,
-                  revenue: 0,
-            },
-      ];
+      let revenue = [0, 0, 0, 0, 0, 0];
+      let vehicleNumber = [0, 0, 0, 0, 0, 0];
       for (const vehicle of res[0].hasCome) {
             if (vehicle.isOut === true) {
                   let outTime = vehicle.outTime.split(" ");
@@ -751,27 +723,31 @@ getRevenueOfParkingByMonth = async (month, year, parkingId) => {
                   if (date[1] === month && date[2] === year) {
                         let day = parseInt(date[0]);
                         if (day <= 5) {
-                              data[0].vehicleNumber++;
-                              data[0].revenue += vehicle.price;
+                              vehicleNumber[0]++;
+                              revenue[0] += vehicle.price;
                         } else if (day <= 10) {
-                              data[1].vehicleNumber++;
-                              data[1].revenue += vehicle.price;
+                              vehicleNumber[1]++;
+                              revenue[1] += vehicle.price;
                         } else if (day <= 15) {
-                              data[2].vehicleNumber++;
-                              data[2].revenue += vehicle.price;
+                              vehicleNumber[2]++;
+                              revenue[2] += vehicle.price;
                         } else if (day <= 20) {
-                              data[3].vehicleNumber++;
-                              data[3].revenue += vehicle.price;
+                              vehicleNumber[3]++;
+                              revenue[3] += vehicle.price;
                         } else if (day <= 25) {
-                              data[4].vehicleNumber++;
-                              data[4].revenue += vehicle.price;
+                              vehicleNumber[4]++;
+                              revenue[4] += vehicle.price;
                         } else {
-                              data[5].vehicleNumber++;
-                              data[5].revenue += vehicle.price;
+                              vehicleNumber[5]++;
+                              revenue[5] += vehicle.price;
                         }
                   }
             }
       }
+      let data = {
+            revenue: revenue,
+            vehicleNumber: vehicleNumber,
+      };
       result = { data: data, status: true };
       return result;
 };
