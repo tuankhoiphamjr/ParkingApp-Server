@@ -39,6 +39,7 @@ addComingVehicle = async (
             let filter = {
                   ownerId: mongoose.Types.ObjectId(userId),
                   _id: mongoose.Types.ObjectId(vehicleId),
+                  isActive: true,
             };
             let res = await Vehicle.find(filter);
             if (res.length === 0) {
@@ -303,6 +304,7 @@ deleteComingVehicle = async (parkingId, userId, vehicleId) => {
             let filter = {
                   ownerId: mongoose.Types.ObjectId(userId),
                   _id: mongoose.Types.ObjectId(vehicleId),
+                  isActive: true,
             };
             let res = await Vehicle.find(filter);
             if (res.length === 0) {
@@ -395,6 +397,7 @@ showListComingVehicle = async (parkingId) => {
             const filterVehicle = {
                   _id: mongoose.Types.ObjectId(vehicle.vehicleId),
                   ownerId: mongoose.Types.ObjectId(vehicle.userId),
+                  isActive: true,
             };
             let rel = await Vehicle.find(filterVehicle);
             if (rel.length === 0) {
@@ -433,6 +436,7 @@ addComeVehicle = async (ownerId, parkingId, userId, vehicleId, comingTime) => {
             let filter = {
                   ownerId: mongoose.Types.ObjectId(userId),
                   _id: mongoose.Types.ObjectId(vehicleId),
+                  isActive: true,
             };
             let res = await Vehicle.find(filter);
             if (res.length === 0) {
@@ -528,6 +532,7 @@ showListVehicleInParking = async (parkingId) => {
                   const filterVehicle = {
                         _id: mongoose.Types.ObjectId(vehicle.vehicleId),
                         ownerId: mongoose.Types.ObjectId(vehicle.userId),
+                        isActive: true,
                   };
                   let rel = await Vehicle.find(filterVehicle);
                   if (rel.length === 0) {
@@ -573,6 +578,7 @@ addOutVehicle = async (
             let filter = {
                   ownerId: mongoose.Types.ObjectId(userId),
                   _id: mongoose.Types.ObjectId(vehicleId),
+                  isActive: true,
             };
             let res = await Vehicle.find(filter);
             if (res.length === 0) {

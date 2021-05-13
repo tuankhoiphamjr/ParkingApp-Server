@@ -56,9 +56,15 @@ addVehicle = async (ownerId, type, licensePlates, color, modelName) => {
       return { result, status: true };
 };
 
-updateVehicleInfo = async (ownerId, type, licensePlates, color, modelName) => {
+updateVehicleInfo = async (
+      vehicleId,
+      type,
+      licensePlates,
+      color,
+      modelName
+) => {
       let result = await Vehicle.findOneAndUpdate(
-            { ownerId: mongoose.Types.ObjectId(ownerId) },
+            { _id: mongoose.Types.ObjectId(vehicleId) },
             {
                   type: type,
                   licensePlates: licensePlates,
@@ -72,9 +78,23 @@ updateVehicleInfo = async (ownerId, type, licensePlates, color, modelName) => {
       return { message: "success", status: true };
 };
 
+deleteVehicle = async (vehicleId) => {
+      let result = await Vehicle.findOneAndUpdate(
+            { _id: mongoose.Types.ObjectId(vehicleId) },
+            {
+                  isActive: false,
+            }
+      );
+      if (!result) {
+            return { message: "Vehicle not found", status: false };
+      }
+      return { message: "success", status: true };
+};
+
 const vehicleService = {
       getVehicleInfoByOwnerId,
       addVehicle,
       updateVehicleInfo,
+      deleteVehicle,
 };
 module.exports = vehicleService;

@@ -21,8 +21,11 @@ const VehicleSchema = new mongoose.Schema({
       modelName: {
             type: String,
       },
-      images:{
+      images: {
             type: Array,
-      }
+      },
+      isActive: {
+            type: Boolean,
+      },
 });
 module.exports = mongoose.model("Vehicle", VehicleSchema);
