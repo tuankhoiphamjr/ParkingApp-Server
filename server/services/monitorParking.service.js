@@ -5,6 +5,7 @@ const Parking = db.parking;
 const Vehicle = db.vehicle;
 const User = db.user;
 const BookingHistory = db.bookingHistory;
+const dateFormat = require('../utils/dateFormat');
 
 createNewMonitor = async (ownerId, parkingId) => {
       const filter = {
@@ -758,6 +759,125 @@ getRevenueOfParkingByMonth = async (month, year, parkingId) => {
       return result;
 };
 
+
+getRevenueAndVehicleNumbersOfParkingByMonthForStatistical = async (
+      date,
+      parkingId
+) => {
+      let result;
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter);
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let checkDate = date.split("/");
+      let checkDateInJSFormat = new Date(new Date(checkDate[1], checkDate[0], 0));
+      let now = new Date(Date.now());
+
+      let countArray =
+            dateFormat.monthYearFormat(now) ===
+                  dateFormat.monthYearFormat(checkDateInJSFormat)
+                  ? Array(now.getDate()).fill(0)
+                  : Array(checkDateInJSFormat.getDate()).fill(0);
+      let revenueArray =
+            dateFormat.monthYearFormat(now) ===
+                  dateFormat.monthYearFormat(checkDateInJSFormat)
+                  ? Array(now.getDate()).fill(0)
+                  : Array(checkDateInJSFormat.getDate()).fill(0);
+
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.isOut === false) {
+                  continue;
+            }
+            let outTime = vehicle.outTime.split(" ");
+            let outDate = outTime[0].split("/");
+            if (
+                  parseInt(outDate[1]) === checkDateInJSFormat.getMonth() + 1 &&
+                  parseInt(outDate[2]) === checkDateInJSFormat.getFullYear()
+            ) {
+                  revenueArray[parseInt(outDate[0]) - 1] += vehicle.price;
+                  countArray[parseInt(outDate[0]) - 1] += 1;
+            }
+      }
+
+      let data = {
+            vehicleNumber: countArray,
+            revenue: revenueArray,
+      };
+      result = { data: data, status: true };
+      return result;
+};;
+
+
+getRevenueVehicleNumberOfParkingByYear = async (year, parkingId) => {
+      let result;
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter);
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+
+      let now = new Date(Date.now());
+      let index = now.getFullYear() === parseInt(year)
+            ? now.getMonth() + 1
+            : 12
+
+      let countArray = []
+      let revenueArray = [];
+      for (let i = 0; i < index; i++) {
+            countArray.push([0, 0, 0, 0, 0, 0])
+            revenueArray.push([0, 0, 0, 0, 0, 0])
+      }
+
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.isOut === true) {
+                  if (now.getFullYear() === parseInt(year)) {
+                        let outTime = vehicle.outTime.split(" ");
+                        let date = outTime[0].split("/");
+                        let day = parseInt(date[0]);
+                        let month = parseInt(date[1]);
+                        if (day <= 5) {
+                              countArray[month-1][0]++;
+                              revenueArray[month-1][0] += vehicle.price;
+                        } else if (day <= 10) {
+                              countArray[month-1][1]++;
+                              revenueArray[month-1][1] += vehicle.price;
+                        } else if (day <= 15) {
+                              countArray[month-1][2]++;
+                              revenueArray[month-1][2] += vehicle.price;
+                        } else if (day <= 20) {
+                              countArray[month-1][3]++;
+                              revenueArray[month-1][3] += vehicle.price;
+                        } else if (day <= 25) {
+                              countArray[month-1][4]++;
+                              revenueArray[month-1][4] += vehicle.price;
+                        } else {
+                              countArray[month-1][5]++;
+                              revenueArray[month-1][5] += vehicle.price;
+                        }
+                  }
+            }
+      }
+      let data = {
+            revenue: revenueArray,
+            vehicleNumber: countArray,
+      };
+      result = { data: data, status: true };
+      return result;
+};
+
 const monitorParkingService = {
       createNewMonitor,
       addComingVehicle,
@@ -771,5 +891,7 @@ const monitorParkingService = {
       addOutVehicle,
       getRevenueOfParkingByDate,
       getRevenueOfParkingByMonth,
+      getRevenueAndVehicleNumbersOfParkingByMonthForStatistical,
+      getRevenueVehicleNumberOfParkingByYear,
 };
 module.exports = monitorParkingService;
