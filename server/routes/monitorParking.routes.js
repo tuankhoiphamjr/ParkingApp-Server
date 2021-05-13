@@ -28,4 +28,9 @@ router.post("/getRevenueOfParkingByDate/:parkingId", controller.getRevenueOfPark
 
 router.post("/getRevenueOfParkingByMonth/:parkingId", controller.getRevenueOfParkingByMonthController);
 
+router.post("/getRevenueAndVehicleNumberOfParkingByMonth/:parkingId", controller.getRevenueAndVehicleNumbersOfParkingByMonthForStatisticalController);
+
+router.post("/getRevenueAndVehicleNumberOfParkingByYear/:parkingId", controller.getRevenueVehicleNumberOfParkingByYearController);
+
+
 module.exports = router;

@@ -175,3 +175,32 @@ exports.getRevenueOfParkingByMonthController = async (req, res) => {
       }
       res.status(200).json(result);
 };
+
+
+exports.getRevenueAndVehicleNumbersOfParkingByMonthForStatisticalController = async (req, res) => {
+      let parkingId = req.params.parkingId;
+      let date = req.body.date;
+      let result = await monitorParkingService.getRevenueAndVehicleNumbersOfParkingByMonthForStatistical(
+            date,
+            parkingId
+      );
+      if (!result.status) {
+            res.status(400).send({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};
+
+exports.getRevenueVehicleNumberOfParkingByYearController = async (req, res) => {
+      let parkingId = req.params.parkingId;
+      let year = req.body.date;
+      let result = await monitorParkingService.getRevenueVehicleNumberOfParkingByYear(
+            year,
+            parkingId
+      );
+      if (!result.status) {
+            res.status(400).send({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};
