@@ -27,14 +27,23 @@ getVehicleInfoByOwnerId = async (ownerId) => {
       return { result, status: true };
 };
 
-addVehicle = async (ownerId, type, licensePlates, color, modelName, images) => {
+addVehicle = async (ownerId, type, licensePlates, color, modelName) => {
+      let validate = await validateLicensePlates(licensePlates);
+      if (validate === false) {
+            return {
+                  message: "License Plates has been duplicated!",
+                  status: false,
+            };
+      }
+      let isActive = true;
       let result = await Vehicle.create({
             ownerId,
             type,
             licensePlates,
             color,
             modelName,
-            images
+            images,
+            isActive,
       });
       let vehicleId = result._id;
       let userId = ownerId;
@@ -73,6 +82,18 @@ updateVehicleInfo = async (
 };
 
 deleteVehicle = async (vehicleId) => {
+      let res = await BookingHistory.find({
+            vehicleId: mongoose.Types.ObjectId(vehicleId),
+      });
+      if (res.length === 0) {
+            return {
+                  message: "Vehicle not found in booking history",
+                  status: false,
+            };
+      }
+      if (res[0].parkingBookingId || res[0].parkingId) {
+            return { message: "Can not delete this vehicle", status: false };
+      }
       let result = await Vehicle.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(vehicleId) },
             {

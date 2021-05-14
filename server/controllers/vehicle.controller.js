@@ -59,13 +59,11 @@ exports.updateVehicleInfo = async (req, res) => {
 
 exports.deleteVehicleInfo = async (req, res) => {
       let { vehicleId } = req.body;
-      let result = await vehicleService.updateVehicleInfo(vehicleId);
+      let result = await vehicleService.deleteVehicle(vehicleId);
       if (!result.status) {
             return res.status(400).send({
-                  message: "Delete vehicle failed.",
+                  message: result.message,
             });
       }
-      return res
-            .status(200)
-            .send({ message: "Delete vehicle successfully." });
+      return res.status(200).send({ message: "Delete vehicle successfully." });
 };
