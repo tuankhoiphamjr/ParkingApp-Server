@@ -91,8 +91,7 @@ addComingVehicle = async (
                               result = { message: err, status: false };
                         } else {
                               result = {
-                                    message:
-                                          "Add new vehicle to monitor parking successfully",
+                                    message: "Add new vehicle to monitor parking successfully",
                                     status: true,
                               };
                         }
@@ -353,8 +352,7 @@ deleteComingVehicle = async (parkingId, userId, vehicleId) => {
                               result = { message: err, status: false };
                         } else
                               result = {
-                                    message:
-                                          "Delete vehicle in monitor parking successfully",
+                                    message: "Delete vehicle in monitor parking successfully",
                                     status: true,
                               };
                   }
@@ -393,6 +391,7 @@ showListComingVehicle = async (parkingId) => {
             });
       }
       let data = [];
+      let resu;
       for (const vehicle of res[0].isComing) {
             const filterVehicle = {
                   _id: mongoose.Types.ObjectId(vehicle.vehicleId),
@@ -401,28 +400,33 @@ showListComingVehicle = async (parkingId) => {
             };
             let rel = await Vehicle.find(filterVehicle);
             if (rel.length === 0) {
-                  return (result = {
-                        message: `Vehicle does not exist: ${vehicle.vehicleId}`,
-                        status: false,
-                  });
+                  resu = {
+                        vehicleInfo: `Vehicle does not exist: ${vehicle.vehicleId}`,
+                        comingTime: vehicle.comingTime,
+                        status: vehicle.status,
+                  };
+            } else {
+                  const filterUser = {
+                        _id: mongoose.Types.ObjectId(vehicle.userId),
+                  };
+                  let userInfo = await User.find(filterUser);
+                  if (userInfo.length === 0) {
+                        resu = {
+                              userInfo: `User does not exist: ${vehicle.userId}`,
+                              vehicleInfo: rel[0],
+                              comingTime: vehicle.comingTime,
+                              status: vehicle.status,
+                        };
+                  } else {
+                        resu = {
+                              userInfo: userInfo[0],
+                              vehicleInfo: rel[0],
+                              comingTime: vehicle.comingTime,
+                              status: vehicle.status,
+                        };
+                  }
+                  // console.log(rel[0]);
             }
-            const filterUser = {
-                  _id: mongoose.Types.ObjectId(vehicle.userId),
-            };
-            let userInfo = await User.find(filterUser);
-            if (userInfo.length === 0) {
-                  return (result = {
-                        message: `User does not exist: ${vehicle.userId}`,
-                        status: false,
-                  });
-            }
-            let resu = {
-                  userInfo: userInfo[0],
-                  vehicleInfo: rel[0],
-                  comingTime: vehicle.comingTime,
-                  status: vehicle.status,
-            };
-            // console.log(rel[0]);
             data.push(resu);
       }
       result = { data: data, status: true };
@@ -487,8 +491,7 @@ addComeVehicle = async (ownerId, parkingId, userId, vehicleId, comingTime) => {
                               result = { message: err, status: false };
                         } else
                               result = {
-                                    message:
-                                          "Add new vehicle parking successfully",
+                                    message: "Add new vehicle parking successfully",
                                     status: true,
                               };
                   }
@@ -527,6 +530,7 @@ showListVehicleInParking = async (parkingId) => {
             });
       }
       let data = [];
+      let resu;
       for (const vehicle of res[0].hasCome) {
             if (vehicle.isOut === false) {
                   const filterVehicle = {
@@ -536,26 +540,29 @@ showListVehicleInParking = async (parkingId) => {
                   };
                   let rel = await Vehicle.find(filterVehicle);
                   if (rel.length === 0) {
-                        return (result = {
-                              message: `Vehicle does not exist: ${vehicle.vehicleId}`,
-                              status: false,
-                        });
+                        resu = {
+                              vehicleInfo: `Vehicle does not exist: ${vehicle.vehicleId}`,
+                              comingTime: vehicle.comingTime,
+                        };
+                  } else {
+                        const filterUser = {
+                              _id: mongoose.Types.ObjectId(vehicle.userId),
+                        };
+                        let userInfo = await User.find(filterUser);
+                        if (userInfo.length === 0) {
+                              resu = {
+                                    userInfo: `User does not exist: ${vehicle.userId}`,
+                                    vehicleInfo: rel[0],
+                                    comingTime: vehicle.comingTime,
+                              };
+                        } else {
+                              resu = {
+                                    userInfo: userInfo[0],
+                                    vehicleInfo: rel[0],
+                                    comingTime: vehicle.comingTime,
+                              };
+                        }
                   }
-                  const filterUser = {
-                        _id: mongoose.Types.ObjectId(vehicle.userId),
-                  };
-                  let userInfo = await User.find(filterUser);
-                  if (userInfo.length === 0) {
-                        return (result = {
-                              message: `User does not exist: ${vehicle.userId}`,
-                              status: false,
-                        });
-                  }
-                  let resu = {
-                        userInfo: userInfo[0],
-                        vehicleInfo: rel[0],
-                        comingTime: vehicle.comingTime,
-                  };
                   data.push(resu);
             }
       }
@@ -654,7 +661,6 @@ addOutVehicle = async (
                         status: false,
                   };
             } else {
-                  console.log(parkingHistory);
                   let history = parkingHistory[0].parkingHistory;
                   history.push({ parkingId: parkingId });
                   let booking = await BookingHistory.findOneAndUpdate(
