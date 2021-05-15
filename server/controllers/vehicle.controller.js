@@ -15,13 +15,14 @@ exports.getVehicleInfoController = async (req, res) => {
 
 exports.addVehicleController = async (req, res) => {
       let ownerId = req.userId;
-      let { type, licensePlates, color, modelName } = req.body;
+      let { type, licensePlates, color, modelName, images } = req.body;
       let { result, status } = await vehicleService.addVehicle(
             ownerId,
             type,
             licensePlates,
             color,
-            modelName
+            modelName, 
+            images
       );
 
       if (!status) {
@@ -58,13 +59,11 @@ exports.updateVehicleInfo = async (req, res) => {
 
 exports.deleteVehicleInfo = async (req, res) => {
       let { vehicleId } = req.body;
-      let result = await vehicleService.updateVehicleInfo(vehicleId);
+      let result = await vehicleService.deleteVehicle(vehicleId);
       if (!result.status) {
             return res.status(400).send({
-                  message: "Delete vehicle failed.",
+                  message: result.message,
             });
       }
-      return res
-            .status(200)
-            .send({ message: "Delete vehicle successfully." });
+      return res.status(200).send({ message: "Delete vehicle successfully." });
 };
