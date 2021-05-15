@@ -27,7 +27,7 @@ getVehicleInfoByOwnerId = async (ownerId) => {
       return { result, status: true };
 };
 
-addVehicle = async (ownerId, type, licensePlates, color, modelName) => {
+addVehicle = async (ownerId, type, licensePlates, color, modelName,images) => {
       let validate = await validateLicensePlates(licensePlates);
       if (validate === false) {
             return {
@@ -43,6 +43,7 @@ addVehicle = async (ownerId, type, licensePlates, color, modelName) => {
             color,
             modelName,
             isActive,
+            images
       });
       let vehicleId = result._id;
       let userId = ownerId;
