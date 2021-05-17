@@ -5,7 +5,7 @@ const Parking = db.parking;
 const Vehicle = db.vehicle;
 const User = db.user;
 const BookingHistory = db.bookingHistory;
-const dateFormat = require('../utils/dateFormat');
+const dateFormat = require("../utils/dateFormat");
 
 createNewMonitor = async (ownerId, parkingId) => {
       const filter = {
@@ -36,6 +36,21 @@ addComingVehicle = async (
 ) => {
       let result;
       // xét xem thông tin xe có chính xác hay không
+      let res = await BookingHistory.find({
+            vehicleId: mongoose.Types.ObjectId(vehicleId),
+      });
+      if (res.length === 0) {
+            return (result = {
+                  message: "Vehicle not found in booking history",
+                  status: false,
+            });
+      }
+      if (res[0].parkingBookingId) {
+            return (result = {
+                  message: "Can not book cause you have a book before",
+                  status: false,
+            });
+      }
       try {
             let filter = {
                   ownerId: mongoose.Types.ObjectId(userId),
@@ -765,7 +780,6 @@ getRevenueOfParkingByMonth = async (month, year, parkingId) => {
       return result;
 };
 
-
 getRevenueAndVehicleNumbersOfParkingByMonthForStatistical = async (
       date,
       parkingId
@@ -783,17 +797,19 @@ getRevenueAndVehicleNumbersOfParkingByMonthForStatistical = async (
             });
       }
       let checkDate = date.split("/");
-      let checkDateInJSFormat = new Date(new Date(checkDate[1], checkDate[0], 0));
+      let checkDateInJSFormat = new Date(
+            new Date(checkDate[1], checkDate[0], 0)
+      );
       let now = new Date(Date.now());
 
       let countArray =
             dateFormat.monthYearFormat(now) ===
-                  dateFormat.monthYearFormat(checkDateInJSFormat)
+            dateFormat.monthYearFormat(checkDateInJSFormat)
                   ? Array(now.getDate()).fill(0)
                   : Array(checkDateInJSFormat.getDate()).fill(0);
       let revenueArray =
             dateFormat.monthYearFormat(now) ===
-                  dateFormat.monthYearFormat(checkDateInJSFormat)
+            dateFormat.monthYearFormat(checkDateInJSFormat)
                   ? Array(now.getDate()).fill(0)
                   : Array(checkDateInJSFormat.getDate()).fill(0);
 
@@ -818,8 +834,7 @@ getRevenueAndVehicleNumbersOfParkingByMonthForStatistical = async (
       };
       result = { data: data, status: true };
       return result;
-};;
-
+};
 
 getRevenueVehicleNumberOfParkingByYear = async (year, parkingId) => {
       let result;
@@ -836,15 +851,14 @@ getRevenueVehicleNumberOfParkingByYear = async (year, parkingId) => {
       }
 
       let now = new Date(Date.now());
-      let index = now.getFullYear() === parseInt(year)
-            ? now.getMonth() + 1
-            : 12
+      let index =
+            now.getFullYear() === parseInt(year) ? now.getMonth() + 1 : 12;
 
-      let countArray = []
+      let countArray = [];
       let revenueArray = [];
       for (let i = 0; i < index; i++) {
-            countArray.push([0, 0, 0, 0, 0, 0])
-            revenueArray.push([0, 0, 0, 0, 0, 0])
+            countArray.push([0, 0, 0, 0, 0, 0]);
+            revenueArray.push([0, 0, 0, 0, 0, 0]);
       }
 
       for (const vehicle of res[0].hasCome) {
@@ -855,23 +869,23 @@ getRevenueVehicleNumberOfParkingByYear = async (year, parkingId) => {
                         let day = parseInt(date[0]);
                         let month = parseInt(date[1]);
                         if (day <= 5) {
-                              countArray[month-1][0]++;
-                              revenueArray[month-1][0] += vehicle.price;
+                              countArray[month - 1][0]++;
+                              revenueArray[month - 1][0] += vehicle.price;
                         } else if (day <= 10) {
-                              countArray[month-1][1]++;
-                              revenueArray[month-1][1] += vehicle.price;
+                              countArray[month - 1][1]++;
+                              revenueArray[month - 1][1] += vehicle.price;
                         } else if (day <= 15) {
-                              countArray[month-1][2]++;
-                              revenueArray[month-1][2] += vehicle.price;
+                              countArray[month - 1][2]++;
+                              revenueArray[month - 1][2] += vehicle.price;
                         } else if (day <= 20) {
-                              countArray[month-1][3]++;
-                              revenueArray[month-1][3] += vehicle.price;
+                              countArray[month - 1][3]++;
+                              revenueArray[month - 1][3] += vehicle.price;
                         } else if (day <= 25) {
-                              countArray[month-1][4]++;
-                              revenueArray[month-1][4] += vehicle.price;
+                              countArray[month - 1][4]++;
+                              revenueArray[month - 1][4] += vehicle.price;
                         } else {
-                              countArray[month-1][5]++;
-                              revenueArray[month-1][5] += vehicle.price;
+                              countArray[month - 1][5]++;
+                              revenueArray[month - 1][5] += vehicle.price;
                         }
                   }
             }
