@@ -108,13 +108,13 @@ exports.addNewComingVehicleToMonitor = async (req, res) => {
             });
             return;
       }
-      
+
       let update = await parkingServices.updateParkingCurrentSlot(
             parkingId,
             false
       );
       if (!update?.status) {
-            res.status(400).send({ message: update.message });
+            res.status(400).send({ message: "Update current slot fail" });
             return;
       }
       res.status(200).json(result);
@@ -154,7 +154,7 @@ exports.addVehicleHasOutOfParking = async (req, res) => {
             true
       );
       if (!update?.status) {
-            res.status(400).send({ message: update.message });
+            res.status(400).send({ message: "Update current slot fail" });
             return;
       }
       res.status(200).json(result);

@@ -250,7 +250,6 @@ showParkingInfo = async (userId) => {
 
 showParkingHistoryInfo = async (userId) => {
       let result;
-      let parkingId = "";
       const userFilter = {
             userId: mongoose.Types.ObjectId(userId),
       };
@@ -261,45 +260,45 @@ showParkingHistoryInfo = async (userId) => {
                   status: false,
             });
       }
-
+      let parkingHistory = [];
       for (let booking of response) {
-            if (!booking.parkingId) {
-                  continue;
+            if (booking.parkingHistory.length !== 0) {
+                  parkingHistory = [...parkingHistory, booking.parkingHistory];
             }
-            parkingId = booking.parkingId;
       }
-      if (parkingId === "") {
+      if (parkingHistory[0].length === 0) {
             return (result = {
                   message: "User does not have parking history",
                   status: false,
             });
       }
-      const filter = {
-            parkingId: mongoose.Types.ObjectId(parkingId),
-      };
-      // xét xem đã có monitor trong collection hay chưa
-      let res = await MonitorParking.find(filter).populate("parkingId");
-      if (res.length === 0) {
-            return (result = {
-                  message: "Parking does not exist",
-                  status: false,
-            });
-      }
       let data = [];
-      for (const vehicle of res[0].hasCome) {
-            if (vehicle.userId === userId && vehicle.isOut === true) {
+      for (const parking of parkingHistory[0]) {
+            const filter = {
+                  parkingId: mongoose.Types.ObjectId(parking.parkingId),
+            };
+            let res = await MonitorParking.find(filter).populate("parkingId");
+            if (res.length === 0) {
                   data.push({
-                        ownerId: res[0].ownerId,
-                        userId: vehicle.userId,
-                        vehicleId: vehicle.vehicleId,
-                        parkingId: res[0].parkingId._id,
-                        parkingName: res[0].parkingId.parkingName,
-                        parkingAddress: res[0].parkingId.parkingAddress,
-                        coordinate: res[0].parkingId.coordinate,
-                        comingTime: vehicle.comingTime,
-                        outTime: vehicle.outTime,
-                        price: vehicle.price,
+                        message: "Parking not found",
                   });
+                  continue;
+            }
+            for (const vehicle of res[0].hasCome) {
+                  if (vehicle.userId === userId && vehicle.isOut === true) {
+                        data.push({
+                              ownerId: res[0].ownerId,
+                              userId: vehicle.userId,
+                              vehicleId: vehicle.vehicleId,
+                              parkingId: res[0].parkingId._id,
+                              parkingName: res[0].parkingId.parkingName,
+                              parkingAddress: res[0].parkingId.parkingAddress,
+                              coordinate: res[0].parkingId.coordinate,
+                              comingTime: vehicle.comingTime,
+                              outTime: vehicle.outTime,
+                              price: vehicle.price,
+                        });
+                  }
             }
       }
       if (data.length !== 0) {
@@ -678,7 +677,13 @@ addOutVehicle = async (
                   };
             } else {
                   let history = parkingHistory[0].parkingHistory;
-                  history.push({ parkingId: parkingId });
+                  let usedTo = false;
+                  for (let i = 0; i < history.length; i++) {
+                        if (parkingId === history[i].parkingId) usedTo = true;
+                  }
+                  if (!usedTo) {
+                        history.push({ parkingId: parkingId });
+                  }
                   let booking = await BookingHistory.findOneAndUpdate(
                         bookingFilter,
                         { $unset: { parkingId: 1 }, parkingHistory: history }

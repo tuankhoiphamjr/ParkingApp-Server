@@ -89,7 +89,7 @@ updateParkingCurrentSlot = async (parkingId, isOut) => {
       let currentSlots = isOut
             ? parkingInfo.result.currentSlots + 1
             : parkingInfo.result.currentSlots - 1;
-      let result;
+      let update;
       await Parking.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(parkingId) },
             {
@@ -97,12 +97,12 @@ updateParkingCurrentSlot = async (parkingId, isOut) => {
             },
             (err, data) => {
                   if (err) {
-                        result = { message: err, status: false };
+                        update = { message: err, status: false };
                   }
-                  result = { message: "Success", status: true };
+                  update = { message: "Success", status: true };
             }
       );
-      return result;
+      return update;
 };
 
 //Get all parking place info that is verified
