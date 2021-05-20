@@ -908,26 +908,74 @@ getPriceOfBooking = async (userId, parkingId) => {
       const parkingFilter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
       };
-      // xét xem đã có monitor trong collection hay chưa
-      let res = await MonitorParking.find(parkingFilter);
-      if (res.length === 0) {
+      const filter = {
+            _id: mongoose.Types.ObjectId(parkingId),
+      };
+      let response = await Parking.find(filter);
+      if (response.length === 0) {
             return (result = {
                   message: "Parking does not exist",
                   status: false,
             });
       }
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(parkingFilter);
+      if (res.length === 0) {
+            return (result = {
+                  message: "Monitor does not exist",
+                  status: false,
+            });
+      }
       let comingTime = "";
+      let vehicleId = "";
       for (const vehicle of res[0].hasCome) {
             if (vehicle.userId === userId || !vehicle.isOut) {
                   comingTime = vehicle.comingTime;
+                  vehicleId = vehicle.vehicleId;
             }
       }
-      if (comingTime==="") {
+      if (comingTime === "") {
             return (result = {
                   message: "User does not park here",
                   status: false,
             });
       }
+      const vehicleFilter = {
+            _id: mongoose.Types.ObjectId(vehicleId),
+      };
+      let respon = await Vehicle.find(vehicleFilter);
+      if (respon.length === 0) {
+            return (result = {
+                  message: "Vehicle does not exits",
+                  status: false,
+            });
+      }
+      let dateTime = comingTime.split(" ");
+      let date = dateTime[0].split("/");
+      let hour = dateTime[1].split(":");
+      let time = new Date(date[2], date[1] - 1, date[0], hour[0], hour[1]);
+      let now = new Date(Date.now());
+      let diff = (now.getTime() - time.getTime()) / 1000;
+      diff /= 3600;
+      diff = Math.ceil(diff);
+      let unitHour = response[0].unitHour;
+      let unitPrice = 0;
+      for (const vehicleType of response[0].priceByVehicle) {
+            if (vehicleType.key === respon[0].type) {
+                  unitPrice = vehicleType.value;
+            }
+      }
+      if (unitPrice === 0) {
+            return (result = {
+                  message: "Vehicle type wrong",
+                  status: false,
+            });
+      }
+      let price = Math.ceil(diff / unitHour) * unitPrice;
+      return (result = {
+            price: price,
+            status: true,
+      });
 };
 
 const monitorParkingService = {
@@ -945,5 +993,6 @@ const monitorParkingService = {
       getRevenueOfParkingByMonth,
       getRevenueAndVehicleNumbersOfParkingByMonthForStatistical,
       getRevenueVehicleNumberOfParkingByYear,
+      getPriceOfBooking,
 };
 module.exports = monitorParkingService;

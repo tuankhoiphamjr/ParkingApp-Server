@@ -220,3 +220,16 @@ exports.getRevenueVehicleNumberOfParkingByYearController = async (req, res) => {
       }
       res.status(200).json(result);
 };
+
+exports.getPriceOfBookingController = async (req, res) => {
+      let { userId, parkingId } = req.body;
+      let result = await monitorParkingService.getPriceOfBooking(
+            userId,
+            parkingId
+      );
+      if (!result?.status) {
+            res.status(400).send({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};

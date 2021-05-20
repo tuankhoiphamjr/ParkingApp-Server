@@ -49,5 +49,9 @@ router.post(
       "/getRevenueAndVehicleNumberOfParkingByYear/:parkingId",
       controller.getRevenueVehicleNumberOfParkingByYearController
 );
+router.post(
+      "/getPriceOfBooking",
+      controller.getPriceOfBookingController
+);
 
 module.exports = router;
