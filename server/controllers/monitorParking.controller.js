@@ -1,14 +1,15 @@
 const { user } = require("../models");
 const monitorParkingService = require("../services/monitorParking.service");
+const parkingServices = require("../services/parking.service");
 
 exports.addMonitorParking = async (req, res) => {
       let { ownerId, parkingId } = req.body;
-      let { result, status } = await monitorParkingService.createNewMonitor(
+      let result = await monitorParkingService.createNewMonitor(
             ownerId,
             parkingId
       );
-      if (!status) {
-            res.status(400).json({ message: "Add monitor fail" });
+      if (!result?.status) {
+            res.status(400).json({ message: result.message });
             return;
       }
       res.status(200).json(result);
@@ -27,8 +28,8 @@ exports.addComingVehicleToMonitor = async (req, res) => {
             status
       );
       // Bug tại đay nhưng không hiểu tại sao
-      if (!result.status) {
-            res.status(400).json({ message: "Add Coming Vehicle fail" });
+      if (!result?.status) {
+            res.status(400).json({ message: result.message });
             return;
       }
       res.status(200).json(result);
@@ -107,6 +108,15 @@ exports.addNewComingVehicleToMonitor = async (req, res) => {
             });
             return;
       }
+
+      let update = await parkingServices.updateParkingCurrentSlot(
+            parkingId,
+            false
+      );
+      if (!update?.status) {
+            res.status(400).send({ message: "Update current slot fail" });
+            return;
+      }
       res.status(200).json(result);
 };
 
@@ -135,12 +145,16 @@ exports.addVehicleHasOutOfParking = async (req, res) => {
             outTime,
             price
       );
-      if (!result) {
-            res.status(400).send({ message: "Something wrong" });
+      if (!result?.status) {
+            res.status(400).send({ message: result.message });
             return;
       }
-      if (!result.status) {
-            res.status(400).send({ message: result.message });
+      let update = await parkingServices.updateParkingCurrentSlot(
+            parkingId,
+            true
+      );
+      if (!update?.status) {
+            res.status(400).send({ message: "Update current slot fail" });
             return;
       }
       res.status(200).json(result);
@@ -176,28 +190,30 @@ exports.getRevenueOfParkingByMonthController = async (req, res) => {
       res.status(200).json(result);
 };
 
-
-exports.getRevenueAndVehicleNumbersOfParkingByMonthForStatisticalController = async (req, res) => {
-      let parkingId = req.params.parkingId;
-      let date = req.body.date;
-      let result = await monitorParkingService.getRevenueAndVehicleNumbersOfParkingByMonthForStatistical(
-            date,
-            parkingId
-      );
-      if (!result.status) {
-            res.status(400).send({ message: result.message });
-            return;
-      }
-      res.status(200).json(result);
-};
+exports.getRevenueAndVehicleNumbersOfParkingByMonthForStatisticalController =
+      async (req, res) => {
+            let parkingId = req.params.parkingId;
+            let date = req.body.date;
+            let result =
+                  await monitorParkingService.getRevenueAndVehicleNumbersOfParkingByMonthForStatistical(
+                        date,
+                        parkingId
+                  );
+            if (!result.status) {
+                  res.status(400).send({ message: result.message });
+                  return;
+            }
+            res.status(200).json(result);
+      };
 
 exports.getRevenueVehicleNumberOfParkingByYearController = async (req, res) => {
       let parkingId = req.params.parkingId;
       let year = req.body.date;
-      let result = await monitorParkingService.getRevenueVehicleNumberOfParkingByYear(
-            year,
-            parkingId
-      );
+      let result =
+            await monitorParkingService.getRevenueVehicleNumberOfParkingByYear(
+                  year,
+                  parkingId
+            );
       if (!result.status) {
             res.status(400).send({ message: result.message });
             return;

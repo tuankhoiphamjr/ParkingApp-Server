@@ -16,21 +16,38 @@ router.get("/getComingVehicle/:parkingId", controller.getIsComingVehicle);
 
 router.get("/getVehicleInParking/:parkingId", controller.getVehicleInParking);
 
-router.post("/addComingVehicle/:parkingId", controller.addComingVehicleToMonitor);
+router.post(
+      "/addComingVehicle/:parkingId",
+      controller.addComingVehicleToMonitor
+);
 
 router.post("/deleteComingVehicle", controller.deleteComingVehicleInMonitor);
 
-router.post("/addNewComingVehicleToMonitor/:parkingId", controller.addNewComingVehicleToMonitor);
+router.post(
+      "/addNewComingVehicleToMonitor/:parkingId",
+      controller.addNewComingVehicleToMonitor
+);
 
 router.post("/addOutVehicle/:parkingId", controller.addVehicleHasOutOfParking);
 
-router.post("/getRevenueOfParkingByDate/:parkingId", controller.getRevenueOfParkingByDateController);
+router.post(
+      "/getRevenueOfParkingByDate/:parkingId",
+      controller.getRevenueOfParkingByDateController
+);
 
-router.post("/getRevenueOfParkingByMonth/:parkingId", controller.getRevenueOfParkingByMonthController);
+router.post(
+      "/getRevenueOfParkingByMonth/:parkingId",
+      controller.getRevenueOfParkingByMonthController
+);
 
-router.post("/getRevenueAndVehicleNumberOfParkingByMonth/:parkingId", controller.getRevenueAndVehicleNumbersOfParkingByMonthForStatisticalController);
+router.post(
+      "/getRevenueAndVehicleNumberOfParkingByMonth/:parkingId",
+      controller.getRevenueAndVehicleNumbersOfParkingByMonthForStatisticalController
+);
 
-router.post("/getRevenueAndVehicleNumberOfParkingByYear/:parkingId", controller.getRevenueVehicleNumberOfParkingByYearController);
-
+router.post(
+      "/getRevenueAndVehicleNumberOfParkingByYear/:parkingId",
+      controller.getRevenueVehicleNumberOfParkingByYearController
+);
 
 module.exports = router;

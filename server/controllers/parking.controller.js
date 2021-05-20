@@ -18,7 +18,6 @@ exports.addNewParkingPlaceController = async (req, res) => {
     closeTime,
     images,
   } = req.body;
-  console.log(res.body);
   let ownerId = req.userId;
   let { result, status } = await parkingServices.createNewParkingPlace(
     ownerId,
