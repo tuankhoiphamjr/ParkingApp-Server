@@ -903,6 +903,33 @@ getRevenueVehicleNumberOfParkingByYear = async (year, parkingId) => {
       return result;
 };
 
+getPriceOfBooking = async (userId, parkingId) => {
+      let result;
+      const parkingFilter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(parkingFilter);
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let comingTime = "";
+      for (const vehicle of res[0].hasCome) {
+            if (vehicle.userId === userId || !vehicle.isOut) {
+                  comingTime = vehicle.comingTime;
+            }
+      }
+      if (comingTime==="") {
+            return (result = {
+                  message: "User does not park here",
+                  status: false,
+            });
+      }
+};
+
 const monitorParkingService = {
       createNewMonitor,
       addComingVehicle,

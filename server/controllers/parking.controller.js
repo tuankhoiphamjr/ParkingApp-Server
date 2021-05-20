@@ -14,6 +14,8 @@ exports.addNewParkingPlaceController = async (req, res) => {
     superficies,
     initialSlots,
     description,
+    unitHour,
+    priceByVehicle,
     openTime,
     closeTime,
     images,
@@ -28,6 +30,8 @@ exports.addNewParkingPlaceController = async (req, res) => {
     superficies,
     initialSlots,
     description,
+    unitHour,
+    priceByVehicle,
     openTime,
     closeTime,
     images
@@ -66,6 +70,8 @@ exports.firstUpdateParkingInfoController = async (req, res) => {
     pricePerHour,
     vechileType,
     description,
+    unitHour,
+    priceByVehicle,
   } = req.body;
 
   let parkingId = req.params.parkingId;
@@ -81,7 +87,9 @@ exports.firstUpdateParkingInfoController = async (req, res) => {
     closeTime,
     pricePerHour,
     vechileType,
-    description
+    description,
+    unitHour,
+    priceByVehicle,
   );
   if (!result.status) {
     return res.status(400).send({
