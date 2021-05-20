@@ -279,7 +279,7 @@
             - SUCCESS: return {status: true, message: "Delete vehicle in monitor parking successfully"}
             - FAILED:  return { status: false, message: "Delete fail" }
 
-     POST: api/monitor/getVehicleInParking/:parkingId     (sau khi xe vào bãi, app chủ bãi muốn show tất cả các xe đang đỗ trong bãi thì gọi api này)
+     GET: api/monitor/getVehicleInParking/:parkingId     (sau khi xe vào bãi, app chủ bãi muốn show tất cả các xe đang đỗ trong bãi thì gọi api này)
 
             - SUCCESS: 
                 return {

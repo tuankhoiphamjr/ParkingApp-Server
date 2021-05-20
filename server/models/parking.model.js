@@ -5,121 +5,123 @@ const dbConfig = require("../config/db.config");
 const PImgSchema = new mongoose.Schema({ id: ObjectId }, { _id: false });
 
 const ParkingSchema = new mongoose.Schema({
-  ownerId: {
-    type: ObjectId,
-    required: true,
-    ref: "User",
-  },
+      ownerId: {
+            type: ObjectId,
+            required: true,
+            ref: "User",
+      },
 
-  parkingName: {
-    type: String,
-    required: true,
-  },
+      parkingName: {
+            type: String,
+            required: true,
+      },
 
-  parkingAddress: {
-    type: String,
-    required: true,
-  },
+      parkingAddress: {
+            type: String,
+            required: true,
+      },
 
-  initialSlots: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
+      initialSlots: {
+            type: Number,
+            required: true,
+            default: 0,
+      },
 
-  currentSlots: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
+      currentSlots: {
+            type: Number,
+            required: true,
+            default: 0,
+      },
 
-  superficies: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
+      superficies: {
+            type: Number,
+            required: true,
+            default: 0,
+      },
 
-  parkingImgId: [PImgSchema],
+      parkingImgId: [PImgSchema],
 
-  openTime: {
-    type: String,
-    default: "00:00",
-  },
+      openTime: {
+            type: String,
+            default: "00:00",
+      },
 
-  closeTime: {
-    type: String,
-    default: "00:00",
-  },
+      closeTime: {
+            type: String,
+            default: "00:00",
+      },
 
-  registerDate: {
-    type: Date,
-    default: Date.now(),
-  },
+      registerDate: {
+            type: Date,
+            default: Date.now(),
+      },
 
-  ratingStar: {
-    type: Number,
-    default: 0.1,
-  },
+      ratingStar: {
+            type: Number,
+            default: 0.1,
+      },
 
-  isVerified: {
-    type: Boolean,
-    default: false,
-  },
+      isVerified: {
+            type: Boolean,
+            default: false,
+      },
 
-  advertisingPoint: {
-    type: Number,
-    default: 0,
-  },
+      advertisingPoint: {
+            type: Number,
+            default: 0,
+      },
 
-  averageRating: {
-    type: Number,
-    default: 0,
-  },
+      averageRating: {
+            type: Number,
+            default: 0,
+      },
 
-  pricePerHour: {
-    type: Number,
-    default: 0,
-  },
+      unitHour: {
+            type: Number,
+            default: 0,
+      },
 
-  coordinate: {
-    latitude: {
-      type: Number,
-      default: 1.1,
-    },
-    longitude: {
-      type: Number,
-      default: 1.1,
-    },
-  },
+      coordinate: {
+            latitude: {
+                  type: Number,
+                  default: 1.1,
+            },
+            longitude: {
+                  type: Number,
+                  default: 1.1,
+            },
+      },
 
-  vechileType: {
-    type: Array,
-    default: [
-      {
-        key : "0",
-        value: "car"
-      }
-    ]
-  },
+      vechileType: {
+            type: Array,
+            default: [
+                  {
+                        key: "0",
+                        value: "car",
+                  },
+            ],
+      },
+      priceByVehicle: {
+            type: Array,
+      },
+      description: {
+            type: String,
+            default: "",
+      },
 
-  description: {
-    type: String,
-    default: "",
-  },
+      distance: {
+            type: Number,
+            default: 0.1,
+      },
+      images: {
+            type: Array,
+            default: [],
+      },
 
-  distance: {
-    type: Number,
-    default: 0.1,
-  },
-  images: {
-    type: Array,
-    default: []
-  },
-
-  isOpen: {
-    type: Boolean,
-    default: true,
-  }
+      isOpen: {
+            type: Boolean,
+            default: true,
+      },
 });
 
 module.exports = mongoose.model("Parking", ParkingSchema);

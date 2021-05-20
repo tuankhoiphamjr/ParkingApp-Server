@@ -14,6 +14,8 @@ createNewParkingPlace = async (
       superficies,
       initialSlots,
       description,
+      unitHour,
+      priceByVehicle,
       openTime,
       closeTime,
       images
@@ -29,6 +31,8 @@ createNewParkingPlace = async (
             initialSlots,
             currentSlots,
             description,
+            unitHour,
+            priceByVehicle,
             openTime,
             closeTime,
             images,
@@ -49,7 +53,9 @@ updateParkingInfoForOwner = async (
       closeTime,
       pricePerHour,
       vechileType,
-      description
+      description,
+      unitHour,
+      priceByVehicle
 ) => {
       let result;
       await Parking.findOneAndUpdate(
@@ -64,6 +70,8 @@ updateParkingInfoForOwner = async (
                   pricePerHour: pricePerHour,
                   vechileType: vechileType,
                   description: description,
+                  unitHour: unitHour,
+                  priceByVehicle: priceByVehicle,
             },
             (err, data) => {
                   if (err) {
