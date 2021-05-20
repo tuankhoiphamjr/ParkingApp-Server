@@ -421,3 +421,23 @@
             - FAILED:  return { status: false, message: message báo lỗi bên server }
 
 
+
+
+
+#Vehicle types: 
+ {
+    key: 1,
+    value: 'Xe máy',
+  },
+  {
+    key: 2,
+    value: 'Ô tô',
+  },
+  {
+    key: 3,
+    value: 'Xe tải',
+  },
+  {
+    key: 4,
+    value: 'Xe đạp',
+  },
