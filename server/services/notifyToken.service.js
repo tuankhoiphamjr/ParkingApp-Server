@@ -47,17 +47,17 @@ getTokensByUsersIdArray = async (usersIdArray) => {
   // });
 
   for (let i = 0; i < usersIdArray.length; i++) {
-    await NotifyToken.find(
-      { userId: mongoose.Types.ObjectId(usersIdArray[i]) },
-      (err, data) => {
-        if (err) {
-          return { message: err, status: false };
-        }
-        data.forEach((token) => {
-          result.push(token.token);
-        });
-      }
-    );
+    let data = await NotifyToken.find({
+      userId: mongoose.Types.ObjectId(usersIdArray[i]),
+    });
+
+    if (data.length === 0) {
+      return { status: false, message: "Token not found" };
+    }
+
+    for (const element of data) {
+      result.push(element.token);
+    }
   }
   return result;
 };
