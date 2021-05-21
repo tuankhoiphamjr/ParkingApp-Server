@@ -451,6 +451,21 @@ showListComingVehicle = async (parkingId) => {
 addComeVehicle = async (ownerId, parkingId, userId, vehicleId, comingTime) => {
       let result;
       // xét xem thông tin xe có chính xác hay không
+      let res = await BookingHistory.find({
+            vehicleId: mongoose.Types.ObjectId(vehicleId),
+      });
+      if (res.length === 0) {
+            return (result = {
+                  message: "Vehicle not found in booking history",
+                  status: false,
+            });
+      }
+      if (res[0].parkingId) {
+            return (result = {
+                  message: "Can not book cause you have parked",
+                  status: false,
+            });
+      }
       try {
             let filter = {
                   ownerId: mongoose.Types.ObjectId(userId),
@@ -932,6 +947,7 @@ getPriceOfBooking = async (userId, parkingId) => {
             if (vehicle.userId === userId || !vehicle.isOut) {
                   comingTime = vehicle.comingTime;
                   vehicleId = vehicle.vehicleId;
+                  break;
             }
       }
       if (comingTime === "") {
@@ -962,7 +978,8 @@ getPriceOfBooking = async (userId, parkingId) => {
       let unitPrice = 0;
       for (const vehicleType of response[0].priceByVehicle) {
             if (vehicleType.key === respon[0].type) {
-                  unitPrice = vehicleType.value;
+                  unitPrice = parseInt(vehicleType.value);
+                  break;
             }
       }
       if (unitPrice === 0) {
