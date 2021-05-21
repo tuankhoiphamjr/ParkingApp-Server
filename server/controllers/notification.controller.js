@@ -103,3 +103,15 @@ exports.checkDeviceController = async (req, res) => {
     status: true,
   });
 };
+
+exports.updateNotifyTokenController = async (req, res) => {
+  const { userId, deviceId, token } = req.body;
+  let result = await tokenServices.updateNotifyToken(deviceId, userId, token);
+  if (!result.status) {
+    return res.status(500).json({ message: result.message, status: false });
+  }
+  return res.status(200).json({
+    message: result.message,
+    status: true,
+  });
+};
