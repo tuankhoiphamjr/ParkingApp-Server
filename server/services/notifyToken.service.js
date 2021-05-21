@@ -35,8 +35,19 @@ getTokensByUsersIdArray = async (usersIdArray) => {
     }
   }
 
-  await asyncForEach(usersIdArray, async (userId) => {
-    await NotifyToken.find({ userId: userId }, (err, data) => {
+  // await asyncForEach(usersIdArray, async (userId) => {
+    // await NotifyToken.find({ userId: userId }, (err, data) => {
+    //   if (err) {
+    //     result = { message: err, status: false };
+    //   }
+    //   data.forEach((token) => {
+    //     result.push(token.token);
+    //   });
+    // });
+  // });
+
+  for (let i = 0; i < usersIdArray.length; i++) {
+    await NotifyToken.find({ userId: usersIdArray[i] }, (err, data) => {
       if (err) {
         result = { message: err, status: false };
       }
@@ -44,7 +55,7 @@ getTokensByUsersIdArray = async (usersIdArray) => {
         result.push(token.token);
       });
     });
-  });
+  }
   return result;
 };
 
