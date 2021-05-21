@@ -11,4 +11,6 @@ router.post("/", controller.notifyToUsersController)
 
 router.post("/checkDevice", controller.checkDeviceController)
 
+router.post("/updateToken", controller.updateNotifyTokenController)
+
 module.exports = router;

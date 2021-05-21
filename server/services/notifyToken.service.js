@@ -29,40 +29,59 @@ getTokenByUserIdAndDeviceId = async (userId, deviceId) => {
 getTokensByUsersIdArray = async (usersIdArray) => {
   let result = [];
 
-  async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
-  }
+  // async function asyncForEach(array, callback) {
+  //   for (let index = 0; index < array.length; index++) {
+  //     await callback(array[index], index, array);
+  //   }
+  // }
 
   // await asyncForEach(usersIdArray, async (userId) => {
-    // await NotifyToken.find({ userId: userId }, (err, data) => {
-    //   if (err) {
-    //     result = { message: err, status: false };
-    //   }
-    //   data.forEach((token) => {
-    //     result.push(token.token);
-    //   });
-    // });
+  // await NotifyToken.find({ userId: userId }, (err, data) => {
+  //   if (err) {
+  //     result = { message: err, status: false };
+  //   }
+  //   data.forEach((token) => {
+  //     result.push(token.token);
+  //   });
+  // });
   // });
 
   for (let i = 0; i < usersIdArray.length; i++) {
-    await NotifyToken.find({ userId: usersIdArray[i] }, (err, data) => {
-      if (err) {
-        result = { message: err, status: false };
+    await NotifyToken.find(
+      { userId: mongoose.Types.ObjectId(usersIdArray[i]) },
+      (err, data) => {
+        if (err) {
+          return { message: err, status: false };
+        }
+        data.forEach((token) => {
+          result.push(token.token);
+        });
       }
-      data.forEach((token) => {
-        result.push(token.token);
-      });
-    });
+    );
   }
   return result;
+};
+
+//  Update token
+updateNotifyToken = async (deviceId, userId, token) => {
+  let result = await NotifyToken.findOneAndUpdate(
+    { deviceId: deviceId, userId: userId },
+    {
+      token: token,
+    }
+  );
+  if (!result) {
+    return { status: false, message: "Something went wrong" };
+  }
+
+  return { status: true, message: "Token update" };
 };
 
 const tokenServices = {
   createToken,
   getTokenByUserIdAndDeviceId,
   getTokensByUsersIdArray,
+  updateNotifyToken,
 };
 
 module.exports = tokenServices;
