@@ -14,6 +14,8 @@ createNewParkingPlace = async (
       superficies,
       initialSlots,
       description,
+      unitHour,
+      priceByVehicle,
       openTime,
       closeTime,
       images
@@ -29,6 +31,8 @@ createNewParkingPlace = async (
             initialSlots,
             currentSlots,
             description,
+            unitHour,
+            priceByVehicle,
             openTime,
             closeTime,
             images,
@@ -49,7 +53,9 @@ updateParkingInfoForOwner = async (
       closeTime,
       pricePerHour,
       vechileType,
-      description
+      description,
+      unitHour,
+      priceByVehicle
 ) => {
       let result;
       await Parking.findOneAndUpdate(
@@ -64,6 +70,8 @@ updateParkingInfoForOwner = async (
                   pricePerHour: pricePerHour,
                   vechileType: vechileType,
                   description: description,
+                  unitHour: unitHour,
+                  priceByVehicle: priceByVehicle,
             },
             (err, data) => {
                   if (err) {
@@ -89,20 +97,16 @@ updateParkingCurrentSlot = async (parkingId, isOut) => {
       let currentSlots = isOut
             ? parkingInfo.result.currentSlots + 1
             : parkingInfo.result.currentSlots - 1;
-      let update;
-      await Parking.findOneAndUpdate(
+      let update = await Parking.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(parkingId) },
             {
                   currentSlots: currentSlots,
-            },
-            (err, data) => {
-                  if (err) {
-                        update = { message: err, status: false };
-                  }
-                  update = { message: "Success", status: true };
             }
       );
-      return update;
+      if (update.length === 0) {
+            return { message: "Update current slots fail", status: false };
+      }
+      return { message: "Update current slots successfully", status: true };
 };
 
 //Get all parking place info that is verified

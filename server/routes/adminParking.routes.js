@@ -5,6 +5,6 @@ const controller = require("../controllers/parking.controller");
 
 router.get("/listNeedVerified", controller.getParkingsNeedVerified);
 
-router.get("/verify/:parkingId", controller.verifyParkingController);
+router.post("/verify/:parkingId", controller.verifyParkingController);
 
 module.exports = router;
