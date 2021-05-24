@@ -419,5 +419,12 @@
                         "status": true
                     }
             - FAILED:  return { status: false, message: message báo lỗi bên server }
+    POST: api/monitor/getPriceOfBooking     (tính giá tiền từ thời điểm xe vào bãi đến thời điểm gọi api)
+            {
+                "userId": "165d6caf46a7880a",
+                "parkingId" : "1231232"
+            }
 
+            - SUCCESS: return {status: true, price: 10000}
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
 
