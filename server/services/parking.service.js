@@ -58,12 +58,14 @@ updateParkingInfoForOwner = async (
       priceByVehicle
 ) => {
       let result;
+      let currentSlots = initialSlots;
       await Parking.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(parkingId), ownerId: ownerId },
             {
                   parkingName: parkingName,
                   parkingAddress: parkingAddress,
                   initialSlots: initialSlots,
+                  currentSlots: currentSlots,
                   superficies: superficies,
                   openTime: openTime,
                   closeTime: closeTime,

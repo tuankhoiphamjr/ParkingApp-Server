@@ -973,7 +973,6 @@ getPriceOfBooking = async (userId, parkingId) => {
       let now = new Date(Date.now());
       let diff = (now.getTime() - time.getTime()) / 1000;
       diff /= 3600;
-      diff = Math.ceil(diff);
       let unitHour = response[0].unitHour;
       let unitPrice = 0;
       for (const vehicleType of response[0].priceByVehicle) {
