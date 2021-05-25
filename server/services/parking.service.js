@@ -55,8 +55,7 @@ updateParkingInfoForOwner = async (
       vechileType,
       description,
       unitHour,
-      priceByVehicle,
-      images
+      priceByVehicle
 ) => {
       let result;
       let currentSlots = initialSlots;
@@ -75,7 +74,6 @@ updateParkingInfoForOwner = async (
                   description: description,
                   unitHour: unitHour,
                   priceByVehicle: priceByVehicle,
-                  images: images,
             },
             (err, data) => {
                   if (err) {

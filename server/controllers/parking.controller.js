@@ -78,7 +78,6 @@ exports.firstUpdateParkingInfoController = async (req, res) => {
             description,
             unitHour,
             priceByVehicle,
-            images,
       } = req.body;
 
       let parkingId = req.params.parkingId;
@@ -96,8 +95,7 @@ exports.firstUpdateParkingInfoController = async (req, res) => {
             vechileType,
             description,
             unitHour,
-            priceByVehicle,
-            images
+            priceByVehicle
       );
       if (!result.status) {
             return res.status(400).send({
@@ -203,7 +201,10 @@ exports.verifyParkingController = async (req, res) => {
                   .status(400)
                   .json({ status: false, message: result.message });
       }
-      let response = await monitorService.createNewMonitor(ownerId, parkingId);
+      let response = await monitorService.createNewMonitor(
+            ownerId,
+            parkingId
+      );
       if (!response?.status) {
             res.status(400).json({ message: response.message });
             return;
