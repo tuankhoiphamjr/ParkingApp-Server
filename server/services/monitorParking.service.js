@@ -837,7 +837,8 @@ getRevenueAndVehicleNumbersOfParkingByMonthForStatistical = async (
             if (vehicle.isOut === false) {
                   continue;
             }
-            let outTime = vehicle.outTime.split(" ");
+            let formatDateDB = dateFormat.dateDBFormat(vehicle.outTime)
+            let outTime = formatDateDB.split(" ");
             let outDate = outTime[0].split("/");
             if (
                   parseInt(outDate[1]) === checkDateInJSFormat.getMonth() + 1 &&
@@ -884,7 +885,8 @@ getRevenueVehicleNumberOfParkingByYear = async (year, parkingId) => {
       for (const vehicle of res[0].hasCome) {
             if (vehicle.isOut === true) {
                   if (now.getFullYear() === parseInt(year)) {
-                        let outTime = vehicle.outTime.split(" ");
+                        let formatDateDB = dateFormat.dateDBFormat(vehicle.outTime)
+                        let outTime = formatDateDB.split(" ");
                         let date = outTime[0].split("/");
                         let day = parseInt(date[0]);
                         let month = parseInt(date[1]);

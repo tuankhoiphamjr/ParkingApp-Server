@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 const dayMonthYearFormat = (date) => {
   const day = date.getDate() > 9 ? `${date.getDate()}` : `0${date.getDate()}`;
   const month =
@@ -19,9 +21,18 @@ const monthYearFormat = (date) => {
   return `${month}/${year}`;
 };
 
+const dateDBFormat = (date) => {
+  return (
+    moment(date).format("DD/MM/YYYY") +
+    " " +
+    moment(date).format("HH:MM")
+  );
+};
+
 const dateFormat = {
   dayMonthYearFormat,
   monthYearFormat,
+  dateDBFormat
 };
 
 module.exports = dateFormat;

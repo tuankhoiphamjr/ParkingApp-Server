@@ -1,3 +1,12 @@
-import moment from 'moment'
+const moment = require("moment");
 
-console.log(moment("2017-01-01").format("DD MMM YYYY"))
+const dateDBFormat = (date) => {
+  return (
+    moment(date).format("DD/MM/YYYY") +
+    " " +
+    moment(date).format("HH:MM")
+  );
+};
+console.log(
+  dateDBFormat(new Date(Date.now()))
+);
