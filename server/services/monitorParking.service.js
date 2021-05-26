@@ -947,7 +947,7 @@ getPriceOfBooking = async (userId, parkingId) => {
       let vehicleId = "";
       for (const vehicle of res[0].hasCome) {
             if (vehicle.userId === userId || !vehicle.isOut) {
-                  comingTime = vehicle.comingTime;
+                  comingTime = dateFormat.dateDBFormat(vehicle.comingTime);
                   vehicleId = vehicle.vehicleId;
                   break;
             }
@@ -978,7 +978,7 @@ getPriceOfBooking = async (userId, parkingId) => {
       let unitHour = response[0].unitHour;
       let unitPrice = 0;
       for (const vehicleType of response[0].priceByVehicle) {
-            if (vehicleType.key === respon[0].type) {
+            if (vehicleType.key === parseInt(respon[0].type)) {
                   unitPrice = parseInt(vehicleType.value);
                   break;
             }

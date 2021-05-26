@@ -198,7 +198,7 @@ exports.verifyParkingController = async (req, res) => {
       let parkingId = req.params.parkingId;
       let ownerId = req.body.ownerId;
       let result = await parkingServices.verifyParking(parkingId, true);
-      if (!result.status) {
+      if (!result?.status) {
             return res
                   .status(400)
                   .json({ status: false, message: result.message });
