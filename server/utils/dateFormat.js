@@ -25,7 +25,7 @@ const dateDBFormat = (date) => {
   return (
     moment(date).format("DD/MM/YYYY") +
     " " +
-    moment(date).format("HH:MM")
+    moment(date).format("HH:mm")
   );
 };
 
