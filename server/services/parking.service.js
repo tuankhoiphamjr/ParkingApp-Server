@@ -3,6 +3,7 @@ const db = require("../models");
 const dbConfig = require("../config/db.config");
 var bcrypt = require("bcryptjs");
 const Parking = db.parking;
+const Feedback = db.feedback;
 
 // Create Parking in DB
 createNewParkingPlace = async (
@@ -98,6 +99,34 @@ updateCurrentSlotsForOwner = async (parkingId, currentSlots) => {
             { _id: mongoose.Types.ObjectId(parkingId) },
             {
                   currentSlots: currentSlots,
+            },
+            (err, data) => {
+                  if (err) {
+                        result = { message: err, status: false };
+                  }
+                  result = { message: "Success", status: true };
+            }
+      );
+      return result;
+};
+
+updateRatingStar = async (parkingId) => {
+      let result;
+      let res = await Feedback.find({
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      });
+      if (res.length === 0) {
+            return { message: "Parking not have feedback yet", status: false };
+      }
+      let totalStar = 0;
+      for (const feedback of res) {
+            totalStar += feedback.ratingStar;
+      }
+      let ratingStar = (totalStar / res.length).toFixed(1);
+      await Parking.findOneAndUpdate(
+            { _id: mongoose.Types.ObjectId(parkingId) },
+            {
+                  ratingStar: ratingStar,
             },
             (err, data) => {
                   if (err) {
@@ -262,6 +291,7 @@ const parkingServices = {
       deleteParkingByOwner,
       verifyParking,
       changeParkingOpenStatus,
+      updateRatingStar,
 };
 
 module.exports = parkingServices;
