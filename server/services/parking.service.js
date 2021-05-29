@@ -91,6 +91,24 @@ updateParkingInfoForOwner = async (
       return result;
 };
 
+// Update parking curent slots for owner by ID of parking
+updateCurrentSlotsForOwner = async (parkingId, currentSlots) => {
+      let result;
+      await Parking.findOneAndUpdate(
+            { _id: mongoose.Types.ObjectId(parkingId) },
+            {
+                  currentSlots: currentSlots,
+            },
+            (err, data) => {
+                  if (err) {
+                        result = { message: err, status: false };
+                  }
+                  result = { message: "Success", status: true };
+            }
+      );
+      return result;
+};
+
 // Get all Parking info by parking ID
 getParkingInfoById = async (parkingId) => {
       let result = await Parking.findOne({ _id: parkingId }).select("-__v");

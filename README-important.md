@@ -427,4 +427,11 @@
 
             - SUCCESS: return {status: true, price: 10000}
             - FAILED:  return { status: false, message: message báo lỗi bên server }
+    POST: api/updateCurrentSlots/:parkingId     (tính giá tiền từ thời điểm xe vào bãi đến thời điểm gọi api)
+        {
+            "currentSlots":200 (nhập số nguyên vào nha má)
+        }
+
+        - SUCCESS: return {status: true, result: result}
+        - FAILED:  return { status: false, message: message báo lỗi bên server }
 

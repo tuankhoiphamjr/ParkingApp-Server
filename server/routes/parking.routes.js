@@ -7,6 +7,8 @@ router.post("/new", controller.addNewParkingPlaceController);
 
 router.get("/:parkingId", controller.getParkingInfoController);
 
+router.post("/updateCurrentSlots/:parkingId", controller.updateParkingCurrentSlotsForOwner);
+
 router.post("/:parkingId/update_1", controller.firstUpdateParkingInfoController);
 
 router.post("/reservation/:parkingId", controller.reservationController);
