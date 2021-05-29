@@ -3,7 +3,6 @@ const router = express.Router();
 
 const controller = require("../controllers/monitorParking.controller");
 
-// router.get("/:parkingId", controller.showFeedbackController);
 router.post("/", controller.addMonitorParking);
 
 router.get("/getBookingInfo", controller.getBookingInfo);

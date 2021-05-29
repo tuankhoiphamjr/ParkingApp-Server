@@ -440,4 +440,47 @@
 
             - SUCCESS: return {status: true, price: 10000}
             - FAILED:  return { status: false, message: message báo lỗi bên server }
+    POST: api/updateCurrentSlots/:parkingId     
+        {
+            "currentSlots":200 (nhập số nguyên vào nha má)
+        }
+
+        - SUCCESS: return {status: true, result: result}
+        - FAILED:  return { status: false, message: message báo lỗi bên server }
+    POST: api/feedback/:parkingId     
+        {
+            "content": "Bai xe tam on",
+            "ratingStar": 4 (nhập số nguyên vào nha má)
+        }
+
+        - SUCCESS: return {status: true, result: result}
+        - FAILED:  return { status: false, message: message báo lỗi bên server }
+    GET: api/feedback/:parkingId     
+
+        - SUCCESS: return {
+            [
+                {
+                    "createAt": "2021-05-29T04:24:32.428Z",
+                    "_id": "60b1c210b285741b3ce3cc06",
+                    "parkingId": "60a893adc4e96e001570d189",
+                    "userId": {
+                        "firstName": "Khoi",
+                        "lastName": "Pham Tuan",
+                        "email": "bk@gmail.com",
+                        "accummulatePoint": 0,
+                        "avatar": "https://storage.googleapis.com/parking_app_hcmut/1619967840050-0353433047",
+                        "isActive": true,
+                        "createdAt": "2021-05-02T11:10:13.952Z",
+                        "_id": "608e8a2294039929a4e6a77c",
+                        "phoneNumber": "0353433047",
+                        "password": "$2a$08$iBQ/7gA9BKiM3XfYWfcURO0XcaXc6GzQzW0LBTDY65ZfL7DRYuhN.",
+                        "role": "user",
+                        "__v": 0
+                    },
+                    "content": "608e8a2294039929a4e6a77c",
+                    "ratingStar": 5,
+                    "__v": 0
+                },{ dưới này còn cái khác}
+        }
+        - FAILED:  return { status: false, message: message báo lỗi bên server }
 

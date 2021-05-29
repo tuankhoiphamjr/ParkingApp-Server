@@ -64,7 +64,7 @@ exports.getParkingInfoController = async (req, res) => {
       return res.status(200).json({ status: true, result: result.result });
 };
 
-// Update Parking Info (NOT IMAGE YET)
+// Update Parking Info
 exports.firstUpdateParkingInfoController = async (req, res) => {
       let {
             parkingName,
@@ -109,6 +109,21 @@ exports.firstUpdateParkingInfoController = async (req, res) => {
             status: true,
             message: "Update parking info successfully.",
       });
+};
+
+exports.updateParkingCurrentSlotsForOwner = async (req, res) => {
+      let parkingId = req.params.parkingId;
+      let currentSlots = req.body.currentSlots;
+      let result = await parkingServices.updateCurrentSlotsForOwner(
+            parkingId,
+            currentSlots
+      );
+      if (!result?.status) {
+            return res
+                  .status(400)
+                  .json({ status: false, message: result.message });
+      }
+      return res.status(200).json({ status: true, result: result });
 };
 
 exports.reservationController = async (req, res) => {

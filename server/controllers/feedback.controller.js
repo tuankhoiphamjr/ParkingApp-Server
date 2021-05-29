@@ -1,6 +1,7 @@
 const feedbackService = require("../services/feedback.service");
+const parkingServices = require("../services/parking.service");
 
-exports.showFeedbackController = async (req, res) => {
+exports.showFeedbackOfParkingController = async (req, res) => {
       let parkingId = req.params.parkingId;
       let { result, status } = await feedbackService.getFeedbackByParkingId(
             parkingId
@@ -14,19 +15,28 @@ exports.showFeedbackController = async (req, res) => {
 };
 
 exports.addFeedbackToParkingOwner = async (req, res) => {
-      let userId = "6067123e3e6aa227bc2f3859";
       let { content, ratingStar } = req.body;
-      // let userId = req.userId;
+      let userId = req.userId;
       let parkingId = req.params.parkingId;
-      let { result, status } = await feedbackService.createFeedback(
+      let result = await feedbackService.createFeedback(
             parkingId,
             userId,
             content,
             ratingStar
       );
-
-      if (!status) {
+      if (!result) {
             res.status(400).json({ message: "Something went wrong" });
+            return;
+      }
+      if (!result.status) {
+            res.status(400).json({ message: result.message });
+            return;
+      }
+      let resu = await parkingServices.updateRatingStar(parkingId);
+      if (!resu?.status) {
+            res.status(400).json({
+                  message: "Something went wrong when update rating star",
+            });
             return;
       }
       res.status(200).json(result);

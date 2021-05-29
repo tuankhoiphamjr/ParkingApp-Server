@@ -74,7 +74,7 @@ exports.deleteComingVehicleInMonitor = async (req, res) => {
       );
       // Bug tại đay nhưng không hiểu tại sao
       if (!result?.status) {
-            res.status(400).json({ message: result.message  });
+            res.status(400).json({ message: result.message });
             return;
       }
       res.status(200).json(result);
@@ -104,7 +104,7 @@ exports.addNewComingVehicleToMonitor = async (req, res) => {
       // Bug tại đay nhưng không hiểu tại sao
       if (!result?.status) {
             res.status(400).json({
-                  message: result.message
+                  message: result.message,
             });
             return;
       }
@@ -136,6 +136,7 @@ exports.addVehicleHasOutOfParking = async (req, res) => {
       let ownerId = req.userId;
       let parkingId = req.params.parkingId;
       let { userId, vehicleId, comingTime, outTime, price } = req.body;
+      price = parseInt(price);
       let result = await monitorParkingService.addOutVehicle(
             ownerId,
             parkingId,

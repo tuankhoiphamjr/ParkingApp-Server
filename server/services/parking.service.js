@@ -3,6 +3,7 @@ const db = require("../models");
 const dbConfig = require("../config/db.config");
 var bcrypt = require("bcryptjs");
 const Parking = db.parking;
+const Feedback = db.feedback;
 
 // Create Parking in DB
 createNewParkingPlace = async (
@@ -59,7 +60,11 @@ updateParkingInfoForOwner = async (
       images
 ) => {
       let result;
-      let currentSlots = initialSlots;
+      let res = await Parking.find({ _id: mongoose.Types.ObjectId(parkingId) });
+      if (res.length === 0) {
+            return { message: "Parking not found", status: false };
+      }
+      let currentSlots = initialSlots - res.initialSlots + res.currentSlots;
       await Parking.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(parkingId), ownerId: ownerId },
             {
@@ -76,6 +81,52 @@ updateParkingInfoForOwner = async (
                   unitHour: unitHour,
                   priceByVehicle: priceByVehicle,
                   images: images,
+            },
+            (err, data) => {
+                  if (err) {
+                        result = { message: err, status: false };
+                  }
+                  result = { message: "Success", status: true };
+            }
+      );
+      return result;
+};
+
+// Update parking curent slots for owner by ID of parking
+updateCurrentSlotsForOwner = async (parkingId, currentSlots) => {
+      let result;
+      await Parking.findOneAndUpdate(
+            { _id: mongoose.Types.ObjectId(parkingId) },
+            {
+                  currentSlots: currentSlots,
+            },
+            (err, data) => {
+                  if (err) {
+                        result = { message: err, status: false };
+                  }
+                  result = { message: "Success", status: true };
+            }
+      );
+      return result;
+};
+
+updateRatingStar = async (parkingId) => {
+      let result;
+      let res = await Feedback.find({
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      });
+      if (res.length === 0) {
+            return { message: "Parking not have feedback yet", status: false };
+      }
+      let totalStar = 0;
+      for (const feedback of res) {
+            totalStar += feedback.ratingStar;
+      }
+      let ratingStar = (totalStar / res.length).toFixed(1);
+      await Parking.findOneAndUpdate(
+            { _id: mongoose.Types.ObjectId(parkingId) },
+            {
+                  ratingStar: ratingStar,
             },
             (err, data) => {
                   if (err) {
@@ -240,6 +291,7 @@ const parkingServices = {
       deleteParkingByOwner,
       verifyParking,
       changeParkingOpenStatus,
+      updateRatingStar,
 };
 
 module.exports = parkingServices;
