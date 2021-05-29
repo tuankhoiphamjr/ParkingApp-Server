@@ -59,7 +59,11 @@ updateParkingInfoForOwner = async (
       images
 ) => {
       let result;
-      let currentSlots = initialSlots;
+      let res = await Parking.find({ _id: mongoose.Types.ObjectId(parkingId) });
+      if (res.length === 0) {
+            return { message: "Parking not found", status: false };
+      }
+      let currentSlots = initialSlots - res.initialSlots + res.currentSlots;
       await Parking.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(parkingId), ownerId: ownerId },
             {
