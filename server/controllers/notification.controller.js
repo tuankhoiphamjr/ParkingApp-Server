@@ -115,3 +115,15 @@ exports.updateNotifyTokenController = async (req, res) => {
     status: true,
   });
 };
+
+exports.deleteNotifyTokenController = async (req, res) => {
+  const { userId, deviceId } = req.body;
+  let result = await tokenServices.deleteNotifyToken(deviceId, userId);
+  if (!result.status) {
+    return res.status(500).json({ message: result.message, status: false });
+  }
+  return res.status(200).json({
+    message: result.message,
+    status: true,
+  });
+};

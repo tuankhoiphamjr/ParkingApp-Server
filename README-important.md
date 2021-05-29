@@ -218,6 +218,19 @@
                                 }
             - FAILED: return { message: "Device has not been registered yet", status: false }
 
+
+    POST: api/notifications/token/delete
+            {
+                "userId" : "60758290432b1241ec881263",
+                "deviceId": "165d6caf46a7880a"
+            }
+
+            - SUCCESS: return   {
+                                    message: `Token deleted`,
+                                    status: true,
+                                }
+            - FAILED: return { message: "Something went wrong Or there are no token in DB", status: false }
+
 # Booking
 
     POST: api/monitor/     (thêm document monitor sau khi bãi xe được duyệt)
