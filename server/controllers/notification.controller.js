@@ -1,5 +1,5 @@
 const tokenServices = require("../services/notifyToken.service");
-
+const notificationServices = require("../services/notification.service");
 const serviceAccount = require("../../firebase.json");
 const admin = require("firebase-admin");
 
@@ -64,7 +64,8 @@ exports.addNewNotificationToken = async (req, res) => {
 // notify to number of user with user ids in array
 exports.notifyToUsersController = async (req, res) => {
   try {
-    const { receivedUsersId, sendUserId, title, body, imageUrl } = req.body;
+    const { receivedUsersId, sendUserId, title, body, imageUrl, action } =
+      req.body;
     let tokens = await tokenServices.getTokensByUsersIdArray(receivedUsersId);
     console.log(tokens);
     await admin.messaging().sendMulticast({
@@ -75,6 +76,17 @@ exports.notifyToUsersController = async (req, res) => {
         imageUrl,
       },
     });
+
+    receivedUsersId.forEach(async (userId) => {
+      await notificationServices.addNewNotification(
+        title,
+        body,
+        userId,
+        sendUserId,
+        action
+      );
+    });
+
     res.status(200).json({
       status: true,
       message: `Successfully sent notifications to user has id: ${receivedUsersId}`,
@@ -124,6 +136,35 @@ exports.deleteNotifyTokenController = async (req, res) => {
   }
   return res.status(200).json({
     message: result.message,
+    status: true,
+  });
+};
+
+// exports.addNotificationController = async (req, res) => {
+//   const { title, body, userId, sendUserId } = req.body;
+//   let result = await notificationServices.addNewNotification(
+//     title,
+//     body,
+//     userId,
+//     sendUserId
+//   );
+//   if (!result.status) {
+//     return res.status(400).json({ message: result.message, status: false });
+//   }
+//   return res.status(200).json({
+//     message: result.message,
+//     status: true,
+//   });
+// };
+
+exports.getNotificationByUserId = async (req, res) => {
+  const userId = req.params.userId;
+  let result = await notificationServices.getNotificationByUserId(userId);
+  if (!result.status) {
+    return res.status(400).json({ message: result.message, status: false });
+  }
+  return res.status(200).json({
+    result: result.result,
     status: true,
   });
 };

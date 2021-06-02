@@ -15,4 +15,8 @@ router.post("/updateToken", controller.updateNotifyTokenController);
 
 router.post("/token/delete", controller.deleteNotifyTokenController);
 
+// router.post("/add", controller.addNotificationController);
+
+router.get("/:userId", controller.getNotificationByUserId);
+
 module.exports = router;

@@ -231,6 +231,45 @@
                                 }
             - FAILED: return { message: "Something went wrong Or there are no token in DB", status: false }
 
+    POST: api/notifications/add
+            {   
+                "title" : "Có người đang tới bãi đỗ xe",
+                "body": "GAME ĐEEEEEEEEE",
+                "sendUserId": "608e1e3d8c9cd107c8b366d1",
+                "userId" : "608e1e3d8c9cd107c8b366d1",    => user nhận thông báo
+            }   
+
+            - SUCCESS: return   {
+                                    message: "Add Notification Successfully",
+                                    status: true,
+                                }
+            - FAILED: return { message: "Something went wrong", status: false }
+
+    GET: api/notifications/:userId
+            - SUCCESS: return   {
+                                    "result": [
+                                        {
+                                            "createdAt": "2021-06-02T12:31:27.657Z",
+                                            "title": "Có người đang tới bãi đỗ xe",
+                                            "body": "GAME ĐEEEEEEEEE",
+                                            "userId": "608e1e3d8c9cd107c8b366d1",
+                                            "sendUserId": "608e1e3d8c9cd107c8b366d1",
+                                        },
+                                        {
+                                            "createdAt": "2021-06-02T12:36:37.018Z",
+                                            "title": "Có người đang tới bãi đỗ xe",
+                                            "body": "GAME ĐEEEEEEEEE",
+                                            "userId": "608e1e3d8c9cd107c8b366d1",
+                                            "sendUserId": "608e1e3d8c9cd107c8b366d1",
+                                        }
+                                    ],
+                                    "status": true
+                                }
+            - FAILED: return {
+                                "message": "There are no notification",
+                                "status": false
+                            }
+
 # Booking
 
     POST: api/monitor/     (thêm document monitor sau khi bãi xe được duyệt)
