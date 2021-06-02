@@ -167,7 +167,7 @@ updateParkingCurrentSlot = async (parkingId, isOut) => {
 //Get all parking place info that is verified
 getAllVerifiedParkingInfo = async () => {
       let result = await Parking.find({ isVerified: true });
-      if (!result) {
+      if (result.length === 0) {
             return { status: false, message: "Not Found Car Parking" };
       }
 

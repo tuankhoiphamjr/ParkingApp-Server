@@ -26,5 +26,6 @@ router.post("/updateInfo", controller.updateUserInfo);
 
 router.get("/getUserInfoById/:userId", controller.getUserInfoById);
 
+router.get("/getUserInfoByIdForUser", controller.getUserInfoByIdForUser);
 
 module.exports = router;

@@ -9,10 +9,18 @@ getFeedbackByParkingId = async (parkingId) => {
             parkingId: mongoose.Types.ObjectId(parkingId),
       };
       let result = await Feedback.find(filter).populate("userId");
-      if (!result) {
+      if (result === 0) {
             return { message: "Feedback not found", status: false };
       }
       return { result, status: true };
+};
+
+getNumberOfFeedback = async () => {
+      let result = await Feedback.find();
+      if (result.length === 0) {
+            return { message: "Feedback not found", status: false };
+      }
+      return { result: result.length, status: true };
 };
 
 createFeedback = async (parkingId, userId, content, ratingStar) => {
@@ -48,5 +56,6 @@ createFeedback = async (parkingId, userId, content, ratingStar) => {
 const feedbackService = {
       getFeedbackByParkingId,
       createFeedback,
+      getNumberOfFeedback,
 };
 module.exports = feedbackService;
