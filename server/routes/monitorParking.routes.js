@@ -11,6 +11,8 @@ router.get("/getParkingInfo", controller.getParkingInfo);
 
 router.get("/getParkingHistoryInfo", controller.getParkingHistoryInfo);
 
+router.get("/getBookingVehicle/:parkingId", controller.getBookingVehicle);
+
 router.get("/getComingVehicle/:parkingId", controller.getIsComingVehicle);
 
 router.get("/getVehicleInParking/:parkingId", controller.getVehicleInParking);
@@ -21,6 +23,8 @@ router.post(
 );
 
 router.post("/deleteComingVehicle", controller.deleteComingVehicleInMonitor);
+
+router.post("/confirmBooking/:parkingId", controller.confirmBooking);
 
 router.post(
       "/addNewComingVehicleToMonitor/:parkingId",

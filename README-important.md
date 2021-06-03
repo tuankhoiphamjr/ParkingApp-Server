@@ -310,26 +310,7 @@
             - FAILED:  return { status: false, message: message báo lỗi bên server }
 
     <!-- Dành cho user -->
-    GET: api/monitor/getBookingInfo    (Xem thông tin bãi xe mà user đang đặt)
-
-            - SUCCESS:
-                return {
-                    "data": {
-                        "ownerId": "608e566af0bfbb0015d99b93",
-                        "userId": "608e8a2294039929a4e6a77c",
-                        "vehicleId": "6093b537c293ad22149650f1",
-                        "parkingId": "608e56bbf0bfbb0015d99b94",
-                        "parkingName": "Bãi xe Dương Quảng Hàm",
-                        "parkingAddress": "495 Dương Quảng Hàm, phường 6, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam",
-                        "coordinate": {
-                            "latitude": 10.8382164,
-                            "longitude": 106.6825801
-                        },
-                        "comingTime": "12:30"
-                    },
-                    "status": true
-                }
-            - FAILED:  return { status: false, message: message báo lỗi bên server }
+    
 
     GET: api/monitor/getParkingInfo    (Xem thông tin bãi xe mà user đang đỗ)
 
@@ -471,3 +452,75 @@
         }
         - FAILED:  return { status: false, message: message báo lỗi bên server }
 
+ GET: api/monitor/getBookingVehicle/:parkingId     (dùng ở giao diện đơn đặt chỗ: hiển thị những booking chưa xác nhận)
+
+        - SUCCESS: 
+            return {
+                "data": [
+                    {
+                        "userInfo": {
+                            "firstName": "Khoi",
+                            "lastName": "Pham Tuan",
+                            "email": "bk@gmail.com",
+                            "accummulatePoint": 0,
+                            "avatar": "https://storage.googleapis.com/parking_app_hcmut/1619967840050-0353433047",
+                            "isActive": true,
+                            "createdAt": "2021-05-02T11:10:13.952Z",
+                            "_id": "608e8a2294039929a4e6a77c",
+                            "phoneNumber": "0353433047",
+                            "password": "$2a$08$iBQ/7gA9BKiM3XfYWfcURO0XcaXc6GzQzW0LBTDY65ZfL7DRYuhN.",
+                            "role": "user",
+                            "__v": 0
+                        },
+                        "vehicleInfo": {
+                            "images": [
+                                "https://storage.googleapis.com/parking_app_hcmut/1621145933384vehicle-0",
+                                "https://storage.googleapis.com/parking_app_hcmut/1621145933406vehicle-1"
+                            ],
+                            "_id": "60a0b950c9048c001595ba57",
+                            "ownerId": "608e8a2294039929a4e6a77c",
+                            "type": "1",
+                            "licensePlates": "76H1 87686",
+                            "color": "Xanh",
+                            "modelName": "Vario",
+                            "isActive": true,
+                            "__v": 0
+                        },
+                        "comingTime": "03/06/2021 11:36",
+                        "status": "Xe đẹp cẩn thận - cái này do người dùng nhập"
+                    }
+                ],
+                "status": true
+            }
+        - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+        GET: api/monitor/getBookingInfo    (Xem thông tin bãi xe mà user đang đặt) (thêm field isConfirm để hiển thị rõ ràng hơn bên app user)
+
+            - SUCCESS:
+                return {
+                    "data": {
+                        "ownerId": "608e566af0bfbb0015d99b93",
+                        "userId": "608e8a2294039929a4e6a77c",
+                        "vehicleId": "6093b537c293ad22149650f1",
+                        "parkingId": "608e56bbf0bfbb0015d99b94",
+                        "parkingName": "Bãi xe Dương Quảng Hàm",
+                        "parkingAddress": "495 Dương Quảng Hàm, phường 6, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam",
+                        "coordinate": {
+                            "latitude": 10.8382164,
+                            "longitude": 106.6825801
+                        },
+                        "comingTime": "12:30",
+                        "isConfirm": true 
+                    },
+                    "status": true
+                }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+
+    POST: api/monitor/confirmBooking/:parkingId     (dùng bên owner để xác nhận booking)
+        {
+            "userId":"608e8a2294039929a4e6a77c"
+        }
+
+        - SUCCESS: return {status: true, message: "Confirm booking successfully}
+        - FAILED:  return { status: false, message: message báo lỗi bên server }
