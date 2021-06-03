@@ -93,6 +93,7 @@ addComingVehicle = async (
                   userId: userId,
                   vehicleId: vehicleId,
                   comingTime: comingTime,
+                  isConfirm: false,
                   status: status,
             };
             listIsComing = [...listIsComing, isComing];
@@ -183,6 +184,7 @@ showBookingInfo = async (userId) => {
                         parkingAddress: res[0].parkingId.parkingAddress,
                         coordinate: res[0].parkingId.coordinate,
                         comingTime: vehicle.comingTime,
+                        isConfirm: vehicle.isConfirm,
                   };
                   return (result = { data: data, status: true });
             }
@@ -392,6 +394,59 @@ deleteComingVehicle = async (parkingId, userId, vehicleId) => {
       }
 };
 
+confirmBooking = async (ownerId, parkingId, userId) => {
+      let result;
+      // xét xem đã có monitor trong collection hay chưa
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+            ownerId: mongoose.Types.ObjectId(ownerId),
+      };
+      let response = await MonitorParking.find(filter);
+
+      if (response.length === 0) {
+            return (result = {
+                  message: "Monitor does not exist",
+                  status: false,
+            });
+      }
+      // Đã có monitor trong collection(đã có hoặc đã thêm ở trên)
+      try {
+            let listBooking = response[0].isComing;
+
+            for (let i = 0; i < listBooking.length; i++) {
+                  if (listBooking[i].userId === userId) {
+                        listBooking[i] = {
+                              userId: userId,
+                              vehicleId: listBooking[i].vehicleId,
+                              comingTime: listBooking[i].comingTime,
+                              isConfirm: true,
+                              status: listBooking[i].status,
+                        };
+                        break;
+                  }
+            }
+
+            // thêm vào model
+            await MonitorParking.findOneAndUpdate(
+                  { parkingId: mongoose.Types.ObjectId(parkingId) },
+                  { isComing: listBooking },
+                  (err, data) => {
+                        if (err) {
+                              result = { message: err, status: false };
+                        } else
+                              result = {
+                                    message: "Confirm booking successfully",
+                                    status: true,
+                              };
+                  }
+            );
+            return result;
+      } catch (error) {
+            // console.log('sdfsdf');
+            return (result = { error, status: false });
+      }
+};
+
 showListComingVehicle = async (parkingId) => {
       let result;
       const filter = {
@@ -408,41 +463,101 @@ showListComingVehicle = async (parkingId) => {
       let data = [];
       let resu;
       for (const vehicle of res[0].isComing) {
-            const filterVehicle = {
-                  _id: mongoose.Types.ObjectId(vehicle.vehicleId),
-                  ownerId: mongoose.Types.ObjectId(vehicle.userId),
-                  isActive: true,
-            };
-            let rel = await Vehicle.find(filterVehicle);
-            if (rel.length === 0) {
-                  resu = {
-                        vehicleInfo: `Vehicle does not exist: ${vehicle.vehicleId}`,
-                        comingTime: vehicle.comingTime,
-                        status: vehicle.status,
+            if (vehicle.isConfirm === true) {
+                  const filterVehicle = {
+                        _id: mongoose.Types.ObjectId(vehicle.vehicleId),
+                        ownerId: mongoose.Types.ObjectId(vehicle.userId),
+                        isActive: true,
                   };
-            } else {
-                  const filterUser = {
-                        _id: mongoose.Types.ObjectId(vehicle.userId),
-                  };
-                  let userInfo = await User.find(filterUser);
-                  if (userInfo.length === 0) {
+                  let rel = await Vehicle.find(filterVehicle);
+                  if (rel.length === 0) {
                         resu = {
-                              userInfo: `User does not exist: ${vehicle.userId}`,
-                              vehicleInfo: rel[0],
+                              vehicleInfo: `Vehicle does not exist: ${vehicle.vehicleId}`,
                               comingTime: vehicle.comingTime,
                               status: vehicle.status,
                         };
                   } else {
+                        const filterUser = {
+                              _id: mongoose.Types.ObjectId(vehicle.userId),
+                        };
+                        let userInfo = await User.find(filterUser);
+                        if (userInfo.length === 0) {
+                              resu = {
+                                    userInfo: `User does not exist: ${vehicle.userId}`,
+                                    vehicleInfo: rel[0],
+                                    comingTime: vehicle.comingTime,
+                                    status: vehicle.status,
+                              };
+                        } else {
+                              resu = {
+                                    userInfo: userInfo[0],
+                                    vehicleInfo: rel[0],
+                                    comingTime: vehicle.comingTime,
+                                    status: vehicle.status,
+                              };
+                        }
+                        // console.log(rel[0]);
+                  }
+                  data.push(resu);
+            }
+      }
+      result = { data: data, status: true };
+      return result;
+};
+
+showListBookingVehicle = async (parkingId) => {
+      let result;
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      // xét xem đã có monitor trong collection hay chưa
+      let res = await MonitorParking.find(filter);
+      if (res.length === 0) {
+            return (result = {
+                  message: "Parking does not exist",
+                  status: false,
+            });
+      }
+      let data = [];
+      let resu;
+      for (const vehicle of res[0].isComing) {
+            if (vehicle.isConfirm === false) {
+                  const filterVehicle = {
+                        _id: mongoose.Types.ObjectId(vehicle.vehicleId),
+                        ownerId: mongoose.Types.ObjectId(vehicle.userId),
+                        isActive: true,
+                  };
+                  let rel = await Vehicle.find(filterVehicle);
+                  if (rel.length === 0) {
                         resu = {
-                              userInfo: userInfo[0],
-                              vehicleInfo: rel[0],
+                              vehicleInfo: `Vehicle does not exist: ${vehicle.vehicleId}`,
                               comingTime: vehicle.comingTime,
                               status: vehicle.status,
                         };
+                  } else {
+                        const filterUser = {
+                              _id: mongoose.Types.ObjectId(vehicle.userId),
+                        };
+                        let userInfo = await User.find(filterUser);
+                        if (userInfo.length === 0) {
+                              resu = {
+                                    userInfo: `User does not exist: ${vehicle.userId}`,
+                                    vehicleInfo: rel[0],
+                                    comingTime: vehicle.comingTime,
+                                    status: vehicle.status,
+                              };
+                        } else {
+                              resu = {
+                                    userInfo: userInfo[0],
+                                    vehicleInfo: rel[0],
+                                    comingTime: vehicle.comingTime,
+                                    status: vehicle.status,
+                              };
+                        }
+                        // console.log(rel[0]);
                   }
-                  // console.log(rel[0]);
+                  data.push(resu);
             }
-            data.push(resu);
       }
       result = { data: data, status: true };
       return result;
@@ -1005,7 +1120,9 @@ const monitorParkingService = {
       showParkingInfo,
       showParkingHistoryInfo,
       showListComingVehicle,
+      showListBookingVehicle,
       deleteComingVehicle,
+      confirmBooking,
       addComeVehicle,
       showListVehicleInParking,
       addOutVehicle,

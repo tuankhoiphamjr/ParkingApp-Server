@@ -80,9 +80,38 @@ exports.deleteComingVehicleInMonitor = async (req, res) => {
       res.status(200).json(result);
 };
 
+exports.confirmBooking = async (req, res) => {
+      let ownerId = req.userId;
+      let parkingId = req.params.parkingId;
+      let userId = req.body.userId;
+      let result = await monitorParkingService.confirmBooking(
+            ownerId,
+            parkingId,
+            userId
+      );
+      // Bug tại đay nhưng không hiểu tại sao
+      if (!result?.status) {
+            res.status(400).json({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};
+
 exports.getIsComingVehicle = async (req, res) => {
       let parkingId = req.params.parkingId;
       let result = await monitorParkingService.showListComingVehicle(parkingId);
+      if (!result.status) {
+            res.status(400).send({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};
+
+exports.getBookingVehicle = async (req, res) => {
+      let parkingId = req.params.parkingId;
+      let result = await monitorParkingService.showListBookingVehicle(
+            parkingId
+      );
       if (!result.status) {
             res.status(400).send({ message: result.message });
             return;

@@ -25,6 +25,9 @@ const MonitorParkingSchema = new mongoose.Schema({
             comingTime: {
                   type: String,
             },
+            isConfirm: {
+                  type: Boolean,
+            },
             status: {
                   type: String,
             },
