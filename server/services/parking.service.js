@@ -4,6 +4,7 @@ const dbConfig = require("../config/db.config");
 var bcrypt = require("bcryptjs");
 const Parking = db.parking;
 const Feedback = db.feedback;
+const DeclineParking = db.declineParking;
 
 // Create Parking in DB
 createNewParkingPlace = async (
@@ -231,29 +232,43 @@ deleteParkingByOwner = async (ownerId, parkingId) => {
 
 // Verify Parking by Admin
 verifyParking = async (parkingId, status) => {
+      const filter = { _id: mongoose.Types.ObjectId(parkingId) };
       let result;
-      await Parking.findOneAndUpdate(
-            { _id: mongoose.Types.ObjectId(parkingId) },
-            { isVerified: status },
-            (err, data) => {
-                  if (err) {
-                        result = { message: err, status: false };
-                  }
+      try {
+            result = await Parking.findByIdAndUpdate(filter, {
+                  isVerified: status,
+            });
+      } catch (error) {
+            return {
+                  status: false,
+                  message: `Accept parking fail, error: ${error}`,
+            };
+      }
+      return { result, status: true };
+};
 
-                  if (!data) {
-                        result = {
-                              message: "Parking not found or something went wrong",
-                              status: false,
-                        };
-                  } else {
-                        result = {
-                              message: `Parking are verify to ${status}`,
-                              status: true,
-                        };
-                  }
-            }
-      );
-      return result;
+// Decline Parking by Admin
+declineParking = async (parkingId) => {
+      const filter = { _id: mongoose.Types.ObjectId(parkingId) };
+      let result;
+      try {
+            result = await Parking.findByIdAndDelete(filter);
+      } catch (error) {
+            return {
+                  status: false,
+                  message: `Delete parking fail, error: ${error.message}`,
+            };
+      }
+      try {
+            result = await DeclineParking.create(parkingId);
+      } catch (error) {
+            return {
+                  status: false,
+                  message: `Add parking to decline document fail, error: ${error.message}`,
+            };
+      }
+
+      return { result, status: true };
 };
 
 // Open or Close a parking by owner (manage parking)
@@ -290,6 +305,7 @@ const parkingServices = {
       getCensorshipParking,
       deleteParkingByOwner,
       verifyParking,
+      declineParking,
       changeParkingOpenStatus,
       updateRatingStar,
 };

@@ -14,7 +14,7 @@ createNewMonitor = async (ownerId, parkingId) => {
       };
       let res = await Parking.find(filter);
       if (res.length === 0) {
-            return { message: "Parking is not true!!", status: false };
+            return { message: "Parking is not true!", status: false };
       } else {
             let result = await MonitorParking.create({
                   ownerId,

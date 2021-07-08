@@ -7,6 +7,8 @@ router.get("/listNeedVerified", controller.getParkingsNeedVerified);
 
 router.post("/verify/:parkingId", controller.verifyParkingController);
 
+router.get("/decline/:parkingId", controller.declineParkingByAdmin);
+
 router.get("/getNumOfUserAndOwner", controller.getNumOfUserAndOwner);
 
 router.get("/getNumOfParking", controller.getNumOfParking);

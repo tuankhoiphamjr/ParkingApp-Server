@@ -99,3 +99,22 @@ exports.getNumOfEvaluate = async (req, res) => {
             status: true,
       });
 };
+
+exports.declineParkingByAdmin = async (req, res) => {
+      let parkingId = req.params.parkingId;
+      let result = await parkingServices.declineParkingByAdmin(parkingId);
+      if (!result) {
+            return res
+                  .status(400)
+                  .json({ status: false, message: "Some thing wrong" });
+      }
+      if (!result.status) {
+            return res
+                  .status(400)
+                  .json({ status: false, message: result.message });
+      }
+      return res.status(200).json({
+            result: result.result,
+            status: true,
+      });
+};
