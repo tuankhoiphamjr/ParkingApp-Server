@@ -77,11 +77,25 @@ updateNotifyToken = async (deviceId, userId, token) => {
   return { status: true, message: "Token update" };
 };
 
+//  Delete token
+deleteNotifyToken = async (deviceId, userId) => {
+  let result = await NotifyToken.deleteMany({
+    deviceId: deviceId,
+    userId: userId,
+  });
+  if (result.deletedCount === 0) {
+    return { status: false, message: "Something went wrong Or there are no token in DB" };
+  }
+
+  return { status: true, message: "Token deleted" };
+};
+
 const tokenServices = {
   createToken,
   getTokenByUserIdAndDeviceId,
   getTokensByUsersIdArray,
   updateNotifyToken,
+  deleteNotifyToken,
 };
 
 module.exports = tokenServices;
