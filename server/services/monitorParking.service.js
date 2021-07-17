@@ -1113,6 +1113,26 @@ getPriceOfBooking = async (userId, parkingId) => {
       });
 };
 
+getNumOfBookingByDate = async (day, month, year) => {
+      let res = await MonitorParking.find();
+      if (!res || res.length === 0) {
+            return {
+                  status: false,
+                  message: "something wrong",
+            };
+      }
+      res.forEach((p) => {
+            p.hasCome.forEach((h) => {
+                  let a = new Date(h.comingTime);
+                  console.log(a);
+            });
+      });
+      return {
+            status: true,
+            result: res,
+      };
+};
+
 const monitorParkingService = {
       createNewMonitor,
       addComingVehicle,
@@ -1131,5 +1151,6 @@ const monitorParkingService = {
       getRevenueAndVehicleNumbersOfParkingByMonthForStatistical,
       getRevenueVehicleNumberOfParkingByYear,
       getPriceOfBooking,
+      getNumOfBookingByDate,
 };
 module.exports = monitorParkingService;
