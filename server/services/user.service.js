@@ -3,6 +3,7 @@ const db = require("../models");
 const dbConfig = require("../config/db.config");
 var bcrypt = require("bcryptjs");
 const User = db.user;
+const dateFormat = require("../utils/dateFormat");
 
 // Create User in DB
 createUser = async (
@@ -151,6 +152,46 @@ getNumOfUserAndOwner = async () => {
             status: true,
       };
 };
+getNumOfUserRegisterByMonth = async (month, year) => {
+      let fromDate = new Date(Date.UTC(year, month - 1, 1));
+      let toDate = new Date(Date.UTC(year, month, 0));
+      let statisticalUser = Array(toDate.getDate()).fill(0);
+      let statisticalOwner = Array(toDate.getDate()).fill(0);
+      let statistical = Array(toDate.getDate());
+      for (let i = 0; i < statistical.length; i++) {
+            statistical[i] = [i + 1, 0, 0];
+      }
+      const filter = {
+            createdAt: {
+                  $gte: fromDate,
+                  $lt: toDate,
+            },
+      };
+      let res = await User.find(filter);
+      if (res.length === 0) {
+            return {
+                  status: true,
+                  result: statistical,
+            };
+      }
+      res.forEach((user) => {
+            let formatDateDB = dateFormat.dateDBFormat(user.createdAt);
+            let outTime = formatDateDB.split(" ");
+            let outDate = outTime[0].split("/");
+            if (user.role === "owner") {
+                  statisticalOwner[parseInt(outDate[0]) - 1] += 1;
+            } else if (user.role === "user") {
+                  statisticalUser[parseInt(outDate[0]) - 1] += 1;
+            }
+      });
+      for (let i = 0; i < statistical.length; i++) {
+            statistical[i] = [i + 1, statisticalOwner[i], statisticalUser[i]];
+      }
+      return {
+            status: true,
+            result: statistical,
+      };
+};
 
 const userServices = {
       setUserStatus,
@@ -162,6 +203,7 @@ const userServices = {
       updateUserInfo,
       checkUserExist,
       getNumOfUserAndOwner,
+      getNumOfUserRegisterByMonth,
 };
 
 module.exports = userServices;
