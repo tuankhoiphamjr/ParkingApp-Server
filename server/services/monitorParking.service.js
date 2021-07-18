@@ -1114,6 +1114,9 @@ getPriceOfBooking = async (userId, parkingId) => {
 };
 
 getNumOfBookingByDate = async (day, month, year) => {
+      day = parseInt(day);
+      month = parseInt(month);
+      year = parseInt(year);
       let res = await MonitorParking.find();
       if (!res || res.length === 0) {
             return {
@@ -1121,15 +1124,32 @@ getNumOfBookingByDate = async (day, month, year) => {
                   message: "something wrong",
             };
       }
+      let numOfBooking = 0;
+      let revenue = 0;
       res.forEach((p) => {
             p.hasCome.forEach((h) => {
-                  let a = new Date(h.comingTime);
-                  console.log(a);
+                  let date = new Date(h.comingTime);
+                  if (
+                        date.getDate() === day &&
+                        date.getMonth() === month &&
+                        date.getFullYear() === year
+                  ) {
+                        numOfBooking++;
+                  }
+                  date = new Date(h.outTime);
+                  if (
+                        date.getDate() === day &&
+                        date.getMonth() === month &&
+                        date.getFullYear() === year
+                  ) {
+                        revenue += parseInt(h.price);
+                  }
             });
       });
+      result = { numOfBooking: numOfBooking, revenue: revenue };
       return {
             status: true,
-            result: res,
+            result: result,
       };
 };
 
