@@ -81,25 +81,27 @@ comparePassword = async (password, passHashinDB) => {
 
 // Update password of user in DB
 updatePassword = async (userId, newPassword) => {
-      let result;
-      await User.findOneAndUpdate(
+      let result = await User.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(userId) },
-            { password: bcrypt.hashSync(newPassword, 8) },
-            (err, data) => {
-                  if (err) {
-                        result = { message: err, status: false };
-                  }
-                  result = { message: "Success", status: true };
-            }
+            { password: bcrypt.hashSync(newPassword, 8) }
       );
 
-      return result;
+      if(result) {
+            return {
+                  status: true,
+                  result: result,
+            }
+      }
+
+      return {
+            status: false,
+            message: "Failed",
+      };
 };
 
 // Update user info in DB
 updateUserInfo = async (userId, firstName, lastName, email, avatar) => {
-      let result;
-      await User.findOneAndUpdate(
+      let result = await User.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(userId) },
             {
                   firstName: firstName,
@@ -107,14 +109,14 @@ updateUserInfo = async (userId, firstName, lastName, email, avatar) => {
                   email: email,
                   avatar: avatar,
             },
-            (err, data) => {
-                  if (err) {
-                        result = { message: err, status: false };
-                  }
-                  result = { message: "Success", status: true };
-            }
+            
       );
-      return result;
+      if(result) {
+            return { result: result, status: true }; 
+      }
+      else {
+            return { message: "Failed", status: false };
+      }
 };
 
 // Checking if user existed with ${role}
@@ -193,6 +195,21 @@ getNumOfUserRegisterByMonth = async (month, year) => {
       };
 };
 
+getAllUserInfos = async () => {
+      let result = await User.find({});
+      if(result.length > 0) {
+            return {
+                  status: true,
+                  result: result,
+            }
+      } else {
+            return {
+                  status: false,
+                  message: "Something went wrong",
+            }
+      }
+};
+
 const userServices = {
       setUserStatus,
       createUser,
@@ -204,6 +221,7 @@ const userServices = {
       checkUserExist,
       getNumOfUserAndOwner,
       getNumOfUserRegisterByMonth,
+      getAllUserInfos,
 };
 
 module.exports = userServices;
