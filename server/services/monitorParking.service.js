@@ -1115,7 +1115,7 @@ getPriceOfBooking = async (userId, parkingId) => {
 
 getNumOfBookingByDate = async (day, month, year) => {
       day = parseInt(day);
-      month = parseInt(month);
+      month = parseInt(month) - 1;
       year = parseInt(year);
       let res = await MonitorParking.find();
       if (!res || res.length === 0) {

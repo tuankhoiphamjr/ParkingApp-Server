@@ -23,6 +23,26 @@ getNumberOfFeedback = async () => {
       return { result: result.length, status: true };
 };
 
+getNumberOfFeedbackByDate = async (day, month, year) => {
+      day = parseInt(day);
+      month = parseInt(month) - 1;
+      year = parseInt(year);
+      let fromDate = new Date(Date.UTC(year, month, day));
+      let toDate = new Date(Date.UTC(year, month, day + 1));
+      console.log(fromDate, toDate);
+      const filter = {
+            createAt: {
+                  $gte: fromDate,
+                  $lt: toDate,
+            },
+      };
+      let result = await Feedback.find(filter);
+      if (result.length === 0) {
+            return { result: 0, status: true };
+      }
+      return { result: result.length, status: true };
+};
+
 createFeedback = async (parkingId, userId, content, ratingStar) => {
       let res = await BookingHistory.find({
             userId: mongoose.Types.ObjectId(userId),
@@ -57,5 +77,6 @@ const feedbackService = {
       getFeedbackByParkingId,
       createFeedback,
       getNumberOfFeedback,
+      getNumberOfFeedbackByDate,
 };
 module.exports = feedbackService;

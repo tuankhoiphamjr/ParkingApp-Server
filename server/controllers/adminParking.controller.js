@@ -164,11 +164,11 @@ exports.getNumberBookingStatisticalByDate = async (req, res) => {
       });
 };
 
-exports.getNumberBookingStatisticalByDate = async (req, res) => {
+exports.getNumberEvaluateStatisticalByDate = async (req, res) => {
       let day = req.params.day;
       let month = req.params.month;
       let year = req.params.year;
-      let result = await monitorService.getNumOfBookingByDate(
+      let result = await feedbackService.getNumberOfFeedbackByDate(
             day,
             month,
             year
