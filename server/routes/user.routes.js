@@ -28,4 +28,8 @@ router.get("/getUserInfoById/:userId", controller.getUserInfoById);
 
 router.get("/getUserInfoByIdForUser", controller.getUserInfoByIdForUser);
 
+router.get("/", controller.getAllUserInfos);
+
+router.post("/password/update", controller.updateNewPassword);
+
 module.exports = router;
