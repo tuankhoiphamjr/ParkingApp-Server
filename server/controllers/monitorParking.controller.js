@@ -73,8 +73,25 @@ exports.deleteComingVehicleInMonitor = async (req, res) => {
             vehicleId
       );
       // Bug tại đay nhưng không hiểu tại sao
-      if (!result.status) {
-            res.status(400).json({ message: "Delete fail" });
+      if (!result?.status) {
+            res.status(400).json({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};
+
+exports.confirmBooking = async (req, res) => {
+      let ownerId = req.userId;
+      let parkingId = req.params.parkingId;
+      let userId = req.body.userId;
+      let result = await monitorParkingService.confirmBooking(
+            ownerId,
+            parkingId,
+            userId
+      );
+      // Bug tại đay nhưng không hiểu tại sao
+      if (!result?.status) {
+            res.status(400).json({ message: result.message });
             return;
       }
       res.status(200).json(result);
@@ -83,6 +100,18 @@ exports.deleteComingVehicleInMonitor = async (req, res) => {
 exports.getIsComingVehicle = async (req, res) => {
       let parkingId = req.params.parkingId;
       let result = await monitorParkingService.showListComingVehicle(parkingId);
+      if (!result.status) {
+            res.status(400).send({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};
+
+exports.getBookingVehicle = async (req, res) => {
+      let parkingId = req.params.parkingId;
+      let result = await monitorParkingService.showListBookingVehicle(
+            parkingId
+      );
       if (!result.status) {
             res.status(400).send({ message: result.message });
             return;
@@ -102,9 +131,9 @@ exports.addNewComingVehicleToMonitor = async (req, res) => {
             comingTime
       );
       // Bug tại đay nhưng không hiểu tại sao
-      if (!result.status) {
+      if (!result?.status) {
             res.status(400).json({
-                  message: "Add new vehicle to monitor fail",
+                  message: result.message,
             });
             return;
       }
@@ -136,6 +165,7 @@ exports.addVehicleHasOutOfParking = async (req, res) => {
       let ownerId = req.userId;
       let parkingId = req.params.parkingId;
       let { userId, vehicleId, comingTime, outTime, price } = req.body;
+      price = parseInt(price);
       let result = await monitorParkingService.addOutVehicle(
             ownerId,
             parkingId,
@@ -215,6 +245,19 @@ exports.getRevenueVehicleNumberOfParkingByYearController = async (req, res) => {
                   parkingId
             );
       if (!result.status) {
+            res.status(400).send({ message: result.message });
+            return;
+      }
+      res.status(200).json(result);
+};
+
+exports.getPriceOfBookingController = async (req, res) => {
+      let { userId, parkingId } = req.body;
+      let result = await monitorParkingService.getPriceOfBooking(
+            userId,
+            parkingId
+      );
+      if (!result?.status) {
             res.status(400).send({ message: result.message });
             return;
       }

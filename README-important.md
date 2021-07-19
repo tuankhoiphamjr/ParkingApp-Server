@@ -218,6 +218,44 @@
                                 }
             - FAILED: return { message: "Device has not been registered yet", status: false }
 
+
+    POST: api/notifications/token/delete
+            {
+                "userId" : "60758290432b1241ec881263",
+                "deviceId": "165d6caf46a7880a"
+            }
+
+            - SUCCESS: return   {
+                                    message: `Token deleted`,
+                                    status: true,
+                                }
+            - FAILED: return { message: "Something went wrong Or there are no token in DB", status: false }
+
+    GET: api/notifications/:userId
+            - SUCCESS: return   {
+                                    "result": [
+                                        {
+                                            "createdAt": "2021-06-02T12:31:27.657Z",
+                                            "title": "Có người đang tới bãi đỗ xe",
+                                            "body": "GAME ĐEEEEEEEEE",
+                                            "userId": "608e1e3d8c9cd107c8b366d1",
+                                            "sendUserId": "608e1e3d8c9cd107c8b366d1",
+                                        },
+                                        {
+                                            "createdAt": "2021-06-02T12:36:37.018Z",
+                                            "title": "Có người đang tới bãi đỗ xe",
+                                            "body": "GAME ĐEEEEEEEEE",
+                                            "userId": "608e1e3d8c9cd107c8b366d1",
+                                            "sendUserId": "608e1e3d8c9cd107c8b366d1",
+                                        }
+                                    ],
+                                    "status": true
+                                }
+            - FAILED: return {
+                                "message": "There are no notification",
+                                "status": false
+                            }
+
 # Booking
 
     POST: api/monitor/     (thêm document monitor sau khi bãi xe được duyệt)
@@ -310,26 +348,7 @@
             - FAILED:  return { status: false, message: message báo lỗi bên server }
 
     <!-- Dành cho user -->
-    GET: api/monitor/getBookingInfo    (Xem thông tin bãi xe mà user đang đặt)
-
-            - SUCCESS:
-                return {
-                    "data": {
-                        "ownerId": "608e566af0bfbb0015d99b93",
-                        "userId": "608e8a2294039929a4e6a77c",
-                        "vehicleId": "6093b537c293ad22149650f1",
-                        "parkingId": "608e56bbf0bfbb0015d99b94",
-                        "parkingName": "Bãi xe Dương Quảng Hàm",
-                        "parkingAddress": "495 Dương Quảng Hàm, phường 6, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam",
-                        "coordinate": {
-                            "latitude": 10.8382164,
-                            "longitude": 106.6825801
-                        },
-                        "comingTime": "12:30"
-                    },
-                    "status": true
-                }
-            - FAILED:  return { status: false, message: message báo lỗi bên server }
+    
 
     GET: api/monitor/getParkingInfo    (Xem thông tin bãi xe mà user đang đỗ)
 
@@ -419,11 +438,132 @@
                         "status": true
                     }
             - FAILED:  return { status: false, message: message báo lỗi bên server }
+    POST: api/monitor/getPriceOfBooking     (tính giá tiền từ thời điểm xe vào bãi đến thời điểm gọi api)
+            {
+                "userId": "165d6caf46a7880a",
+                "parkingId" : "1231232"
+            }
+
+            - SUCCESS: return {status: true, price: 10000}
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+    POST: api/updateCurrentSlots/:parkingId     
+        {
+            "currentSlots":200 (nhập số nguyên vào nha má)
+        }
+
+        - SUCCESS: return {status: true, result: result}
+        - FAILED:  return { status: false, message: message báo lỗi bên server }
+    POST: api/feedback/:parkingId     
+        {
+            "content": "Bai xe tam on",
+            "ratingStar": 4 (nhập số nguyên vào nha má)
+        }
+
+        - SUCCESS: return {status: true, result: result}
+        - FAILED:  return { status: false, message: message báo lỗi bên server }
+    GET: api/feedback/:parkingId     
+
+        - SUCCESS: return {
+            [
+                {
+                    "createAt": "2021-05-29T04:24:32.428Z",
+                    "_id": "60b1c210b285741b3ce3cc06",
+                    "parkingId": "60a893adc4e96e001570d189",
+                    "userId": {
+                        "firstName": "Khoi",
+                        "lastName": "Pham Tuan",
+                        "email": "bk@gmail.com",
+                        "accummulatePoint": 0,
+                        "avatar": "https://storage.googleapis.com/parking_app_hcmut/1619967840050-0353433047",
+                        "isActive": true,
+                        "createdAt": "2021-05-02T11:10:13.952Z",
+                        "_id": "608e8a2294039929a4e6a77c",
+                        "phoneNumber": "0353433047",
+                        "password": "$2a$08$iBQ/7gA9BKiM3XfYWfcURO0XcaXc6GzQzW0LBTDY65ZfL7DRYuhN.",
+                        "role": "user",
+                        "__v": 0
+                    },
+                    "content": "608e8a2294039929a4e6a77c",
+                    "ratingStar": 5,
+                    "__v": 0
+                },{ dưới này còn cái khác}
+        }
+        - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+ GET: api/monitor/getBookingVehicle/:parkingId     (dùng ở giao diện đơn đặt chỗ: hiển thị những booking chưa xác nhận)
+
+        - SUCCESS: 
+            return {
+                "data": [
+                    {
+                        "userInfo": {
+                            "firstName": "Khoi",
+                            "lastName": "Pham Tuan",
+                            "email": "bk@gmail.com",
+                            "accummulatePoint": 0,
+                            "avatar": "https://storage.googleapis.com/parking_app_hcmut/1619967840050-0353433047",
+                            "isActive": true,
+                            "createdAt": "2021-05-02T11:10:13.952Z",
+                            "_id": "608e8a2294039929a4e6a77c",
+                            "phoneNumber": "0353433047",
+                            "password": "$2a$08$iBQ/7gA9BKiM3XfYWfcURO0XcaXc6GzQzW0LBTDY65ZfL7DRYuhN.",
+                            "role": "user",
+                            "__v": 0
+                        },
+                        "vehicleInfo": {
+                            "images": [
+                                "https://storage.googleapis.com/parking_app_hcmut/1621145933384vehicle-0",
+                                "https://storage.googleapis.com/parking_app_hcmut/1621145933406vehicle-1"
+                            ],
+                            "_id": "60a0b950c9048c001595ba57",
+                            "ownerId": "608e8a2294039929a4e6a77c",
+                            "type": "1",
+                            "licensePlates": "76H1 87686",
+                            "color": "Xanh",
+                            "modelName": "Vario",
+                            "isActive": true,
+                            "__v": 0
+                        },
+                        "comingTime": "03/06/2021 11:36",
+                        "status": "Xe đẹp cẩn thận - cái này do người dùng nhập"
+                    }
+                ],
+                "status": true
+            }
+        - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+        GET: api/monitor/getBookingInfo    (Xem thông tin bãi xe mà user đang đặt) (thêm field isConfirm để hiển thị rõ ràng hơn bên app user)
+
+            - SUCCESS:
+                return {
+                    "data": {
+                        "ownerId": "608e566af0bfbb0015d99b93",
+                        "userId": "608e8a2294039929a4e6a77c",
+                        "vehicleId": "6093b537c293ad22149650f1",
+                        "parkingId": "608e56bbf0bfbb0015d99b94",
+                        "parkingName": "Bãi xe Dương Quảng Hàm",
+                        "parkingAddress": "495 Dương Quảng Hàm, phường 6, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam",
+                        "coordinate": {
+                            "latitude": 10.8382164,
+                            "longitude": 106.6825801
+                        },
+                        "comingTime": "12:30",
+                        "isConfirm": true 
+                    },
+                    "status": true
+                }
+            - FAILED:  return { status: false, message: message báo lỗi bên server }
+
+
+    POST: api/monitor/confirmBooking/:parkingId     (dùng bên owner để xác nhận booking)
+        {
+            "userId":"608e8a2294039929a4e6a77c"
+        }
 
 
 
-
-
+        - SUCCESS: return {status: true, message: "Confirm booking successfully}
+        - FAILED:  return { status: false, message: message báo lỗi bên server }
 #Vehicle types: 
  {
     key: 1,
@@ -441,3 +581,4 @@
     key: 4,
     value: 'Xe đạp',
   },
+

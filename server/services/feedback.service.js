@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const db = require("../models");
 const Feedback = db.feedback;
+const BookingHistory = db.bookingHistory;
 
 // Show feedback of an parking
 getFeedbackByParkingId = async (parkingId) => {
@@ -20,6 +21,14 @@ getNumberOfFeedback = async () => {
     return { message: "Feedback not found", status: false };
   }
   return { result: result.length, status: true };
+};
+
+getNumberOfFeedback = async () => {
+      let result = await Feedback.find();
+      if (result.length === 0) {
+            return { message: "Feedback not found", status: false };
+      }
+      return { result: result.length, status: true };
 };
 
 createFeedback = async (parkingId, userId, content, ratingStar) => {

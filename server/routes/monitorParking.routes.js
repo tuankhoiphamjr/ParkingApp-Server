@@ -3,7 +3,6 @@ const router = express.Router();
 
 const controller = require("../controllers/monitorParking.controller");
 
-// router.get("/:parkingId", controller.showFeedbackController);
 router.post("/", controller.addMonitorParking);
 
 router.get("/getBookingInfo", controller.getBookingInfo);
@@ -11,6 +10,8 @@ router.get("/getBookingInfo", controller.getBookingInfo);
 router.get("/getParkingInfo", controller.getParkingInfo);
 
 router.get("/getParkingHistoryInfo", controller.getParkingHistoryInfo);
+
+router.get("/getBookingVehicle/:parkingId", controller.getBookingVehicle);
 
 router.get("/getComingVehicle/:parkingId", controller.getIsComingVehicle);
 
@@ -22,6 +23,8 @@ router.post(
 );
 
 router.post("/deleteComingVehicle", controller.deleteComingVehicleInMonitor);
+
+router.post("/confirmBooking/:parkingId", controller.confirmBooking);
 
 router.post(
       "/addNewComingVehicleToMonitor/:parkingId",
@@ -48,6 +51,10 @@ router.post(
 router.post(
       "/getRevenueAndVehicleNumberOfParkingByYear/:parkingId",
       controller.getRevenueVehicleNumberOfParkingByYearController
+);
+router.post(
+      "/getPriceOfBooking",
+      controller.getPriceOfBookingController
 );
 
 module.exports = router;

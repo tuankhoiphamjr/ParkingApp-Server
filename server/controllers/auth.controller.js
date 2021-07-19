@@ -54,7 +54,7 @@ exports.signin = async (req, res) => {
   await userServices.setUserStatus(mongoose.Types.ObjectId(result._id), true);
 
   let token = await jwt.sign({ id: result._id }, config.secret, {
-    expiresIn: 10*60*60*1000, // 24 hours
+    expiresIn: "365d", // 24 hours
   });
 
   // Pass token to response

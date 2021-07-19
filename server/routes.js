@@ -9,7 +9,7 @@ router.use("/user", [authJwt.verifyToken], require("./routes/user.routes"));
 
 router.use("/image", require("./routes/image.routes"));
 
-router.use("/feedback", require("./routes/feedback.routes"));
+router.use("/feedback",[authJwt.verifyToken], require("./routes/feedback.routes"));
 
 router.use(
       "/vehicle",

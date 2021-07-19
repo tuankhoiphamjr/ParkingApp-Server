@@ -74,11 +74,39 @@ exports.updateUserInfo = async (req, res) => {
 
 exports.getUserInfoById = async (req, res) => {
       let userId = req.params.userId;
-      console.log(userId);
       let { result, status } = await userServices.getUserById(userId);
       if (!status) {
             res.status(400).send({ message: "Get user fail" });
             return;
       }
       res.status(200).json(result);
+};
+
+exports.getUserInfoByIdForUser = async (req, res) => {
+      let userId = req.userId;
+      let { result, status } = await userServices.getUserById(userId);
+      if (!status) {
+            res.status(400).send({ message: "Get user fail" });
+            return;
+      }
+      res.status(200).json(result);
+};
+
+exports.getAllUserInfos = async (req, res) => {
+      let { result, status } = await userServices.getAllUserInfos();
+      if (!status) {
+            res.status(400).send({ message: "Get user fail" });
+            return;
+      }
+      res.status(200).json(result);
+};
+
+exports.updateNewPassword = async (req, res) => {
+      let {userId, newPassword} = req.body;
+      let response = await userServices.updatePassword(userId, newPassword);
+      if (!response.status) {
+            res.status(400).send(response);
+            return;
+      }
+      res.status(200).send(response);
 };

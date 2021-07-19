@@ -3,6 +3,8 @@ const db = require("../models");
 const dbConfig = require("../config/db.config");
 var bcrypt = require("bcryptjs");
 const Parking = db.parking;
+const Feedback = db.feedback;
+const DeclineParking = db.declineParking;
 
 // Create Parking in DB
 createNewParkingPlace = async (
@@ -55,7 +57,8 @@ updateParkingInfoForOwner = async (
       vechileType,
       description,
       unitHour,
-      priceByVehicle
+      priceByVehicle,
+      images
 ) => {
       let result;
       let res = await Parking.find({ _id: mongoose.Types.ObjectId(parkingId) });
@@ -81,6 +84,64 @@ updateParkingInfoForOwner = async (
       await Parking.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(parkingId) },
             dataUpdate,
+            (err, data) => {
+                  if (err) {
+                        result = { message: err, status: false };
+                  }
+                  result = { message: "Success", status: true };
+            }
+      );
+      return result;
+};
+
+// Update parking curent slots for owner by ID of parking
+updateCurrentSlotsForOwner = async (parkingId, currentSlots) => {
+      let result;
+      await Parking.findOneAndUpdate(
+            { _id: mongoose.Types.ObjectId(parkingId) },
+            {
+                  currentSlots: currentSlots,
+            },
+            (err, data) => {
+                  if (err) {
+                        result = { message: err, status: false };
+                  }
+                  result = { message: "Success", status: true };
+            }
+      );
+      return result;
+};
+
+updateRatingStar = async (parkingId) => {
+      let result;
+      let res = await Feedback.find({
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      });
+      if (res.length === 0) {
+            return { message: "Parking not have feedback yet", status: false };
+      }
+      let totalStar = 0;
+      for (const feedback of res) {
+            totalStar += feedback.ratingStar;
+      }
+      let ratingStar = (totalStar / res.length).toFixed(1);
+      await Parking.findOneAndUpdate(
+            { _id: mongoose.Types.ObjectId(parkingId) },
+            {
+                  parkingName: parkingName,
+                  parkingAddress: parkingAddress,
+                  initialSlots: initialSlots,
+                  currentSlots: currentSlots,
+                  superficies: superficies,
+                  openTime: openTime,
+                  closeTime: closeTime,
+                  pricePerHour: pricePerHour,
+                  vechileType: vechileType,
+                  description: description,
+                  unitHour: unitHour,
+                  priceByVehicle: priceByVehicle,
+                  images: images,
+            },
             (err, data) => {
                   if (err) {
                         result = { message: err, status: false };
@@ -151,26 +212,22 @@ updateParkingCurrentSlot = async (parkingId, isOut) => {
       let currentSlots = isOut
             ? parkingInfo.result.currentSlots + 1
             : parkingInfo.result.currentSlots - 1;
-      let update;
-      await Parking.findOneAndUpdate(
+      let update = await Parking.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(parkingId) },
             {
                   currentSlots: currentSlots,
-            },
-            (err, data) => {
-                  if (err) {
-                        update = { message: err, status: false };
-                  }
-                  update = { message: "Success", status: true };
             }
       );
-      return update;
+      if (update.length === 0) {
+            return { message: "Update current slots fail", status: false };
+      }
+      return { message: "Update current slots successfully", status: true };
 };
 
 //Get all parking place info that is verified
 getAllVerifiedParkingInfo = async () => {
       let result = await Parking.find({ isVerified: true });
-      if (!result) {
+      if (result.length === 0) {
             return { status: false, message: "Not Found Car Parking" };
       }
 
@@ -234,29 +291,43 @@ deleteParkingByOwner = async (ownerId, parkingId) => {
 
 // Verify Parking by Admin
 verifyParking = async (parkingId, status) => {
+      const filter = { _id: mongoose.Types.ObjectId(parkingId) };
       let result;
-      await Parking.findOneAndUpdate(
-            { _id: mongoose.Types.ObjectId(parkingId) },
-            { isVerified: status },
-            (err, data) => {
-                  if (err) {
-                        result = { message: err, status: false };
-                  }
+      try {
+            result = await Parking.findByIdAndUpdate(filter, {
+                  isVerified: status,
+            });
+      } catch (error) {
+            return {
+                  status: false,
+                  message: `Accept parking fail, error: ${error}`,
+            };
+      }
+      return { result, status: true };
+};
 
-                  if (!data) {
-                        result = {
-                              message: "Parking not found or something went wrong",
-                              status: false,
-                        };
-                  } else {
-                        result = {
-                              message: `Parking are verify to ${status}`,
-                              status: true,
-                        };
-                  }
-            }
-      );
-      return result;
+// Decline Parking by Admin
+declineParking = async (parkingId) => {
+      const filter = { _id: mongoose.Types.ObjectId(parkingId) };
+      let result;
+      try {
+            result = await Parking.findByIdAndDelete(filter);
+      } catch (error) {
+            return {
+                  status: false,
+                  message: `Delete parking fail, error: ${error.message}`,
+            };
+      }
+      try {
+            result = await DeclineParking.create(parkingId);
+      } catch (error) {
+            return {
+                  status: false,
+                  message: `Add parking to decline document fail, error: ${error.message}`,
+            };
+      }
+
+      return { result, status: true };
 };
 
 // Open or Close a parking by owner (manage parking)
@@ -293,7 +364,9 @@ const parkingServices = {
       getCensorshipParking,
       deleteParkingByOwner,
       verifyParking,
+      declineParking,
       changeParkingOpenStatus,
+      updateRatingStar,
 };
 
 module.exports = parkingServices;
