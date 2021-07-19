@@ -15,6 +15,8 @@ db.vehicle = require("./vehicle.model");
 db.notifyToken = require("./notifyToken.model");
 db.monitorParking = require("./monitorParking.model");
 db.bookingHistory = require("./bookingHistory.model");
+db.notification = require("./notification.model");
+db.likedParkings = require("./likedParkings.model")
 
 db.ROLES = ["user", "admin", "moderator"];
 

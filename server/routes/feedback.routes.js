@@ -3,7 +3,9 @@ const router = express.Router();
 
 const controller = require("../controllers/feedback.controller");
 
-router.get("/:parkingId", controller.showFeedbackController);
+router.get("/:parkingId", controller.showFeedbackOfParkingController);
+router.get("/getoverview/:parkingId", controller.getOverviewFeedback);
+
 router.post("/:parkingId", controller.addFeedbackToParkingOwner);
 
 module.exports = router;

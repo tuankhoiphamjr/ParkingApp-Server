@@ -1,11 +1,34 @@
 const mongoose = require("mongoose");
 const db = require("../models");
+const moment = require('moment')
 const MonitorParking = db.monitorParking;
 const Parking = db.parking;
 const Vehicle = db.vehicle;
 const User = db.user;
 const BookingHistory = db.bookingHistory;
 const dateFormat = require("../utils/dateFormat");
+
+
+
+//helper 
+
+function getMonthDateRange(year, month) {
+  
+      // month in moment is 0 based, so 9 is actually october, subtract 1 to compensate
+      // array is 'year', 'month', 'day', etc
+      var startDate = moment([year, month - 1]);
+  
+      // Clone the value before .endOf()
+      var endDate = moment(startDate).endOf('month');
+  
+      // just for demonstration:
+      console.log(startDate.toDate());
+      console.log(endDate.toDate());
+  
+      // make sure to call toDate() for plain JavaScript date type
+      return { start: startDate, end: endDate };
+  }
+//end helper
 
 createNewMonitor = async (ownerId, parkingId) => {
       const filter = {
@@ -719,8 +742,8 @@ getRevenueOfParkingByDate = async (date, parkingId) => {
       let revenue = 0;
       for (const vehicle of res[0].hasCome) {
             if (vehicle.isOut === true) {
-                  let outTime = vehicle.outTime.split(" ");
-                  if (outTime[0] === date) {
+                  let outTime = moment(vehicle.outTime).format('DD/MM/YYYY')
+                  if (outTime === date) {
                         count++;
                         revenue += vehicle.price;
                   }
@@ -735,10 +758,12 @@ getRevenueOfParkingByDate = async (date, parkingId) => {
 };
 
 getRevenueOfParkingByMonth = async (month, year, parkingId) => {
+      const {start, end} = getMonthDateRange(year, month)
       let result;
       const filter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
       };
+      const daysInMonth = moment(month + '/' + year, 'MM/YYYY').daysInMonth()
       // xét xem đã có monitor trong collection hay chưa
       let res = await MonitorParking.find(filter);
       if (res.length === 0) {
@@ -748,30 +773,29 @@ getRevenueOfParkingByMonth = async (month, year, parkingId) => {
             });
       }
       let revenue = [0, 0, 0, 0, 0, 0];
-      let vehicleNumber = [0, 0, 0, 0, 0, 0];
+      let vehicleNumber = new Array(daysInMonth).fill(0);
       for (const vehicle of res[0].hasCome) {
             if (vehicle.isOut === true) {
-                  let outTime = vehicle.outTime.split(" ");
-                  let date = outTime[0].split("/");
-                  if (date[1] === month && date[2] === year) {
-                        let day = parseInt(date[0]);
+                  if (moment(vehicle.outTime) < moment(end) && moment(vehicle.outTime) >= moment(start)) {
+                        let day = moment(vehicle.outTime).date()
+                        vehicleNumber[day - 1] += 1
                         if (day <= 5) {
-                              vehicleNumber[0]++;
+                              // vehicleNumber[0]++;
                               revenue[0] += vehicle.price;
                         } else if (day <= 10) {
-                              vehicleNumber[1]++;
+                              // vehicleNumber[1]++;
                               revenue[1] += vehicle.price;
                         } else if (day <= 15) {
-                              vehicleNumber[2]++;
+                              // vehicleNumber[2]++;
                               revenue[2] += vehicle.price;
                         } else if (day <= 20) {
-                              vehicleNumber[3]++;
+                              // vehicleNumber[3]++;
                               revenue[3] += vehicle.price;
                         } else if (day <= 25) {
-                              vehicleNumber[4]++;
+                              // vehicleNumber[4]++;
                               revenue[4] += vehicle.price;
                         } else {
-                              vehicleNumber[5]++;
+                              // vehicleNumber[5]++;
                               revenue[5] += vehicle.price;
                         }
                   }
@@ -856,8 +880,7 @@ getRevenueVehicleNumberOfParkingByYear = async (year, parkingId) => {
       }
 
       let now = new Date(Date.now());
-      let index =
-            now.getFullYear() === parseInt(year) ? now.getMonth() + 1 : 12;
+      let index = 12;
 
       let countArray = [];
       let revenueArray = [];
@@ -869,7 +892,11 @@ getRevenueVehicleNumberOfParkingByYear = async (year, parkingId) => {
       for (const vehicle of res[0].hasCome) {
             if (vehicle.isOut === true) {
                   if (now.getFullYear() === parseInt(year)) {
-                        let outTime = vehicle.outTime.split(" ");
+                        let formatDateDB = dateFormat.dateDBFormat(
+                              vehicle.outTime
+                        );
+                        let outTime = formatDateDB.split(" ");
+                              
                         let date = outTime[0].split("/");
                         let day = parseInt(date[0]);
                         let month = parseInt(date[1]);
@@ -896,8 +923,8 @@ getRevenueVehicleNumberOfParkingByYear = async (year, parkingId) => {
             }
       }
       let data = {
-            revenue: revenueArray,
-            vehicleNumber: countArray,
+            revenue: revenueArray.map(_=> _.reduce((s, i)=> s + i)),
+            vehicleNumber: countArray.map(_=> _.reduce((s, i)=> s + i)),
       };
       result = { data: data, status: true };
       return result;

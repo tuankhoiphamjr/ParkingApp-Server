@@ -60,47 +60,51 @@ exports.getParkingInfoController = async (req, res) => {
 
 // Update Parking Info (NOT IMAGE YET)
 exports.firstUpdateParkingInfoController = async (req, res) => {
-  let {
-    parkingName,
-    parkingAddress,
-    initialSlots,
-    superficies,
-    openTime,
-    closeTime,
-    pricePerHour,
-    vechileType,
-    description,
-    unitHour,
-    priceByVehicle,
-  } = req.body;
-
-  let parkingId = req.params.parkingId;
-  let ownerId = req.userId;
-  let result = await parkingServices.updateParkingInfoForOwner(
-    parkingId,
-    ownerId,
-    parkingName,
-    parkingAddress,
-    initialSlots,
-    superficies,
-    openTime,
-    closeTime,
-    pricePerHour,
-    vechileType,
-    description,
-    unitHour,
-    priceByVehicle,
-  );
-  if (!result.status) {
-    return res.status(400).send({
-      status: false,
-      message: "Update parking info failed.",
-    });
-  }
-  return res
-    .status(200)
-    .send({ status: true, message: "Update parking info successfully." });
+      let {
+            parkingName,
+            parkingAddress,
+            initialSlots,
+            superficies,
+            openTime,
+            closeTime,
+            pricePerHour,
+            vechileType,
+            description,
+            unitHour,
+            priceByVehicle,
+            images,
+      } = req.body;
+      let parkingId = req.params.parkingId;
+      let ownerId = req.userId;
+      let result = await parkingServices.updateParkingInfoForOwner(
+            parkingId,
+            ownerId,
+            parkingName,
+            parkingAddress,
+            initialSlots,
+            superficies,
+            openTime,
+            closeTime,
+            pricePerHour,
+            vechileType,
+            description,
+            unitHour,
+            priceByVehicle,
+            images
+      );
+      console.log(result);
+      if (!result?.status) {
+            return res.status(400).send({
+                  status: false,
+                  message: "Update parking info failed.",
+            });
+      }
+      return res.status(200).send({
+            status: true,
+            message: "Update parking info successfully.",
+      });
 };
+
 
 exports.reservationController = async (req, res) => {
   let parkingId = req.params.parkingId;

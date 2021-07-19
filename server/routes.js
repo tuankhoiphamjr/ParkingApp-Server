@@ -29,7 +29,7 @@ router.use(
       require("./routes/adminParking.routes")
 );
 
-router.use("/parkings", require("./routes/parkings.routes"));
+router.use("/parkings", [authJwt.verifyToken], require("./routes/parkings.routes"));
 
 router.use("/notifications", require("./routes/notification"));
 
@@ -39,6 +39,11 @@ router.use(
       require("./routes/monitorParking.routes")
 );
 
+router.use(
+      "/likedparking",
+      [authJwt.verifyToken],
+      require("./routes/likedParkings.routes")
+);
 // router.use("/avatar", require("./routes/image"));
 
 module.exports = router;
