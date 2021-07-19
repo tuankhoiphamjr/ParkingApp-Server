@@ -77,7 +77,6 @@ exports.firstUpdateParkingInfoController = async (req, res) => {
             priceByVehicle,
             images,
       } = req.body;
-
       let parkingId = req.params.parkingId;
       let ownerId = req.userId;
       let result = await parkingServices.updateParkingInfoForOwner(
@@ -96,7 +95,8 @@ exports.firstUpdateParkingInfoController = async (req, res) => {
             priceByVehicle,
             images
       );
-      if (!result.status) {
+      console.log(result);
+      if (!result?.status) {
             return res.status(400).send({
                   status: false,
                   message: "Update parking info failed.",
@@ -122,6 +122,7 @@ exports.updateParkingCurrentSlotsForOwner = async (req, res) => {
       }
       return res.status(200).json({ status: true, result: result });
 };
+
 
 exports.reservationController = async (req, res) => {
       let parkingId = req.params.parkingId;
