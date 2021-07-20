@@ -11,21 +11,21 @@ const LikeParkings = new mongoose.Schema({
             required: true,
       },
       parkingName: {
-          type: String,
-          required: true
+            type: String,
+            required: true,
       },
       userName: {
-          type: String,
-          required: true,
+            type: String,
+            required: true,
       },
       parkingAddress: {
-          type: String,
-          required: true
+            type: String,
+            required: true,
       },
       createdAt: {
-          type: String,
-          default: new Date(),
-          required: true
-      }
+            type: String,
+            default: new Date(),
+            required: true,
+      },
 });
 module.exports = mongoose.model("LikedParkings", LikeParkings);

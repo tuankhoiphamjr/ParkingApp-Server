@@ -65,12 +65,13 @@ updateParkingInfoForOwner = async (
       if (res.length === 0) {
             return { message: "Parking not found", status: false };
       }
-      let currentSlots = (+initialSlots) - res[0].initialSlots + res[0].currentSlots;
+      let currentSlots =
+            +initialSlots - res[0].initialSlots + res[0].currentSlots;
       let dataUpdate = {
             parkingName,
             parkingAddress,
             initialSlots,
-            currentSlots, 
+            currentSlots,
             superficies,
             openTime,
             closeTime,
@@ -80,7 +81,7 @@ updateParkingInfoForOwner = async (
             unitHour,
             priceByVehicle,
             images,
-      }
+      };
       await Parking.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(parkingId) },
             dataUpdate,
@@ -125,7 +126,7 @@ updateRatingStar = async (parkingId) => {
             totalStar += feedback.ratingStar;
       }
       let ratingStar = (totalStar / res.length).toFixed(1);
-      await Parking.findOneAndUpdate(
+      let response = await Parking.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(parkingId) },
             {
                   parkingName: parkingName,
@@ -141,14 +142,12 @@ updateRatingStar = async (parkingId) => {
                   unitHour: unitHour,
                   priceByVehicle: priceByVehicle,
                   images: images,
-            },
-            (err, data) => {
-                  if (err) {
-                        result = { message: err, status: false };
-                  }
-                  result = { message: "Success", status: true };
             }
       );
+      if (response.length === 0) {
+            return { message: "Update rating star fail", status: 400 };
+      }
+      result = { message: "Update rating star successfully", status: 200 };
       return result;
 };
 
