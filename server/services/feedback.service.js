@@ -23,6 +23,14 @@ getNumberOfFeedback = async () => {
       return { result: result.length, status: true };
 };
 
+getNumberOfFeedback = async () => {
+      let result = await Feedback.find();
+      if (result.length === 0) {
+            return { message: "Feedback not found", status: false };
+      }
+      return { result: result.length, status: true };
+};
+
 getNumberOfFeedbackByDate = async (day, month, year) => {
       day = parseInt(day);
       month = parseInt(month) - 1;
@@ -72,10 +80,43 @@ createFeedback = async (parkingId, userId, content, ratingStar) => {
       return { result, status: true };
 };
 
+getOverviewFeedBack = async (parkingId) => {
+      const filter = {
+            parkingId: mongoose.Types.ObjectId(parkingId),
+      };
+      let result = await Feedback.find(filter).populate("userId");
+      const votes = [
+            {
+                  point: "1 sao",
+                  total: result?.filter((item) => item.ratingStar === 1).length,
+            },
+            {
+                  point: "2 sao",
+                  total: result?.filter((item) => item.ratingStar === 2).length,
+            },
+            {
+                  point: "3 sao",
+                  total: result?.filter((item) => item.ratingStar === 3).length,
+            },
+            {
+                  point: "4 sao",
+                  total: result?.filter((item) => item.ratingStar === 4).length,
+            },
+            {
+                  point: "5 sao",
+                  total: result?.filter((item) => item.ratingStar === 5).length,
+            },
+      ];
+      if (result === 0) {
+            return { message: "Feedback not found", status: false };
+      }
+      return { result: votes, status: true };
+};
 const feedbackService = {
       getFeedbackByParkingId,
       createFeedback,
       getNumberOfFeedback,
       getNumberOfFeedbackByDate,
+      getOverviewFeedBack,
 };
 module.exports = feedbackService;
