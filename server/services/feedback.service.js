@@ -29,7 +29,6 @@ getNumberOfFeedbackByDate = async (day, month, year) => {
       year = parseInt(year);
       let fromDate = new Date(Date.UTC(year, month, day));
       let toDate = new Date(Date.UTC(year, month, day + 1));
-      console.log(fromDate, toDate);
       const filter = {
             createAt: {
                   $gte: fromDate,
