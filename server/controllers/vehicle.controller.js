@@ -21,7 +21,7 @@ exports.addVehicleController = async (req, res) => {
             type,
             licensePlates,
             color,
-            modelName, 
+            modelName,
             images
       );
 
@@ -39,13 +39,23 @@ exports.addVehicleController = async (req, res) => {
 };
 
 exports.updateVehicleInfo = async (req, res) => {
-      let { vehicleId, type, licensePlates, color, modelName } = req.body;
+      let {
+            vehicleId,
+            type,
+            licensePlates,
+            color,
+            modelName,
+            images,
+            description,
+      } = req.body;
       let result = await vehicleService.updateVehicleInfo(
             vehicleId,
             type,
             licensePlates,
             color,
-            modelName
+            modelName,
+            images,
+            description
       );
       if (!result.status) {
             return res.status(400).send({
