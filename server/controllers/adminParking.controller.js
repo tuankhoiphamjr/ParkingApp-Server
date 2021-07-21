@@ -163,3 +163,28 @@ exports.getNumberBookingStatisticalByDate = async (req, res) => {
             status: true,
       });
 };
+
+exports.getNumberEvaluateStatisticalByDate = async (req, res) => {
+      let day = req.params.day;
+      let month = req.params.month;
+      let year = req.params.year;
+      let result = await feedbackService.getNumberOfFeedbackByDate(
+            day,
+            month,
+            year
+      );
+      if (!result) {
+            return res.status(400).json({
+                  status: false,
+            });
+      }
+      if (!result.status) {
+            return res.status(400).json({
+                  status: false,
+            });
+      }
+      return res.status(200).json({
+            result: result.result,
+            status: true,
+      });
+};

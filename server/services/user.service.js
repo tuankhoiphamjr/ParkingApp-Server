@@ -29,17 +29,14 @@ createUser = async (
 
 // Change status of user
 setUserStatus = async (userId, status) => {
-      let result;
-      await User.findOneAndUpdate(
+      let result = [];
+      let respon = await User.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(userId) },
-            { isActive: status },
-            (err, data) => {
-                  if (err) {
-                        result = { message: err, status: false };
-                  }
-                  result = { message: "Success", status: true };
-            }
+            { isActive: status }
       );
+      if (respon.length === 0) {
+            result = { message: "Something wrong", status: false };
+      } else result = { message: "Success", status: true };
       return result;
 };
 
@@ -86,11 +83,11 @@ updatePassword = async (userId, newPassword) => {
             { password: bcrypt.hashSync(newPassword, 8) }
       );
 
-      if(result) {
+      if (result) {
             return {
                   status: true,
                   result: result,
-            }
+            };
       }
 
       return {
@@ -108,13 +105,11 @@ updateUserInfo = async (userId, firstName, lastName, email, avatar) => {
                   lastName: lastName,
                   email: email,
                   avatar: avatar,
-            },
-            
+            }
       );
-      if(result) {
-            return { result: result, status: true }; 
-      }
-      else {
+      if (result) {
+            return { result: result, status: true };
+      } else {
             return { message: "Failed", status: false };
       }
 };
@@ -197,16 +192,16 @@ getNumOfUserRegisterByMonth = async (month, year) => {
 
 getAllUserInfos = async () => {
       let result = await User.find({});
-      if(result.length > 0) {
+      if (result.length > 0) {
             return {
                   status: true,
                   result: result,
-            }
+            };
       } else {
             return {
                   status: false,
                   message: "Something went wrong",
-            }
+            };
       }
 };
 

@@ -60,17 +60,18 @@ updateParkingInfoForOwner = async (
       priceByVehicle,
       images
 ) => {
-      let result;
+      let result = [];
       let res = await Parking.find({ _id: mongoose.Types.ObjectId(parkingId) });
       if (res.length === 0) {
             return { message: "Parking not found", status: false };
       }
-      let currentSlots = (+initialSlots) - res[0].initialSlots + res[0].currentSlots;
+      let currentSlots =
+            +initialSlots - res[0].initialSlots + res[0].currentSlots;
       let dataUpdate = {
             parkingName,
             parkingAddress,
             initialSlots,
-            currentSlots, 
+            currentSlots,
             superficies,
             openTime,
             closeTime,
@@ -80,40 +81,91 @@ updateParkingInfoForOwner = async (
             unitHour,
             priceByVehicle,
             images,
-      }
-      await Parking.findOneAndUpdate(
+      };
+      let respon = await Parking.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(parkingId) },
-            dataUpdate,
-            (err, data) => {
-                  if (err) {
-                        result = { message: err, status: false };
-                  }
-                  result = { message: "Success", status: true };
-            }
+            dataUpdate
       );
+      if (respon.length === 0) {
+            result = { message: "Something wrong", status: false };
+      } else result = { message: "Success", status: true };
       return result;
 };
 
 // Update parking curent slots for owner by ID of parking
 updateCurrentSlotsForOwner = async (parkingId, currentSlots) => {
-      let result;
-      await Parking.findOneAndUpdate(
+      let result = [];
+      let respon = await Parking.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(parkingId) },
             {
                   currentSlots: currentSlots,
-            },
-            (err, data) => {
-                  if (err) {
-                        result = { message: err, status: false };
-                  }
-                  result = { message: "Success", status: true };
             }
       );
+      if (respon.length === 0) {
+            result = { message: "Something wrong", status: false };
+      } else result = { message: "Success", status: true };
+      return result;
+};
+
+// updateRatingStar = async (parkingId) => {
+//       let result = [];
+//       let res = await Feedback.find({
+//             parkingId: mongoose.Types.ObjectId(parkingId),
+//       });
+//       if (res.length === 0) {
+//             return { message: "Parking not have feedback yet", status: false };
+//       }
+//       let totalStar = 0;
+//       for (const feedback of res) {
+//             totalStar += feedback.ratingStar;
+//       }
+//       let ratingStar = (totalStar / res.length).toFixed(1);
+//       let response = await Parking.findOneAndUpdate(
+//             { _id: mongoose.Types.ObjectId(parkingId) },
+//             {
+//                   parkingName: parkingName,
+//                   parkingAddress: parkingAddress,
+//                   initialSlots: initialSlots,
+//                   currentSlots: currentSlots,
+//                   superficies: superficies,
+//                   openTime: openTime,
+//                   closeTime: closeTime,
+//                   pricePerHour: pricePerHour,
+//                   vechileType: vechileType,
+//                   description: description,
+//                   unitHour: unitHour,
+//                   priceByVehicle: priceByVehicle,
+//                   images: images,
+//                   ratingStar: ratingStar,
+//             }
+//       );
+//       if (response.length === 0) {
+//             return { message: "Update rating star fail", status: false };
+//       } else
+//             result = {
+//                   message: "Update rating star successfully",
+//                   status: true,
+//             };
+//       return result;
+// };
+
+// Update parking curent slots for owner by ID of parking
+updateCurrentSlotsForOwner = async (parkingId, currentSlots) => {
+      let result = [];
+      let respon = await Parking.findOneAndUpdate(
+            { _id: mongoose.Types.ObjectId(parkingId) },
+            {
+                  currentSlots: currentSlots,
+            }
+      );
+      if (respon.length === 0) {
+            result = { message: "Something wrong", status: false };
+      } else result = { message: "Success", status: true };
       return result;
 };
 
 updateRatingStar = async (parkingId) => {
-      let result;
+      let result = [];
       let res = await Feedback.find({
             parkingId: mongoose.Types.ObjectId(parkingId),
       });
@@ -125,76 +177,15 @@ updateRatingStar = async (parkingId) => {
             totalStar += feedback.ratingStar;
       }
       let ratingStar = (totalStar / res.length).toFixed(1);
-      await Parking.findOneAndUpdate(
-            { _id: mongoose.Types.ObjectId(parkingId) },
-            {
-                  parkingName: parkingName,
-                  parkingAddress: parkingAddress,
-                  initialSlots: initialSlots,
-                  currentSlots: currentSlots,
-                  superficies: superficies,
-                  openTime: openTime,
-                  closeTime: closeTime,
-                  pricePerHour: pricePerHour,
-                  vechileType: vechileType,
-                  description: description,
-                  unitHour: unitHour,
-                  priceByVehicle: priceByVehicle,
-                  images: images,
-            },
-            (err, data) => {
-                  if (err) {
-                        result = { message: err, status: false };
-                  }
-                  result = { message: "Success", status: true };
-            }
-      );
-      return result;
-};
-
-// Update parking curent slots for owner by ID of parking
-updateCurrentSlotsForOwner = async (parkingId, currentSlots) => {
-      let result;
-      await Parking.findOneAndUpdate(
-            { _id: mongoose.Types.ObjectId(parkingId) },
-            {
-                  currentSlots: currentSlots,
-            },
-            (err, data) => {
-                  if (err) {
-                        result = { message: err, status: false };
-                  }
-                  result = { message: "Success", status: true };
-            }
-      );
-      return result;
-};
-
-updateRatingStar = async (parkingId) => {
-      let result;
-      let res = await Feedback.find({
-            parkingId: mongoose.Types.ObjectId(parkingId),
-      });
-      if (res.length === 0) {
-            return { message: "Parking not have feedback yet", status: false };
-      }
-      let totalStar = 0;
-      for (const feedback of res) {
-            totalStar += feedback.ratingStar;
-      }
-      let ratingStar = (totalStar / res.length).toFixed(1);
-      await Parking.findOneAndUpdate(
+      let respon = await Parking.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(parkingId) },
             {
                   ratingStar: ratingStar,
-            },
-            (err, data) => {
-                  if (err) {
-                        result = { message: err, status: false };
-                  }
-                  result = { message: "Success", status: true };
             }
       );
+      if (respon.length === 0) {
+            result = { message: "Something wrong", status: false };
+      } else result = { message: "Success", status: true };
       return result;
 };
 
@@ -263,7 +254,7 @@ getCensorshipParking = async () => {
 
 // Delete a parking by owner
 deleteParkingByOwner = async (ownerId, parkingId) => {
-      let result;
+      let result = [];
       let checkIfParkingExisted = await getParkingByOwnerIdAndParkingId(
             ownerId,
             parkingId
@@ -274,25 +265,24 @@ deleteParkingByOwner = async (ownerId, parkingId) => {
                   status: false,
                   message: "Parking not Found or Deleted Or user are not owner of parking",
             };
-      await Parking.deleteOne(
-            { _id: parkingId, ownerId: ownerId },
-            (err, data) => {
-                  if (err) {
-                        result = { message: err, status: false };
-                  }
-                  result = {
-                        message: "Delete Parking successfully",
-                        status: true,
-                  };
-            }
-      );
+      let respon = await Parking.deleteOne({
+            _id: parkingId,
+            ownerId: ownerId,
+      });
+      if (respon.length === 0) {
+            result = { message: "Something wrong", status: false };
+      } else
+            result = {
+                  message: "Delete Parking successfully",
+                  status: true,
+            };
       return result;
 };
 
 // Verify Parking by Admin
 verifyParking = async (parkingId, status) => {
       const filter = { _id: mongoose.Types.ObjectId(parkingId) };
-      let result;
+      let result = [];
       try {
             result = await Parking.findByIdAndUpdate(filter, {
                   isVerified: status,
@@ -309,7 +299,7 @@ verifyParking = async (parkingId, status) => {
 // Decline Parking by Admin
 declineParking = async (parkingId) => {
       const filter = { _id: mongoose.Types.ObjectId(parkingId) };
-      let result;
+      let result = [];
       try {
             result = await Parking.findByIdAndDelete(filter);
       } catch (error) {
