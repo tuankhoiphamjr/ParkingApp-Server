@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const db = require("../models");
-const moment = require('moment')
+const moment = require("moment");
 const MonitorParking = db.monitorParking;
 const Parking = db.parking;
 const Vehicle = db.vehicle;
@@ -8,26 +8,23 @@ const User = db.user;
 const BookingHistory = db.bookingHistory;
 const dateFormat = require("../utils/dateFormat");
 
-
-
-//helper 
+//helper
 
 function getMonthDateRange(year, month) {
-  
       // month in moment is 0 based, so 9 is actually october, subtract 1 to compensate
       // array is 'year', 'month', 'day', etc
       var startDate = moment([year, month - 1]);
-  
+
       // Clone the value before .endOf()
-      var endDate = moment(startDate).endOf('month');
-  
+      var endDate = moment(startDate).endOf("month");
+
       // just for demonstration:
       console.log(startDate.toDate());
       console.log(endDate.toDate());
-  
+
       // make sure to call toDate() for plain JavaScript date type
       return { start: startDate, end: endDate };
-  }
+}
 //end helper
 
 createNewMonitor = async (ownerId, parkingId) => {
@@ -57,7 +54,7 @@ addComingVehicle = async (
       comingTime,
       status
 ) => {
-      let result;
+      let result = [];
       // xét xem thông tin xe có chính xác hay không
       let res = await BookingHistory.find({
             vehicleId: mongoose.Types.ObjectId(vehicleId),
@@ -123,20 +120,19 @@ addComingVehicle = async (
 
             // thêm vào model
 
-            await MonitorParking.findOneAndUpdate(
+            let resspon = await MonitorParking.findOneAndUpdate(
                   { parkingId: mongoose.Types.ObjectId(parkingId) },
-                  { isComing: listIsComing },
-                  (err, data) => {
-                        if (err) {
-                              result = { message: err, status: false };
-                        } else {
-                              result = {
-                                    message: "Add new vehicle to monitor parking successfully",
-                                    status: true,
-                              };
-                        }
-                  }
+                  { isComing: listIsComing }
             );
+
+            if (resspon.length === 0) {
+                  result = { message: "some thing wrong", status: false };
+            } else {
+                  result = {
+                        message: "Add new vehicle to monitor parking successfully",
+                        status: true,
+                  };
+            }
 
             let bookingFilter = {
                   vehicleId: mongoose.Types.ObjectId(vehicleId),
@@ -159,7 +155,7 @@ addComingVehicle = async (
 };
 
 showBookingInfo = async (userId) => {
-      let result;
+      let result = [];
       let parkingId = "";
       const userFilter = {
             userId: mongoose.Types.ObjectId(userId),
@@ -217,7 +213,7 @@ showBookingInfo = async (userId) => {
 };
 
 showParkingInfo = async (userId) => {
-      let result;
+      let result = [];
       let parkingId = "";
       const userFilter = {
             userId: mongoose.Types.ObjectId(userId),
@@ -274,7 +270,7 @@ showParkingInfo = async (userId) => {
 };
 
 showParkingHistoryInfo = async (userId) => {
-      let result;
+      let result = [];
       const userFilter = {
             userId: mongoose.Types.ObjectId(userId),
       };
@@ -337,7 +333,7 @@ showParkingHistoryInfo = async (userId) => {
 };
 
 deleteComingVehicle = async (parkingId, userId, vehicleId) => {
-      let result;
+      let result = [];
       // xét xem thông tin xe có chính xác hay không
       try {
             let filter = {
@@ -384,19 +380,18 @@ deleteComingVehicle = async (parkingId, userId, vehicleId) => {
             }
 
             // thêm vào model
-            await MonitorParking.findOneAndUpdate(
+            let respon = await MonitorParking.findOneAndUpdate(
                   { parkingId: mongoose.Types.ObjectId(parkingId) },
-                  { isComing: listIsComing },
-                  (err, data) => {
-                        if (err) {
-                              result = { message: err, status: false };
-                        } else
-                              result = {
-                                    message: "Delete vehicle in monitor parking successfully",
-                                    status: true,
-                              };
-                  }
+                  { isComing: listIsComing }
             );
+
+            if (respon.length === 0) {
+                  result = { message: "Something wrong", status: false };
+            } else
+                  result = {
+                        message: "Delete vehicle in monitor parking successfully",
+                        status: true,
+                  };
             let bookingFilter = {
                   vehicleId: mongoose.Types.ObjectId(vehicleId),
                   userId: mongoose.Types.ObjectId(userId),
@@ -418,7 +413,7 @@ deleteComingVehicle = async (parkingId, userId, vehicleId) => {
 };
 
 confirmBooking = async (ownerId, parkingId, userId) => {
-      let result;
+      let result = [];
       // xét xem đã có monitor trong collection hay chưa
       const filter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
@@ -450,28 +445,25 @@ confirmBooking = async (ownerId, parkingId, userId) => {
             }
 
             // thêm vào model
-            await MonitorParking.findOneAndUpdate(
+            let respon = await MonitorParking.findOneAndUpdate(
                   { parkingId: mongoose.Types.ObjectId(parkingId) },
-                  { isComing: listBooking },
-                  (err, data) => {
-                        if (err) {
-                              result = { message: err, status: false };
-                        } else
-                              result = {
-                                    message: "Confirm booking successfully",
-                                    status: true,
-                              };
-                  }
+                  { isComing: listBooking }
             );
+            if (respon.length === 0) {
+                  result = { message: "Something wrong", status: false };
+            } else
+                  result = {
+                        message: "Confirm booking successfully",
+                        status: true,
+                  };
             return result;
       } catch (error) {
-            // console.log('sdfsdf');
             return (result = { error, status: false });
       }
 };
 
 showListComingVehicle = async (parkingId) => {
-      let result;
+      let result = [];
       const filter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
       };
@@ -529,7 +521,7 @@ showListComingVehicle = async (parkingId) => {
 };
 
 showListBookingVehicle = async (parkingId) => {
-      let result;
+      let result = [];
       const filter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
       };
@@ -587,7 +579,7 @@ showListBookingVehicle = async (parkingId) => {
 };
 
 addComeVehicle = async (ownerId, parkingId, userId, vehicleId, comingTime) => {
-      let result;
+      let result = [];
       // xét xem thông tin xe có chính xác hay không
       let res = await BookingHistory.find({
             vehicleId: mongoose.Types.ObjectId(vehicleId),
@@ -651,19 +643,18 @@ addComeVehicle = async (ownerId, parkingId, userId, vehicleId, comingTime) => {
             listHasCome = [...listHasCome, newCome];
 
             // thêm vào model
-            await MonitorParking.findOneAndUpdate(
+            let respon = await MonitorParking.findOneAndUpdate(
                   { parkingId: mongoose.Types.ObjectId(parkingId) },
-                  { hasCome: listHasCome },
-                  (err, data) => {
-                        if (err) {
-                              result = { message: err, status: false };
-                        } else
-                              result = {
-                                    message: "Add new vehicle parking successfully",
-                                    status: true,
-                              };
-                  }
+                  { hasCome: listHasCome }
             );
+
+            if (respon.length === 0) {
+                  result = { message: "Something wrong", status: false };
+            } else
+                  result = {
+                        message: "Add new vehicle parking successfully",
+                        status: true,
+                  };
             let bookingFilter = {
                   vehicleId: mongoose.Types.ObjectId(vehicleId),
                   userId: mongoose.Types.ObjectId(userId),
@@ -685,7 +676,7 @@ addComeVehicle = async (ownerId, parkingId, userId, vehicleId, comingTime) => {
 };
 
 showListVehicleInParking = async (parkingId) => {
-      let result;
+      let result = [];
       const filter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
       };
@@ -747,7 +738,7 @@ addOutVehicle = async (
       outTime,
       price
 ) => {
-      let result;
+      let result = [];
       // xét xem thông tin xe có chính xác hay không
       try {
             let filter = {
@@ -805,19 +796,17 @@ addOutVehicle = async (
             }
 
             // thêm vào model
-            await MonitorParking.findOneAndUpdate(
+            let respon = await MonitorParking.findOneAndUpdate(
                   { parkingId: mongoose.Types.ObjectId(parkingId) },
-                  { hasCome: listHasCome },
-                  (err, data) => {
-                        if (err) {
-                              result = { message: err, status: false };
-                        } else
-                              result = {
-                                    message: "An vehicle has come out parking",
-                                    status: true,
-                              };
-                  }
+                  { hasCome: listHasCome }
             );
+            if (respon.length === 0) {
+                  result = { message: "some thing wrong", status: false };
+            } else
+                  result = {
+                        message: "An vehicle has come out parking",
+                        status: true,
+                  };
             let bookingFilter = {
                   vehicleId: mongoose.Types.ObjectId(vehicleId),
                   userId: mongoose.Types.ObjectId(userId),
@@ -856,7 +845,7 @@ addOutVehicle = async (
 };
 
 getRevenueOfParkingByDate = async (date, parkingId) => {
-      let result;
+      let result = [];
       const filter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
       };
@@ -872,7 +861,7 @@ getRevenueOfParkingByDate = async (date, parkingId) => {
       let revenue = 0;
       for (const vehicle of res[0].hasCome) {
             if (vehicle.isOut === true) {
-                  let outTime = moment(vehicle.outTime).format('DD/MM/YYYY')
+                  let outTime = moment(vehicle.outTime).format("DD/MM/YYYY");
                   if (outTime === date) {
                         count++;
                         revenue += vehicle.price;
@@ -888,12 +877,12 @@ getRevenueOfParkingByDate = async (date, parkingId) => {
 };
 
 getRevenueOfParkingByMonth = async (month, year, parkingId) => {
-      const {start, end} = getMonthDateRange(year, month)
-      let result;
+      const { start, end } = getMonthDateRange(year, month);
+      let result = [];
       const filter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
       };
-      const daysInMonth = moment(month + '/' + year, 'MM/YYYY').daysInMonth()
+      const daysInMonth = moment(month + "/" + year, "MM/YYYY").daysInMonth();
       // xét xem đã có monitor trong collection hay chưa
       let res = await MonitorParking.find(filter);
       if (res.length === 0) {
@@ -906,9 +895,12 @@ getRevenueOfParkingByMonth = async (month, year, parkingId) => {
       let vehicleNumber = new Array(daysInMonth).fill(0);
       for (const vehicle of res[0].hasCome) {
             if (vehicle.isOut === true) {
-                  if (moment(vehicle.outTime) < moment(end) && moment(vehicle.outTime) >= moment(start)) {
-                        let day = moment(vehicle.outTime).date()
-                        vehicleNumber[day - 1] += 1
+                  if (
+                        moment(vehicle.outTime) < moment(end) &&
+                        moment(vehicle.outTime) >= moment(start)
+                  ) {
+                        let day = moment(vehicle.outTime).date();
+                        vehicleNumber[day - 1] += 1;
                         if (day <= 5) {
                               // vehicleNumber[0]++;
                               revenue[0] += vehicle.price;
@@ -943,7 +935,7 @@ getRevenueAndVehicleNumbersOfParkingByMonthForStatistical = async (
       date,
       parkingId
 ) => {
-      let result;
+      let result = [];
       const filter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
       };
@@ -997,7 +989,7 @@ getRevenueAndVehicleNumbersOfParkingByMonthForStatistical = async (
 };
 
 getRevenueVehicleNumberOfParkingByYear = async (year, parkingId) => {
-      let result;
+      let result = [];
       const filter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
       };
@@ -1027,7 +1019,7 @@ getRevenueVehicleNumberOfParkingByYear = async (year, parkingId) => {
                               vehicle.outTime
                         );
                         let outTime = formatDateDB.split(" ");
-                              
+
                         let date = outTime[0].split("/");
                         let day = parseInt(date[0]);
                         let month = parseInt(date[1]);
@@ -1054,15 +1046,15 @@ getRevenueVehicleNumberOfParkingByYear = async (year, parkingId) => {
             }
       }
       let data = {
-            revenue: revenueArray.map(_=> _.reduce((s, i)=> s + i)),
-            vehicleNumber: countArray.map(_=> _.reduce((s, i)=> s + i)),
+            revenue: revenueArray.map((_) => _.reduce((s, i) => s + i)),
+            vehicleNumber: countArray.map((_) => _.reduce((s, i) => s + i)),
       };
       result = { data: data, status: true };
       return result;
 };
 
 getPriceOfBooking = async (userId, parkingId) => {
-      let result;
+      let result = [];
       const parkingFilter = {
             parkingId: mongoose.Types.ObjectId(parkingId),
       };
