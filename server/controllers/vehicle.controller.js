@@ -22,7 +22,8 @@ exports.addVehicleController = async (req, res) => {
             licensePlates,
             color,
             modelName,
-            images
+            images,
+            description
       );
 
       if (!status) {
