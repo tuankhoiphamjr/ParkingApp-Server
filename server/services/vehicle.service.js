@@ -52,7 +52,7 @@ addVehicle = async (
             modelName,
             isActive,
             images,
-            description
+            description,
       });
       let vehicleId = result._id;
       let userId = ownerId;
@@ -73,6 +73,7 @@ updateVehicleInfo = async (
       type,
       licensePlates,
       color,
+      modelName,
       images,
       description
 ) => {
