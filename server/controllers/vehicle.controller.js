@@ -15,7 +15,8 @@ exports.getVehicleInfoController = async (req, res) => {
 
 exports.addVehicleController = async (req, res) => {
       let ownerId = req.userId;
-      let { type, licensePlates, color, modelName, images } = req.body;
+      let { type, licensePlates, color, modelName, images, description } =
+            req.body;
       let { result, status } = await vehicleService.addVehicle(
             ownerId,
             type,
