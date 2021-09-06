@@ -19,4 +19,6 @@ router.get("/getUserStatistical/:month&:year", controller.getNumberUserStatistic
 
 router.get("/getNumberBookingStatisticalByDate/:day&:month&:year", controller.getNumberBookingStatisticalByDate);
 
+router.get("/getNumberEvaluateStatisticalByDate/:day&:month&:year", controller.getNumberEvaluateStatisticalByDate);
+
 module.exports = router;

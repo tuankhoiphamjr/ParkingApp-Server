@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
 const DeclineParkingSchema = new mongoose.Schema({
-      parkingId: {
+      ownerId: {
             type: ObjectId,
             required: true,
-            ref: "Parking",
+            ref: "User",
       },
       declineAt: {
             type: Date,

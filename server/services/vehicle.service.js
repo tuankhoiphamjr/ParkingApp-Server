@@ -27,7 +27,15 @@ getVehicleInfoByOwnerId = async (ownerId) => {
       return { result, status: true };
 };
 
-addVehicle = async (ownerId, type, licensePlates, color, modelName,images) => {
+addVehicle = async (
+      ownerId,
+      type,
+      licensePlates,
+      color,
+      modelName,
+      images,
+      description
+) => {
       let validate = await validateLicensePlates(licensePlates);
       if (validate === false) {
             return {
@@ -43,7 +51,8 @@ addVehicle = async (ownerId, type, licensePlates, color, modelName,images) => {
             color,
             modelName,
             isActive,
-            images
+            images,
+            description,
       });
       let vehicleId = result._id;
       let userId = ownerId;
@@ -64,7 +73,9 @@ updateVehicleInfo = async (
       type,
       licensePlates,
       color,
-      modelName
+      modelName,
+      images,
+      description
 ) => {
       let result = await Vehicle.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(vehicleId) },
@@ -73,6 +84,8 @@ updateVehicleInfo = async (
                   licensePlates: licensePlates,
                   color: color,
                   modelName: modelName,
+                  images: images,
+                  description: description,
             }
       );
       if (!result) {

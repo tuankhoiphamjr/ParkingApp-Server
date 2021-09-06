@@ -24,6 +24,9 @@ const VehicleSchema = new mongoose.Schema({
       images: {
             type: Array,
       },
+      description: {
+            type: String,
+      },
       isActive: {
             type: Boolean,
       },
