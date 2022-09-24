@@ -149,7 +149,6 @@ addComingVehicle = async (
             }
             return result;
       } catch (error) {
-            // console.log('sdfsdf');
             return (result = { error, status: false });
       }
 };
