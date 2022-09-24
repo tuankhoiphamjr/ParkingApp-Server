@@ -27,7 +27,6 @@ exports.addComingVehicleToMonitor = async (req, res) => {
             comingTime,
             status
       );
-      // Bug tại đay nhưng không hiểu tại sao
       if (!result?.status) {
             res.status(400).json({ message: result.message });
             return;
