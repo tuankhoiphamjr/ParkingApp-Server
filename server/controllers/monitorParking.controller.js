@@ -72,7 +72,6 @@ exports.deleteComingVehicleInMonitor = async (req, res) => {
             userId,
             vehicleId
       );
-      // Bug tại đay nhưng không hiểu tại sao
       if (!result?.status) {
             res.status(400).json({ message: result.message });
             return;
@@ -89,7 +88,6 @@ exports.confirmBooking = async (req, res) => {
             parkingId,
             userId
       );
-      // Bug tại đay nhưng không hiểu tại sao
       if (!result?.status) {
             res.status(400).json({ message: result.message });
             return;
@@ -130,7 +128,6 @@ exports.addNewComingVehicleToMonitor = async (req, res) => {
             vehicleId,
             comingTime
       );
-      // Bug tại đay nhưng không hiểu tại sao
       if (!result?.status) {
             res.status(400).json({
                   message: result.message,
